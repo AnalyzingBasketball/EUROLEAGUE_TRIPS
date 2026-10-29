@@ -1,6 +1,6 @@
 import streamlit as st
 
-from common.menu import iniciar_pagina
+from common.menu import iniciar_pagina, number_formats
 from common.print_tools import print_button
 from common.theme import is_dark
 from controllers.chart_data import default_season, km_by_club, trip_lines, venue_counts
@@ -42,7 +42,10 @@ if iniciar_pagina("Calendario y viajes", "✈️"):
 
     st.subheader("Fuente 2 · CSV: sedes y coordenadas")
     st.caption("Geocodificadas con OpenStreetMap (ODbL). Las filas con «revisar» tienen una coordenada aproximada.")
-    st.dataframe(venues_table(get_venues_csv()), width="stretch", hide_index=True, height=260)
+    st.dataframe(
+        venues_table(get_venues_csv()), width="stretch", hide_index=True, height=260,
+        column_config=number_formats(Latitud="%.4f", Longitud="%.4f"),
+    )
 
     st.subheader("Gráficos")
     if filtered.empty:

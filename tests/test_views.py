@@ -60,9 +60,11 @@ def test_trip_table_columns_and_result(metrics):
 def test_country_name_and_venues_table():
     assert country_name("gb") == "Reino Unido"
     assert country_name("xx") == "XX"
-    t = venues_table(SEDES.assign(precision="pabellon", revisar=0))
+    t = venues_table(SEDES.assign(precision="pabellon", revisar=[0, 1]))
     assert list(t.columns[:4]) == ["Id", "Sede", "Ciudad", "País"]
     assert set(t["País"]) == {"España"}
+    assert list(t["Precisión"]) == ["Pabellón", "Pabellón"]
+    assert list(t["Revisar"]) == ["No", "Sí"]
 
 
 def test_competition_names_renames_and_maps_codes():

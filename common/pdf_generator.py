@@ -40,7 +40,7 @@ class _Report(FPDF):
 
 
 def _fmt(value: object) -> str:
-    if value is None or (isinstance(value, float) and pd.isna(value)):
+    if value is None or value is pd.NA or (isinstance(value, float) and pd.isna(value)):
         return ""
     text = f"{value:g}" if isinstance(value, float) else str(value)
     return text if len(text) <= MAX_CELL_CHARS else text[: MAX_CELL_CHARS - 1] + "…"

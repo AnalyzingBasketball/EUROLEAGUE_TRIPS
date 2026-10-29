@@ -2,18 +2,9 @@
 import pandas as pd
 
 from controllers.charts import COMP_NAMES
+from controllers.labels import country_name
 
-COUNTRY_NAMES = {
-    "ad": "Andorra", "ae": "Emiratos Árabes Unidos", "ba": "Bosnia y Herzegovina", "be": "Bélgica", "bg": "Bulgaria",
-    "de": "Alemania", "es": "España", "fr": "Francia", "gb": "Reino Unido", "gr": "Grecia", "il": "Israel", "it": "Italia",
-    "lt": "Lituania", "lv": "Letonia", "mc": "Mónaco", "me": "Montenegro", "pl": "Polonia", "ro": "Rumanía", "rs": "Serbia",
-    "ru": "Rusia", "si": "Eslovenia", "tr": "Turquía",
-}
-
-
-def country_name(code: object) -> object:
-    """Código ISO de dos letras -> nombre en español (si no se conoce, el mismo código en mayúsculas)."""
-    return COUNTRY_NAMES.get(code, str(code).upper()) if isinstance(code, str) else code
+PRECISION_NAMES = {"pabellon": "Pabellón", "calle": "Calle", "ciudad": "Ciudad"}
 
 
 def competition_names(df: pd.DataFrame, column: str = "competicion_id") -> pd.DataFrame:
@@ -27,7 +18,9 @@ def venues_table(venues: pd.DataFrame) -> pd.DataFrame:
     """Catálogo de sedes con nombres de columna y país en español, listo para mostrar."""
     return pd.DataFrame({
         "Id": venues["id"], "Sede": venues["nombre"], "Ciudad": venues["ciudad"], "País": venues["pais"].map(country_name),
-        "Latitud": venues["lat"], "Longitud": venues["lon"], "Precisión": venues["precision"], "Revisar": venues["revisar"],
+        "Latitud": venues["lat"], "Longitud": venues["lon"],
+        "Precisión": venues["precision"].map(PRECISION_NAMES).fillna(venues["precision"]),
+        "Revisar": venues["revisar"].map({0: "No", 1: "Sí"}),
     })
 
 
@@ -51,6 +44,11 @@ def filter_metrics(
     return out
 
 
+def _whole(values: pd.Series) -> pd.Series:
+    """Redondea a enteros y deja los huecos como NaN: Streamlit los pinta en blanco (con Int64 saldría «None»)."""
+    return values.round(0)
+
+
 def trip_table(metrics: pd.DataFrame, names: dict[int, str], venues: pd.DataFrame) -> pd.DataFrame:
     """Calendario con descanso y km, listo para mostrar."""
     sedes = venues.set_index("id")
@@ -64,11 +62,11 @@ def trip_table(metrics: pd.DataFrame, names: dict[int, str], venues: pd.DataFram
         "Ciudad": metrics["sede_id"].map(sedes["ciudad"]),
         "País": metrics["sede_id"].map(sedes["pais"]).map(country_name),
         "Resultado": metrics["pts_for"].astype(int).astype(str) + "-" + metrics["pts_against"].astype(int).astype(str),
-        "Descanso (días)": metrics["rest_days"],
-        "Km del viaje": metrics["km_trip"].round(0),
-        "Km desde la sede anterior": metrics["km_prev"].round(0),
-        "Km 7 días": metrics["km_7d"].round(0),
-        "Km 14 días": metrics["km_14d"].round(0),
+        "Descanso (días)": _whole(metrics["rest_days"]),
+        "Km del viaje": _whole(metrics["km_trip"]),
+        "Km desde la sede anterior": _whole(metrics["km_prev"]),
+        "Km 7 días": _whole(metrics["km_7d"]),
+        "Km 14 días": _whole(metrics["km_14d"]),
     })
     return out.sort_values(["Fecha", "Club"]).reset_index(drop=True)
 
@@ -80,13 +78,13 @@ def fatigue_table(metrics: pd.DataFrame, names: dict[int, str]) -> pd.DataFrame:
         "Competición": metrics["competicion_id"].map(COMP_NAMES),
         "Club": metrics["club_id"].map(names),
         "Rival": metrics["rival_id"].map(names),
-        "Descanso (días)": metrics["rest_days"],
-        "Partidos 7 días previos": metrics["games_prev_7d"],
-        "Km 7 días": metrics["km_7d"].round(0),
-        "Jugadores ≥10 min": metrics["players_10"],
+        "Descanso (días)": _whole(metrics["rest_days"]),
+        "Partidos 7 días previos": _whole(metrics["games_prev_7d"]),
+        "Km 7 días": _whole(metrics["km_7d"]),
+        "Jugadores ≥10 min": _whole(metrics["players_10"]),
         "Cuota de minutos top 5": (metrics["top5_share"] * 100).round(1),
-        "Titulares cambiados": metrics["starters_changed"],
-        "Margen": metrics["margin"],
+        "Titulares cambiados": _whole(metrics["starters_changed"]),
+        "Margen": _whole(metrics["margin"]),
         "Margen ajustado": metrics["margin_resid"].round(1),
     })
     return out.sort_values(["Fecha", "Club"]).reset_index(drop=True)

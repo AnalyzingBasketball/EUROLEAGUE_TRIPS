@@ -2,6 +2,8 @@
 import pandas as pd
 import plotly.graph_objects as go
 
+from controllers.labels import country_name
+
 COMP_NAMES = {"ACB": "ACB", "E": "Euroliga", "U": "EuroCup"}
 COMP_ORDER = ["ACB", "E", "U"]
 
@@ -64,7 +66,7 @@ def trip_map_figure(venues: pd.DataFrame, lines: pd.DataFrame | None, dark: bool
         lon=venues["lon"], lat=venues["lat"], mode="markers", name="Sedes",
         marker={"size": (venues["partidos"] ** 0.5 * 5 + 5).clip(upper=26), "color": pal["ACB"], "opacity": 0.85,
                 "line": {"color": pal["surface"], "width": 2}},
-        text=venues["nombre"] + " (" + venues["pais"].str.upper() + ")",
+        text=venues["nombre"] + " (" + venues["pais"].map(country_name) + ")",
         customdata=venues["partidos"], hovertemplate="%{text}<br>%{customdata} partidos<extra></extra>",
         showlegend=False,
     ))

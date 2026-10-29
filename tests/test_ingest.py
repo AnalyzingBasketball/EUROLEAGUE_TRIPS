@@ -7,8 +7,10 @@ from controllers.ingest import (
     group_venues,
     haversine_km,
     norm,
+    normalize_venue_name,
     parse_api_game,
     same_venue,
+    tidy_club_name,
 )
 
 
@@ -89,3 +91,29 @@ def test_alias_ranges_open_ended_when_current():
     rows = [("E", "BAS", "Cazoo", 2022), ("E", "BAS", "Kosner", 2025), ("E", "BAS", "Kosner", 2026),
             ("E", "BAS", "Cazoo", 2022)]
     assert alias_ranges(rows, 2026) == [("E", "BAS", "Cazoo", 2022, 2022), ("E", "BAS", "Kosner", 2025, None)]
+
+
+@pytest.mark.parametrize("raw,expected", [
+    ("STARK ARENA", "Stark Arena"),
+    ("COCA-COLA ARENA", "Coca-Cola Arena"),
+    ("PALAZZETTO DELLO SPORT", "Palazzetto dello Sport"),
+    ("PEACE AND FRIENDSHIP STADIUM", "Peace and Friendship Stadium"),
+    ("BJK EMLAKJET SPORTS&EVENT HALL", "BJK Emlakjet Sports & Event Hall"),
+    ("PALALEONESSA A2A", "PalaLeonessa A2A"),
+    ("EDEL-OPTICS.DE ARENA", "Edel-Optics.de Arena"),
+    ("ARENA 8888 SOFIA", "Arena 8888 Sofia"),
+    ("PAOK SPORTS ARENA", "PAOK Sports Arena"),
+    ("Pabellón Fernando Martín", "Pabellón Fernando Martín"),  # ya en mayúsculas y minúsculas: no se toca
+    ("OAKA Altion", "OAKA Altion"),
+    ("WiZink Center", "WiZink Center"),
+    ("Poliesportiu d'Andorra", "Poliesportiu d'Andorra"),
+])
+def test_normalize_venue_name(raw, expected):
+    assert normalize_venue_name(raw) == expected
+
+
+def test_tidy_club_name_capitalizes_words_and_fixes_brands():
+    assert tidy_club_name("ratiopharm ulm") == "Ratiopharm Ulm"
+    assert tidy_club_name("NINERS Chemnitz") == "Niners Chemnitz"
+    assert tidy_club_name("LDLC ASVEL Villeurbanne") == "LDLC ASVEL Villeurbanne"
+    assert tidy_club_name("MoraBanc Andorra") == "MoraBanc Andorra"

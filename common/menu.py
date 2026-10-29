@@ -5,6 +5,11 @@ from common.login import generar_login, logout
 from common.print_tools import inject_print_css
 
 
+def number_formats(**formats: str) -> dict:
+    """Configuración de columnas numéricas con formato fijo: {"Km": "%.0f"} -> NumberColumn(format="%.0f")."""
+    return {name: st.column_config.NumberColumn(format=fmt) for name, fmt in formats.items()}
+
+
 def crear_menu() -> None:
     """Enlaces a las páginas, usuario activo y botón de salir."""
     with st.sidebar:

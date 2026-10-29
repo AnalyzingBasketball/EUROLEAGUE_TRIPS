@@ -28,6 +28,7 @@ def test_trip_map_draws_lines_and_markers():
                            "partidos": [4, 1], "revisar": [0, 0]})
     lines = pd.DataFrame({"base_lat": [40.0], "base_lon": [-3.0], "destino_lat": [38.0], "destino_lon": [23.0]})
     assert len(trip_map_figure(venues, lines, False).data) == 2
+    assert trip_map_figure(venues, None, False).data[0].text[1] == "B (Grecia)"
     assert len(trip_map_figure(venues, None, False).data) == 1
 
 

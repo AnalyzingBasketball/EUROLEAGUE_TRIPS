@@ -33,7 +33,7 @@ controllers/             lógica: métricas, datos de gráficas, figuras, inform
 models/                  acceso a datos: SQLite, CSV y API, con esquema SQL
 data/                    viajes_fatiga.db, sedes.csv y paises.json (contornos del mapa del PDF)
 .streamlit/config.toml   oculta el menú automático de Streamlit
-tests/                   pruebas con pytest (97)
+tests/                   pruebas con pytest (113)
 ```
 
 ## Fuentes de datos

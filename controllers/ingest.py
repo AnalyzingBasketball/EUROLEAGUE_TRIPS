@@ -3,6 +3,38 @@ import math
 import unicodedata
 from dataclasses import dataclass
 
+VENUE_ACRONYMS = {"BJK", "PAOK", "USH", "CSKA", "LDLC", "SAP", "BLM", "PG"}
+VENUE_LOWER = {"de", "del", "della", "dello", "da", "do", "dos", "di", "la", "le", "and"}
+VENUE_FIXES = {"PALAEUR": "PalaEur", "PALADOZZA": "PalaDozza", "PALALEONESSA A2A": "PalaLeonessa A2A"}
+CLUB_FIXES = {"NINERS Chemnitz": "Niners Chemnitz", "BOSNA BH Telecom Sarajevo": "Bosna BH Telecom Sarajevo"}
+
+
+def normalize_venue_name(name: str) -> str:
+    """Nombre de pabellón con mayúscula inicial en cada palabra; solo toca los nombres escritos todo en mayúsculas.
+
+    Se respetan las siglas (BJK, PAOK, SAP...), las partículas en minúscula (de, dello) y los tokens con cifras (A2A).
+    """
+    name = " ".join(name.replace("&", " & ").split())
+    if name != name.upper():
+        return name  # ya viene en mayúsculas y minúsculas
+    if name in VENUE_FIXES:
+        return VENUE_FIXES[name]
+    words = []
+    for i, word in enumerate(name.split()):
+        if word in VENUE_ACRONYMS or any(c.isdigit() for c in word) or word == "&":
+            words.append(word)
+        elif word.lower() in VENUE_LOWER and i > 0:
+            words.append(word.lower())
+        else:
+            words.append("-".join(part.capitalize() for part in word.split("-")))
+    return " ".join(words)
+
+
+def tidy_club_name(name: str) -> str:
+    """Nombre de club con cada palabra empezando en mayúscula y sin marcas escritas todo en mayúsculas (NINERS, BOSNA)."""
+    name = CLUB_FIXES.get(name, name)
+    return " ".join(word[:1].upper() + word[1:] for word in name.split())
+
 
 def norm(text: str) -> str:
     """Minúsculas, sin tildes ni espacios sobrantes, para comparar nombres."""

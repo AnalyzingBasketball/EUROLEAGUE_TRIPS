@@ -14,7 +14,7 @@ from controllers.chart_data import (
     home_away_effect,
     rest_trip_grid,
 )
-from controllers.charts import effect_figure, rest_trip_heatmap
+from controllers.charts import COMP_NAMES, effect_figure, rest_trip_heatmap
 from controllers.reports import fatigue_report
 from controllers.views import (
     club_names,
@@ -140,7 +140,7 @@ if iniciar_pagina("Fatiga y rotaciones", "🏀"):
         rot_now = st.session_state.get("rot", "players_10")
         measure_now = st.session_state.get("measure", "win_pct")
         unit_now = st.session_state.get("unit", "km_trip")
-        report_filters = {"Temporada de la tabla": seasons_label(season), "Competiciones": ", ".join(comps),
+        report_filters = {"Temporada de la tabla": seasons_label(season), "Competiciones": ", ".join(COMP_NAMES[c] for c in comps),
                           "Solo doble competición": "sí" if only_dual else "no"}
         b2.download_button(
             "📄 Exportar a PDF",

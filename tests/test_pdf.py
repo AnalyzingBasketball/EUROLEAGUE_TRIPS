@@ -65,3 +65,12 @@ def test_trip_and_fatigue_reports_build():
     assert _pages(pdf) >= 2
     assert fatigue_report("admin", {}, trips, scope, "players_10", "x", "margin_resid", "trip_hours").startswith(b"%PDF")
     assert fatigue_report("admin", {}, trips, scope.iloc[0:0], "players_10", "x").startswith(b"%PDF")
+
+
+def test_cell_format_blank_for_missing_values_and_whole_numbers():
+    from common.pdf_generator import _fmt
+
+    assert _fmt(pd.NA) == ""
+    assert _fmt(np.nan) == ""
+    assert _fmt(3.0) == "3"
+    assert _fmt(pd.array([7, None], dtype="Int64")[0]) == "7"
