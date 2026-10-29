@@ -145,5 +145,5 @@ if iniciar_pagina("Fatiga y rotaciones", "🏀"):
             "📄 Exportar a PDF",
             data=lambda: fatigue_report(user, report_filters, fatigue_table(scope, names),
                                         all_seasons, rot_now, ROTATION[rot_now], measure_now, unit_now),
-            file_name=f"fatiga_rotaciones_{season}.pdf", mime="application/pdf", width="stretch", disabled=all_seasons.empty,
+            file_name=f"fatiga_rotaciones_{season}.pdf", mime="application/pdf", type="primary", width="stretch", disabled=all_seasons.empty,
         )

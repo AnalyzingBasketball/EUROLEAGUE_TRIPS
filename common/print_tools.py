@@ -16,10 +16,9 @@ PRINT_BUTTON = """
 <style>
 html, body { margin: 0; padding: 0; background: transparent; }
 button { box-sizing: border-box; width: 100%; height: 40px; padding: 0 12px; border-radius: 8px;
-         border: 1px solid rgba(128, 128, 128, 0.45); background: transparent; color: #0b0b0b; cursor: pointer;
+         border: 1px solid #ff4b4b; background: #ff4b4b; color: #ffffff; cursor: pointer;
          font: 400 14px "Source Sans", "Source Sans Pro", sans-serif; white-space: nowrap; }
-button:hover { border-color: #ff4b4b; color: #ff4b4b; }
-@media (prefers-color-scheme: dark) { button { color: #f0efec; } }
+button:hover { border-color: #ff6b6b; background: #ff6b6b; }
 </style>
 <button onclick="window.parent.print()">🖨️ Imprimir página</button>
 """

@@ -77,5 +77,5 @@ if iniciar_pagina("Calendario y viajes", "✈️"):
             "📄 Exportar a PDF",
             data=lambda: trip_report(user, report_filters, trips, km_data,
                                      venue_counts(filtered, venues), trip_data),
-            file_name=f"calendario_viajes_{season}.pdf", mime="application/pdf", width="stretch", disabled=filtered.empty,
+            file_name=f"calendario_viajes_{season}.pdf", mime="application/pdf", type="primary", width="stretch", disabled=filtered.empty,
         )
