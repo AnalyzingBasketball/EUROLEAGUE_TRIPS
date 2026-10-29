@@ -2,7 +2,7 @@
 
 Aplicación Streamlit que estudia si los kilómetros de viaje y el poco descanso se relacionan con el rendimiento y con las rotaciones de los clubes españoles que compiten a la vez en la liga ACB y en la Euroliga o la EuroCup. Reúne los calendarios de las tres competiciones desde 2022/23 hasta 2026/27 (en curso) y calcula, para cada partido y club, el descanso, el viaje y la rotación de la plantilla.
 
-Enlace público: _pendiente de publicar_.
+Enlace público: https://euroleague-trips.streamlit.app (usuario `admin`, contraseña `admin`).
 
 ## Uso
 

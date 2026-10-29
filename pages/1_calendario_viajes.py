@@ -59,7 +59,7 @@ if iniciar_pagina("Calendario y viajes", "✈️"):
 
     user = st.session_state["usuario"]  # el PDF se genera al pulsar, fuera del hilo del script: no puede leer la sesión
     with actions:
-        b1, b2, _ = st.columns([3, 3, 2], vertical_alignment="center")
+        b1, b2, _ = st.columns([3, 3, 4], vertical_alignment="center")
         with b1:
             print_button()
         trips = trip_table(filtered, names, venues)
@@ -71,5 +71,5 @@ if iniciar_pagina("Calendario y viajes", "✈️"):
             "📄 Exportar a PDF",
             data=lambda: trip_report(user, report_filters, trips, km_data,
                                      venue_counts(filtered, venues), trip_data),
-            file_name=f"calendario_viajes_{season}.pdf", mime="application/pdf", disabled=filtered.empty,
+            file_name=f"calendario_viajes_{season}.pdf", mime="application/pdf", width="stretch", disabled=filtered.empty,
         )

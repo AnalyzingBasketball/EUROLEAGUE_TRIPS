@@ -2,11 +2,13 @@
 import streamlit as st
 
 from common.login import generar_login, logout
+from common.print_tools import inject_print_css
 
 
 def crear_menu() -> None:
     """Enlaces a las páginas, usuario activo y botón de salir."""
     with st.sidebar:
+        inject_print_css()
         st.title("Viajes y fatiga")
         st.page_link("home.py", label="Inicio", icon="🏠")
         st.page_link("pages/1_calendario_viajes.py", label="Calendario y viajes", icon="✈️")

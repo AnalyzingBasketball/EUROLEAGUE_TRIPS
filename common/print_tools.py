@@ -14,15 +14,22 @@ PRINT_CSS = """
 
 PRINT_BUTTON = """
 <style>
-button { font: 600 14px sans-serif; padding: 7px 12px; white-space: nowrap; width: 100%; border-radius: 8px; border: 1px solid #888;
-         background: transparent; color: #0b0b0b; cursor: pointer; }
+html, body { margin: 0; padding: 0; background: transparent; }
+button { box-sizing: border-box; width: 100%; height: 40px; padding: 0 12px; border-radius: 8px;
+         border: 1px solid rgba(128, 128, 128, 0.45); background: transparent; color: #0b0b0b; cursor: pointer;
+         font: 400 16px "Source Sans", "Source Sans Pro", sans-serif; white-space: nowrap; }
+button:hover { border-color: #ff4b4b; color: #ff4b4b; }
 @media (prefers-color-scheme: dark) { button { color: #f0efec; } }
 </style>
 <button onclick="window.parent.print()">🖨️ Imprimir página</button>
 """
 
 
-def print_button() -> None:
-    """Pinta el botón de imprimir y añade los estilos que ocultan menú y botones en la vista de impresión."""
+def inject_print_css() -> None:
+    """Estilos de impresión: ocultan menú y botones. Se llama desde el menú para no añadir un hueco junto a los botones."""
     st.markdown(PRINT_CSS, unsafe_allow_html=True)
-    st.iframe(PRINT_BUTTON, height=46)
+
+
+def print_button() -> None:
+    """Botón que abre el diálogo de impresión del navegador."""
+    st.iframe(PRINT_BUTTON, height=40)

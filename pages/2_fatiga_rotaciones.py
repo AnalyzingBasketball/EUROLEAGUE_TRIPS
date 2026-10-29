@@ -88,7 +88,7 @@ if iniciar_pagina("Fatiga y rotaciones", "🏀"):
 
     user = st.session_state["usuario"]  # el PDF se genera al pulsar, fuera del hilo del script: no puede leer la sesión
     with actions:
-        b1, b2, _ = st.columns([3, 3, 2], vertical_alignment="center")
+        b1, b2, _ = st.columns([3, 3, 4], vertical_alignment="center")
         with b1:
             print_button()
         rot_now = st.session_state.get("rot", "players_10")
@@ -98,5 +98,5 @@ if iniciar_pagina("Fatiga y rotaciones", "🏀"):
             "📄 Exportar a PDF",
             data=lambda: fatigue_report(user, report_filters, fatigue_table(scope, names),
                                         all_seasons, rot_now, ROTATION[rot_now]),
-            file_name=f"fatiga_rotaciones_{season}.pdf", mime="application/pdf", disabled=all_seasons.empty,
+            file_name=f"fatiga_rotaciones_{season}.pdf", mime="application/pdf", width="stretch", disabled=all_seasons.empty,
         )
