@@ -9,7 +9,7 @@ Enlace público: https://euroleague-trips.streamlit.app (usuario `admin`, contra
 - Usuario de prueba: `admin` / `admin`.
 - Menú lateral con dos páginas:
   - Calendario y viajes: tabla de partidos con descanso y kilómetros, catálogo de sedes, ranking de kilómetros por club y mapa de sedes y viajes.
-  - Fatiga y rotaciones: tabla de descanso, carga y rotación, próximos partidos de la API de Euroliga y gráficas en dos pestañas: descanso y rotación, y resultados y viaje (victorias en casa y fuera, resultado según km u horas de viaje, mapa de calor de descanso y viaje).
+  - Fatiga y rotaciones: tabla de descanso, carga y rotación, próximos partidos de la API de Euroliga y gráficas en dos bloques seguidos: descanso y rotación, y resultados y viaje (victorias en casa y fuera, resultado según km u horas de viaje, mapa de calor de descanso y viaje).
 - Cada página tiene un botón para imprimir y otro para exportar a PDF con los datos filtrados en pantalla.
 
 ## Instalación y ejecución

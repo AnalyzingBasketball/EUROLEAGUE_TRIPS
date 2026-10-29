@@ -36,8 +36,8 @@ if iniciar_pagina("Viajes y fatiga", "🏀"):
     )
     st.write(
         "Fatiga y rotaciones muestra la tabla de descanso, carga y rotación, los próximos partidos que devuelve la "
-        "API de Euroliga y dos pestañas de gráficas. La primera relaciona el rendimiento y la rotación con el "
-        "descanso y los kilómetros. La segunda compara las victorias en casa y fuera y el resultado según el viaje."
+        "API de Euroliga y dos bloques de gráficas. El primero relaciona el rendimiento y la rotación con el "
+        "descanso y los kilómetros. El segundo compara las victorias en casa y fuera y el resultado según el viaje."
     )
 
     st.subheader("Cómo leer los datos")

@@ -81,56 +81,57 @@ if iniciar_pagina("Fatiga y rotaciones", "🏀"):
     if all_seasons.empty:
         st.info("No hay partidos con estos filtros.")
     else:
-        tab_rest, tab_results = st.tabs(["Descanso y rotación", "Resultados y viaje"])
-        with tab_rest:
-            st.markdown("**Rendimiento según el descanso**")
-            rest = binned_effect(all_seasons, "rest_days", "margin_resid")
-            st.plotly_chart(effect_figure(rest, "Margen ajustado medio (puntos)", "Días desde el partido anterior", dark),
+        st.markdown("#### Descanso y rotación")
+        st.markdown("**Rendimiento según el descanso**")
+        rest = binned_effect(all_seasons, "rest_days", "margin_resid")
+        st.plotly_chart(effect_figure(rest, "Margen ajustado medio (puntos)", "Días desde el partido anterior", dark),
+                        theme=None, width="stretch")
+        with st.expander("Ver los datos del gráfico"):
+            st.dataframe(competition_names(rest.round(2)), width="stretch", hide_index=True)
+
+        rot_key = st.selectbox("Medida de rotación", list(ROTATION), format_func=ROTATION.get, key="rot")
+        st.markdown(f"**{ROTATION[rot_key]} según los km de los últimos 7 días**")
+        rot = binned_effect(all_seasons, "km_7d", rot_key)
+        st.plotly_chart(effect_figure(rot, ROTATION[rot_key], "Km de viaje acumulados en 7 días", dark),
+                        theme=None, width="stretch")
+        with st.expander("Ver los datos del gráfico"):
+            st.dataframe(competition_names(rot.round(3)), width="stretch", hide_index=True)
+
+        st.divider()
+        st.markdown("#### Resultados y viaje")
+        st.caption("Los selectores de esta sección solo cambian las dos últimas gráficas.")
+        results = add_result_columns(all_seasons)
+        m1, m2 = st.columns(2)
+        measure = m1.selectbox("Resultado", list(RESULT_MEASURES), format_func=RESULT_MEASURES.get, key="measure",
+                               help="Se aplica a las dos últimas gráficas. El margen ajustado descuenta la fuerza de los clubes.")
+        unit = m2.radio("Medida del viaje", list(TRIP_UNITS), format_func=TRIP_UNITS.get, key="unit",
+                        help="Las horas son una estimación: el mejor de autobús (75 km/h) o avión (750 km/h) más 3 h de aeropuerto.")
+        label = RESULT_MEASURES[measure]
+
+        st.markdown("**Victorias en casa y fuera**")
+        home_away = home_away_effect(results, "win_pct")
+        st.plotly_chart(effect_figure(home_away, "Victorias (%)", "Condición del partido", dark),
+                        theme=None, width="stretch")
+        with st.expander("Ver los datos del gráfico"):
+            st.dataframe(competition_names(home_away.round(2)), width="stretch", hide_index=True)
+
+        away_games = results[results["home"] == 0]
+        if away_games.empty:
+            st.info("No hay partidos fuera con estos filtros.")
+        else:
+            st.markdown(f"**{label} fuera de casa según el viaje**")
+            by_trip = away_trip_effect(results, unit, measure)
+            st.plotly_chart(effect_figure(by_trip, label, TRIP_UNITS[unit], dark), theme=None, width="stretch")
+            with st.expander("Ver los datos del gráfico"):
+                st.dataframe(competition_names(by_trip.round(2)), width="stretch", hide_index=True)
+
+            st.markdown(f"**{label} fuera de casa según descanso y viaje**")
+            st.caption("El color compara con la media de los partidos fuera. Las celdas con menos de 15 partidos quedan en blanco.")
+            grid = rest_trip_grid(results, measure)
+            st.plotly_chart(rest_trip_heatmap(grid, label, float(away_games[measure].mean()), dark),
                             theme=None, width="stretch")
             with st.expander("Ver los datos del gráfico"):
-                st.dataframe(competition_names(rest.round(2)), width="stretch", hide_index=True)
-
-            rot_key = st.selectbox("Medida de rotación", list(ROTATION), format_func=ROTATION.get, key="rot")
-            st.markdown(f"**{ROTATION[rot_key]} según los km de los últimos 7 días**")
-            rot = binned_effect(all_seasons, "km_7d", rot_key)
-            st.plotly_chart(effect_figure(rot, ROTATION[rot_key], "Km de viaje acumulados en 7 días", dark),
-                            theme=None, width="stretch")
-            with st.expander("Ver los datos del gráfico"):
-                st.dataframe(competition_names(rot.round(3)), width="stretch", hide_index=True)
-
-        with tab_results:
-            results = add_result_columns(all_seasons)
-            m1, m2 = st.columns(2)
-            measure = m1.selectbox("Resultado", list(RESULT_MEASURES), format_func=RESULT_MEASURES.get, key="measure",
-                                   help="Se aplica a las dos últimas gráficas. El margen ajustado descuenta la fuerza de los clubes.")
-            unit = m2.radio("Medida del viaje", list(TRIP_UNITS), format_func=TRIP_UNITS.get, key="unit",
-                            help="Las horas son una estimación: el mejor de autobús (75 km/h) o avión (750 km/h) más 3 h de aeropuerto.")
-            label = RESULT_MEASURES[measure]
-
-            st.markdown("**Victorias en casa y fuera**")
-            home_away = home_away_effect(results, "win_pct")
-            st.plotly_chart(effect_figure(home_away, "Victorias (%)", "Condición del partido", dark),
-                            theme=None, width="stretch")
-            with st.expander("Ver los datos del gráfico"):
-                st.dataframe(competition_names(home_away.round(2)), width="stretch", hide_index=True)
-
-            away_games = results[results["home"] == 0]
-            if away_games.empty:
-                st.info("No hay partidos fuera con estos filtros.")
-            else:
-                st.markdown(f"**{label} fuera de casa según el viaje**")
-                by_trip = away_trip_effect(results, unit, measure)
-                st.plotly_chart(effect_figure(by_trip, label, TRIP_UNITS[unit], dark), theme=None, width="stretch")
-                with st.expander("Ver los datos del gráfico"):
-                    st.dataframe(competition_names(by_trip.round(2)), width="stretch", hide_index=True)
-
-                st.markdown(f"**{label} fuera de casa según descanso y viaje**")
-                st.caption("El color compara con la media de los partidos fuera. Las celdas con menos de 15 partidos quedan en blanco.")
-                grid = rest_trip_grid(results, measure)
-                st.plotly_chart(rest_trip_heatmap(grid, label, float(away_games[measure].mean()), dark),
-                                theme=None, width="stretch")
-                with st.expander("Ver los datos del gráfico"):
-                    st.dataframe(grid.round(2), width="stretch", hide_index=True)
+                st.dataframe(grid.round(2), width="stretch", hide_index=True)
 
     user = st.session_state["usuario"]  # el PDF se genera al pulsar, fuera del hilo del script: no puede leer la sesión
     with actions:
