@@ -8,9 +8,11 @@ COMP_ORDER = ["ACB", "E", "U"]
 # Tres primeros colores categóricos validados para todas las parejas (azul, naranja, aguamarina), en claro y oscuro.
 PALETTES = {
     False: {"ACB": "#2a78d6", "E": "#eb6834", "U": "#1baf7a", "ink": "#0b0b0b", "muted": "#52514e",
-            "grid": "rgba(0,0,0,0.12)", "surface": "#ffffff", "land": "#ececea", "line": "#8a8985"},
+            "grid": "rgba(0,0,0,0.12)", "surface": "#ffffff", "land": "#ececea", "line": "#8a8985",
+            "div_neg": "#a98bd0", "div_mid": "#ececea", "div_pos": "#f0b93a"},
     True: {"ACB": "#3987e5", "E": "#d95926", "U": "#199e70", "ink": "#f0efec", "muted": "#c3c2b7",
-           "grid": "rgba(255,255,255,0.14)", "surface": "#0e1117", "land": "#262730", "line": "#8a8985"},
+           "grid": "rgba(255,255,255,0.14)", "surface": "#0e1117", "land": "#262730", "line": "#8a8985",
+           "div_neg": "#6d4a99", "div_mid": "#2d2f38", "div_pos": "#b88a1f"},
 }
 
 
@@ -92,3 +94,22 @@ def effect_figure(data: pd.DataFrame, y_title: str, x_title: str, dark: bool) ->
     fig.update_xaxes(title=x_title, showgrid=False, categoryorder="array", categoryarray=list(data["tramo"].astype(str).unique()))
     fig.update_yaxes(title=y_title)
     return _layout(fig, pal)
+
+
+def rest_trip_heatmap(grid: pd.DataFrame, measure: str, center: float, dark: bool) -> go.Figure:
+    """Mapa de calor descanso x viaje. Color divergente respecto a `center` (la media de los partidos fuera)."""
+    pal = PALETTES[dark]
+    z = grid.pivot(index="descanso", columns="viaje", values="media")
+    n = grid.pivot(index="descanso", columns="viaje", values="n")
+    text = z.map(lambda v: "" if pd.isna(v) else f"{round(v, 1) + 0.0:.1f}") + n.map(lambda k: f"<br>n={k}" if k else "")
+    text = text.where(z.notna(), "")
+    fig = go.Figure(go.Heatmap(
+        x=[str(c) for c in z.columns], y=[str(r) for r in z.index], z=z.to_numpy(), text=text.to_numpy(),
+        texttemplate="%{text}", customdata=n.to_numpy(), zmid=center, xgap=2, ygap=2,
+        colorscale=[[0, pal["div_neg"]], [0.5, pal["div_mid"]], [1, pal["div_pos"]]],
+        colorbar={"title": measure, "thickness": 12},
+        hovertemplate="%{y}<br>%{x}<br>" + measure + ": %{z:.2f} (n=%{customdata})<extra></extra>",
+    ))
+    fig.update_xaxes(title="Km del viaje (ida y vuelta)", showgrid=False, side="bottom")
+    fig.update_yaxes(title="Días de descanso", showgrid=False, autorange="reversed")
+    return _layout(fig, pal, 380)

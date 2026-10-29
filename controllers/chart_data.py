@@ -7,10 +7,24 @@ REST_LABELS = ["2 días o menos", "3 días", "4-5 días", "6-7 días", "8 días 
 KM_BINS = [-1, 0, 1000, 3000, np.inf]
 KM_LABELS = ["Sin viaje (0 km)", "1-1.000 km", "1.000-3.000 km", "Más de 3.000 km"]
 
+KM_TRIP_BINS = [-1, 500, 1000, 2000, 3000, np.inf]
+KM_TRIP_LABELS = ["Hasta 500 km", "500-1.000 km", "1.000-2.000 km", "2.000-3.000 km", "Más de 3.000 km"]
+HOURS_BINS = [-1, 6, 9, 12, 15, np.inf]
+HOURS_LABELS = ["Hasta 6 h", "6-9 h", "9-12 h", "12-15 h", "Más de 15 h"]
+
 BINS = {
     "rest_days": (REST_BINS, REST_LABELS),
     "km_7d": (KM_BINS, KM_LABELS),
+    "km_trip": (KM_TRIP_BINS, KM_TRIP_LABELS),
+    "trip_hours": (HOURS_BINS, HOURS_LABELS),
 }
+
+RESULT_MEASURES = {"win_pct": "Victorias (%)", "margin": "Margen (puntos)", "margin_resid": "Margen ajustado (puntos)"}
+TRIP_UNITS = {"km_trip": "Km del viaje (ida y vuelta)", "trip_hours": "Horas de viaje aproximadas (ida y vuelta)"}
+MIN_CELL = 15  # partidos mínimos para colorear una celda del mapa de calor
+
+# Estimación del tiempo de viaje: el mejor de autobús o avión (con 3 h de aeropuerto) para la mitad del trayecto.
+BUS_KMH, FLIGHT_KMH, AIRPORT_HOURS = 75.0, 750.0, 3.0
 
 
 def default_season(metrics: pd.DataFrame) -> int:
@@ -58,14 +72,55 @@ def trip_lines(metrics: pd.DataFrame, venues: pd.DataFrame) -> pd.DataFrame:
     return pd.concat([trips.reset_index(drop=True), base, dest], axis=1)
 
 
+def travel_hours(km_round_trip: pd.Series) -> pd.Series:
+    """Horas aproximadas de viaje (ida y vuelta): min(autobús, avión + aeropuerto) por trayecto. Es una estimación."""
+    one_way = km_round_trip / 2
+    return 2 * np.minimum(one_way / BUS_KMH, one_way / FLIGHT_KMH + AIRPORT_HOURS)
+
+
+def add_result_columns(metrics: pd.DataFrame) -> pd.DataFrame:
+    """Añade `win_pct` (victoria = 100, derrota = 0) y `trip_hours` para las gráficas de resultados."""
+    out = metrics.copy()
+    out["win_pct"] = out["win"] * 100
+    out["trip_hours"] = travel_hours(out["km_trip"])
+    return out
+
+
+def _aggregate(data: pd.DataFrame, by: list[str], value: str) -> pd.DataFrame:
+    """Media de `value` por grupos, con n y error estándar."""
+    agg = data.groupby(by, observed=True)[value].agg(media="mean", n="size", sd="std").reset_index()
+    agg["se"] = (agg["sd"] / np.sqrt(agg["n"])).fillna(0.0)
+    return agg.drop(columns="sd")
+
+
 def binned_effect(metrics: pd.DataFrame, column: str, value: str, group: str = "competicion_id") -> pd.DataFrame:
     """Media de `value` por tramo de `column` y grupo, con n y error estándar.
 
-    `column` debe estar en BINS ("rest_days" o "km_7d"). Los tramos sin datos no aparecen.
+    `column` debe estar en BINS. Los tramos sin datos no aparecen.
     """
     bins, labels = BINS[column]
     data = metrics.dropna(subset=[column, value]).copy()
     data["tramo"] = pd.cut(data[column], bins=bins, labels=labels, right=True)
-    agg = data.groupby(["tramo", group], observed=True)[value].agg(media="mean", n="size", sd="std").reset_index()
-    agg["se"] = (agg["sd"] / np.sqrt(agg["n"])).fillna(0.0)
-    return agg.drop(columns="sd")
+    return _aggregate(data, ["tramo", group], value)
+
+
+def home_away_effect(metrics: pd.DataFrame, value: str = "win_pct") -> pd.DataFrame:
+    """Media de `value` en casa y fuera por competición (columna `tramo` = Local o Visitante)."""
+    data = metrics.dropna(subset=[value]).copy()
+    data["tramo"] = pd.Categorical(data["home"].map({1: "Local", 0: "Visitante"}), categories=["Local", "Visitante"])
+    return _aggregate(data, ["tramo", "competicion_id"], value)
+
+
+def away_trip_effect(metrics: pd.DataFrame, unit: str, value: str) -> pd.DataFrame:
+    """Resultado de los partidos fuera según el viaje; `unit` es "km_trip" o "trip_hours"."""
+    return binned_effect(metrics[metrics["home"] == 0], unit, value)
+
+
+def rest_trip_grid(metrics: pd.DataFrame, value: str, min_n: int = MIN_CELL) -> pd.DataFrame:
+    """Media de `value` en partidos fuera por descanso (filas) y km de viaje (columnas); NaN si hay menos de `min_n`."""
+    away = metrics[metrics["home"] == 0].dropna(subset=["rest_days", "km_trip", value]).copy()
+    away["descanso"] = pd.cut(away["rest_days"], bins=REST_BINS, labels=REST_LABELS, right=True)
+    away["viaje"] = pd.cut(away["km_trip"], bins=KM_TRIP_BINS, labels=KM_TRIP_LABELS, right=True)
+    grid = away.groupby(["descanso", "viaje"], observed=False)[value].agg(media="mean", n="size").reset_index()
+    grid.loc[grid["n"] < min_n, "media"] = np.nan
+    return grid

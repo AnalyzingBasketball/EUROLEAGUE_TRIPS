@@ -96,7 +96,7 @@ def _add_table(pdf: FPDF, block: Table) -> None:
 
 
 def _image_width(pdf: FPDF) -> float:
-    return min(190, pdf.epw)
+    return min(150, pdf.epw)  # a 150 mm caben dos gráficas por página horizontal
 
 
 def _image_height(pdf: FPDF, block: Image) -> float:

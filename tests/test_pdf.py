@@ -58,6 +58,10 @@ def test_trip_and_fatigue_reports_build():
     km = pd.DataFrame({"Club": ["A"], "Competición": ["E"], "Km": [1.0]})
     assert trip_report("admin", {}, trips, km, venues, None).startswith(b"%PDF")
     scope = pd.DataFrame({"competicion_id": ["E", "E"], "rest_days": [2.0, 6.0], "km_7d": [0.0, 500.0],
-                          "margin_resid": [1.0, -1.0], "players_10": [9, 10]})
-    assert fatigue_report("admin", {}, trips, scope, "players_10", "Jugadores ≥10 min").startswith(b"%PDF")
+                          "margin_resid": [1.0, -1.0], "players_10": [9, 10], "home": [1, 0], "win": [1.0, 0.0],
+                          "margin": [5.0, -5.0], "km_trip": [0.0, 800.0]})
+    pdf = fatigue_report("admin", {}, trips, scope, "players_10", "Jugadores ≥10 min")
+    assert pdf.startswith(b"%PDF")
+    assert _pages(pdf) >= 2
+    assert fatigue_report("admin", {}, trips, scope, "players_10", "x", "margin_resid", "trip_hours").startswith(b"%PDF")
     assert fatigue_report("admin", {}, trips, scope.iloc[0:0], "players_10", "x").startswith(b"%PDF")

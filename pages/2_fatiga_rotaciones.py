@@ -4,8 +4,17 @@ import streamlit as st
 from common.menu import iniciar_pagina
 from common.print_tools import print_button
 from common.theme import is_dark
-from controllers.chart_data import binned_effect, default_season
-from controllers.charts import effect_figure
+from controllers.chart_data import (
+    RESULT_MEASURES,
+    TRIP_UNITS,
+    add_result_columns,
+    away_trip_effect,
+    binned_effect,
+    default_season,
+    home_away_effect,
+    rest_trip_grid,
+)
+from controllers.charts import effect_figure, rest_trip_heatmap
 from controllers.reports import fatigue_report
 from controllers.views import (
     club_names,
@@ -33,8 +42,8 @@ if iniciar_pagina("Fatiga y rotaciones", "🏀"):
     seasons = sorted(metrics["temporada_id"].unique(), reverse=True)
     season = c1.selectbox("Temporada", seasons, index=seasons.index(default_season(metrics)),
                           format_func=seasons_label, key="season_f")
-    comps = c2.multiselect("Competición", ["ACB", "E"], default=["ACB", "E"],
-                           format_func={"ACB": "ACB", "E": "Euroliga"}.get, key="comps_f")
+    comps = c2.multiselect("Competición", ["ACB", "E", "U"], default=["ACB", "E", "U"],
+                           format_func={"ACB": "ACB", "E": "Euroliga", "U": "EuroCup"}.get, key="comps_f")
     only_dual = c3.checkbox("Solo clubes con doble competición", value=True, key="dual_f")
     scope = filter_metrics(metrics, season, comps)
     if only_dual:
@@ -71,20 +80,56 @@ if iniciar_pagina("Fatiga y rotaciones", "🏀"):
     if all_seasons.empty:
         st.info("No hay partidos con estos filtros.")
     else:
-        st.markdown("**Rendimiento según el descanso**")
-        rest = binned_effect(all_seasons, "rest_days", "margin_resid")
-        st.plotly_chart(effect_figure(rest, "Margen ajustado medio (puntos)", "Días desde el partido anterior", dark),
-                        theme=None, width="stretch")
-        with st.expander("Ver los datos del gráfico"):
-            st.dataframe(rest.round(2), width="stretch", hide_index=True)
+        tab_rest, tab_results = st.tabs(["Descanso y rotación", "Resultados y viaje"])
+        with tab_rest:
+            st.markdown("**Rendimiento según el descanso**")
+            rest = binned_effect(all_seasons, "rest_days", "margin_resid")
+            st.plotly_chart(effect_figure(rest, "Margen ajustado medio (puntos)", "Días desde el partido anterior", dark),
+                            theme=None, width="stretch")
+            with st.expander("Ver los datos del gráfico"):
+                st.dataframe(rest.round(2), width="stretch", hide_index=True)
 
-        rot_key = st.selectbox("Medida de rotación", list(ROTATION), format_func=ROTATION.get, key="rot")
-        st.markdown(f"**{ROTATION[rot_key]} según los km de los últimos 7 días**")
-        rot = binned_effect(all_seasons, "km_7d", rot_key)
-        st.plotly_chart(effect_figure(rot, ROTATION[rot_key], "Km de viaje acumulados en 7 días", dark),
-                        theme=None, width="stretch")
-        with st.expander("Ver los datos del gráfico"):
-            st.dataframe(rot.round(3), width="stretch", hide_index=True)
+            rot_key = st.selectbox("Medida de rotación", list(ROTATION), format_func=ROTATION.get, key="rot")
+            st.markdown(f"**{ROTATION[rot_key]} según los km de los últimos 7 días**")
+            rot = binned_effect(all_seasons, "km_7d", rot_key)
+            st.plotly_chart(effect_figure(rot, ROTATION[rot_key], "Km de viaje acumulados en 7 días", dark),
+                            theme=None, width="stretch")
+            with st.expander("Ver los datos del gráfico"):
+                st.dataframe(rot.round(3), width="stretch", hide_index=True)
+
+        with tab_results:
+            results = add_result_columns(all_seasons)
+            m1, m2 = st.columns(2)
+            measure = m1.selectbox("Resultado", list(RESULT_MEASURES), format_func=RESULT_MEASURES.get, key="measure",
+                                   help="Se aplica a las dos últimas gráficas. El margen ajustado descuenta la fuerza de los clubes.")
+            unit = m2.radio("Medida del viaje", list(TRIP_UNITS), format_func=TRIP_UNITS.get, key="unit",
+                            help="Las horas son una estimación: el mejor de autobús (75 km/h) o avión (750 km/h) más 3 h de aeropuerto.")
+            label = RESULT_MEASURES[measure]
+
+            st.markdown("**Victorias en casa y fuera**")
+            home_away = home_away_effect(results, "win_pct")
+            st.plotly_chart(effect_figure(home_away, "Victorias (%)", "Condición del partido", dark),
+                            theme=None, width="stretch")
+            with st.expander("Ver los datos del gráfico"):
+                st.dataframe(home_away.round(2), width="stretch", hide_index=True)
+
+            away_games = results[results["home"] == 0]
+            if away_games.empty:
+                st.info("No hay partidos fuera con estos filtros.")
+            else:
+                st.markdown(f"**{label} fuera de casa según el viaje**")
+                by_trip = away_trip_effect(results, unit, measure)
+                st.plotly_chart(effect_figure(by_trip, label, TRIP_UNITS[unit], dark), theme=None, width="stretch")
+                with st.expander("Ver los datos del gráfico"):
+                    st.dataframe(by_trip.round(2), width="stretch", hide_index=True)
+
+                st.markdown(f"**{label} fuera de casa según descanso y viaje**")
+                st.caption("El color compara con la media de los partidos fuera. Las celdas con menos de 15 partidos quedan en blanco.")
+                grid = rest_trip_grid(results, measure)
+                st.plotly_chart(rest_trip_heatmap(grid, label, float(away_games[measure].mean()), dark),
+                                theme=None, width="stretch")
+                with st.expander("Ver los datos del gráfico"):
+                    st.dataframe(grid.round(2), width="stretch", hide_index=True)
 
     user = st.session_state["usuario"]  # el PDF se genera al pulsar, fuera del hilo del script: no puede leer la sesión
     with actions:
@@ -92,11 +137,13 @@ if iniciar_pagina("Fatiga y rotaciones", "🏀"):
         with b1:
             print_button()
         rot_now = st.session_state.get("rot", "players_10")
+        measure_now = st.session_state.get("measure", "win_pct")
+        unit_now = st.session_state.get("unit", "km_trip")
         report_filters = {"Temporada de la tabla": seasons_label(season), "Competiciones": ", ".join(comps),
                           "Solo doble competición": "sí" if only_dual else "no"}
         b2.download_button(
             "📄 Exportar a PDF",
             data=lambda: fatigue_report(user, report_filters, fatigue_table(scope, names),
-                                        all_seasons, rot_now, ROTATION[rot_now]),
+                                        all_seasons, rot_now, ROTATION[rot_now], measure_now, unit_now),
             file_name=f"fatiga_rotaciones_{season}.pdf", mime="application/pdf", width="stretch", disabled=all_seasons.empty,
         )

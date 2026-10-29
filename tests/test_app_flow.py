@@ -76,7 +76,7 @@ def test_login_then_logout():
     assert "usuario" not in at.session_state
 
 
-@pytest.mark.parametrize("page,min_charts", [("pages/1_calendario_viajes.py", 2), ("pages/2_fatiga_rotaciones.py", 2)])
+@pytest.mark.parametrize("page,min_charts", [("pages/1_calendario_viajes.py", 2), ("pages/2_fatiga_rotaciones.py", 5)])
 def test_pages_show_two_sources_and_charts_after_login(page, min_charts):
     at = _open_page(page)
     assert not at.exception

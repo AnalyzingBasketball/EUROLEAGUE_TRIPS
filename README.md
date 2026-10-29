@@ -9,7 +9,7 @@ Enlace público: https://euroleague-trips.streamlit.app (usuario `admin`, contra
 - Usuario de prueba: `admin` / `admin`.
 - Menú lateral con dos páginas:
   - Calendario y viajes: tabla de partidos con descanso y kilómetros, catálogo de sedes, ranking de kilómetros por club y mapa de sedes y viajes.
-  - Fatiga y rotaciones: tabla de descanso, carga y rotación, próximos partidos de la API de Euroliga y dos gráficas de efecto.
+  - Fatiga y rotaciones: tabla de descanso, carga y rotación, próximos partidos de la API de Euroliga y gráficas en dos pestañas: descanso y rotación, y resultados y viaje (victorias en casa y fuera, resultado según km u horas de viaje, mapa de calor de descanso y viaje).
 - Cada página tiene un botón para imprimir y otro para exportar a PDF con los datos filtrados en pantalla.
 
 ## Instalación y ejecución
@@ -31,9 +31,9 @@ pages/                   una página por análisis (solo presentación)
 common/                  login, menú, tema, botón de imprimir, generador de PDF
 controllers/             lógica: métricas, datos de gráficas, figuras, informes
 models/                  acceso a datos: SQLite, CSV y API, con esquema SQL
-data/                    viajes_fatiga.db y sedes.csv
+data/                    viajes_fatiga.db, sedes.csv y paises.json (contornos del mapa del PDF)
 .streamlit/config.toml   oculta el menú automático de Streamlit
-tests/                   pruebas con pytest (91)
+tests/                   pruebas con pytest (97)
 ```
 
 ## Fuentes de datos
@@ -44,7 +44,7 @@ tests/                   pruebas con pytest (91)
 | CSV `data/sedes.csv` | Catálogo de sedes con coordenadas | Direcciones de la API y de los clubes, geocodificadas con Nominatim |
 | API de Euroliga | Próximos partidos de la temporada en curso | `api-live.euroleague.net/v2` (pública) |
 
-Las coordenadas proceden de OpenStreetMap (© colaboradores de OpenStreetMap, licencia ODbL). Las sedes marcadas `revisar` tienen una coordenada aproximada, a nivel de ciudad.
+Las coordenadas y la ciudad de cada sede proceden de OpenStreetMap (© colaboradores de OpenStreetMap, licencia ODbL); la ciudad de las sedes de la ACB es la del club. Los contornos de países del mapa del PDF son de Natural Earth (dominio público), reducidos a Europa y Oriente Medio. Las sedes marcadas `revisar` tienen una coordenada aproximada, a nivel de ciudad.
 
 La base se construye fuera de la aplicación con dos scripts (`fetch_euroleague.py` y `build_db.py`), que no forman parte de la entrega. Un mismo club cambia de código y de nombre según la competición y la temporada, por lo que el modelo separa el club (identificador propio), sus alias por competición y temporada, y los clubes que juegan cada competición cada año. Valencia Basket cambia de pabellón en 2025 y el modelo lo recoge.
 
@@ -54,6 +54,7 @@ La base se construye fuera de la aplicación con dos scripts (`fetch_euroleague.
 - Km del viaje: 0 en casa; fuera, ida y vuelta entre la sede base del club y la del partido (distancia de Haversine).
 - Km 7 y 14 días: kilómetros del viaje acumulados en esas ventanas, incluido el partido.
 - Rotación: jugadores con 10 minutos o más, cuota de minutos de los cinco que más juegan, titulares cambiados respecto al partido anterior.
+- Horas de viaje (aproximadas): para cada trayecto, el menor entre autobús a 75 km/h y avión a 750 km/h más 3 horas de aeropuerto, por la ida y la vuelta. Es una estimación, no un dato.
 - Margen ajustado: margen real menos el esperado por la fuerza de ambos clubes y la ventaja de campo, con una regresión ridge por competición y temporada.
 
 Las gráficas muestran medias con ±1,96 errores estándar. Son correlaciones, no causas.
