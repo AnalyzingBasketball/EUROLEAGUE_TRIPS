@@ -8,6 +8,7 @@ from controllers.charts import km_by_club_figure, trip_map_figure
 from controllers.reports import trip_report
 from controllers.views import (
     club_names,
+    competition_names,
     filter_metrics,
     seasons_label,
     trip_table,
@@ -53,7 +54,7 @@ if iniciar_pagina("Calendario y viajes", "✈️"):
             km = km_by_club(filtered, names)
             st.plotly_chart(km_by_club_figure(km, dark), theme=None, width="stretch")
             with st.expander("Ver los datos del gráfico"):
-                st.dataframe(km.round(0), width="stretch", hide_index=True)
+                st.dataframe(competition_names(km.round(0), "Competición"), width="stretch", hide_index=True)
             lines = None
         else:
             lines = trip_lines(filtered, venues)

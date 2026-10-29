@@ -4,6 +4,7 @@ import pytest
 from controllers.metrics import build_metrics
 from controllers.views import (
     club_names,
+    competition_names,
     country_name,
     fatigue_table,
     filter_metrics,
@@ -50,6 +51,7 @@ def test_trip_table_columns_and_result(metrics):
     assert t.loc[0, "Resultado"] == "90-80"
     assert t.loc[0, "Condición"] == "Local"
     assert t.loc[0, "Sede"] == "Madrid"
+    assert t.loc[0, "Competición"] == "ACB"
     assert t.loc[0, "Ciudad"] == "Madrid"
     assert t.loc[0, "País"] == "España"
     assert "Km 7 días" in t.columns
@@ -61,6 +63,14 @@ def test_country_name_and_venues_table():
     t = venues_table(SEDES.assign(precision="pabellon", revisar=0))
     assert list(t.columns[:4]) == ["Id", "Sede", "Ciudad", "País"]
     assert set(t["País"]) == {"España"}
+
+
+def test_competition_names_renames_and_maps_codes():
+    df = pd.DataFrame({"competicion_id": ["ACB", "E", "U"], "media": [1, 2, 3]})
+    out = competition_names(df)
+    assert list(out["Competición"]) == ["ACB", "Euroliga", "EuroCup"]
+    assert "competicion_id" not in out.columns
+    assert list(df["competicion_id"]) == ["ACB", "E", "U"]  # no modifica la tabla original
 
 
 def test_fatigue_table_handles_missing_minutes(metrics):

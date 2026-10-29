@@ -1,6 +1,8 @@
 """Tablas de presentación: filtran y renombran las métricas para mostrarlas."""
 import pandas as pd
 
+from controllers.charts import COMP_NAMES
+
 COUNTRY_NAMES = {
     "ad": "Andorra", "ae": "Emiratos Árabes Unidos", "ba": "Bosnia y Herzegovina", "be": "Bélgica", "bg": "Bulgaria",
     "de": "Alemania", "es": "España", "fr": "Francia", "gb": "Reino Unido", "gr": "Grecia", "il": "Israel", "it": "Italia",
@@ -12,6 +14,13 @@ COUNTRY_NAMES = {
 def country_name(code: object) -> object:
     """Código ISO de dos letras -> nombre en español (si no se conoce, el mismo código en mayúsculas)."""
     return COUNTRY_NAMES.get(code, str(code).upper()) if isinstance(code, str) else code
+
+
+def competition_names(df: pd.DataFrame, column: str = "competicion_id") -> pd.DataFrame:
+    """Copia de la tabla con la competición por su nombre (ACB, Euroliga, EuroCup) en una columna «Competición»."""
+    out = df.copy()
+    out[column] = out[column].map(COMP_NAMES).fillna(out[column])
+    return out.rename(columns={column: "Competición"})
 
 
 def venues_table(venues: pd.DataFrame) -> pd.DataFrame:
@@ -47,7 +56,7 @@ def trip_table(metrics: pd.DataFrame, names: dict[int, str], venues: pd.DataFram
     sedes = venues.set_index("id")
     out = pd.DataFrame({
         "Fecha": metrics["fecha"].dt.date,
-        "Competición": metrics["competicion_id"],
+        "Competición": metrics["competicion_id"].map(COMP_NAMES),
         "Club": metrics["club_id"].map(names),
         "Rival": metrics["rival_id"].map(names),
         "Condición": metrics["home"].map({1: "Local", 0: "Visitante"}),
@@ -68,7 +77,7 @@ def fatigue_table(metrics: pd.DataFrame, names: dict[int, str]) -> pd.DataFrame:
     """Descanso, carga y rotación por partido, listo para mostrar."""
     out = pd.DataFrame({
         "Fecha": metrics["fecha"].dt.date,
-        "Competición": metrics["competicion_id"],
+        "Competición": metrics["competicion_id"].map(COMP_NAMES),
         "Club": metrics["club_id"].map(names),
         "Rival": metrics["rival_id"].map(names),
         "Descanso (días)": metrics["rest_days"],

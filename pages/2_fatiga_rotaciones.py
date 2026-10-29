@@ -18,6 +18,7 @@ from controllers.charts import effect_figure, rest_trip_heatmap
 from controllers.reports import fatigue_report
 from controllers.views import (
     club_names,
+    competition_names,
     fatigue_table,
     filter_metrics,
     seasons_label,
@@ -87,7 +88,7 @@ if iniciar_pagina("Fatiga y rotaciones", "🏀"):
             st.plotly_chart(effect_figure(rest, "Margen ajustado medio (puntos)", "Días desde el partido anterior", dark),
                             theme=None, width="stretch")
             with st.expander("Ver los datos del gráfico"):
-                st.dataframe(rest.round(2), width="stretch", hide_index=True)
+                st.dataframe(competition_names(rest.round(2)), width="stretch", hide_index=True)
 
             rot_key = st.selectbox("Medida de rotación", list(ROTATION), format_func=ROTATION.get, key="rot")
             st.markdown(f"**{ROTATION[rot_key]} según los km de los últimos 7 días**")
@@ -95,7 +96,7 @@ if iniciar_pagina("Fatiga y rotaciones", "🏀"):
             st.plotly_chart(effect_figure(rot, ROTATION[rot_key], "Km de viaje acumulados en 7 días", dark),
                             theme=None, width="stretch")
             with st.expander("Ver los datos del gráfico"):
-                st.dataframe(rot.round(3), width="stretch", hide_index=True)
+                st.dataframe(competition_names(rot.round(3)), width="stretch", hide_index=True)
 
         with tab_results:
             results = add_result_columns(all_seasons)
@@ -111,7 +112,7 @@ if iniciar_pagina("Fatiga y rotaciones", "🏀"):
             st.plotly_chart(effect_figure(home_away, "Victorias (%)", "Condición del partido", dark),
                             theme=None, width="stretch")
             with st.expander("Ver los datos del gráfico"):
-                st.dataframe(home_away.round(2), width="stretch", hide_index=True)
+                st.dataframe(competition_names(home_away.round(2)), width="stretch", hide_index=True)
 
             away_games = results[results["home"] == 0]
             if away_games.empty:
@@ -121,7 +122,7 @@ if iniciar_pagina("Fatiga y rotaciones", "🏀"):
                 by_trip = away_trip_effect(results, unit, measure)
                 st.plotly_chart(effect_figure(by_trip, label, TRIP_UNITS[unit], dark), theme=None, width="stretch")
                 with st.expander("Ver los datos del gráfico"):
-                    st.dataframe(by_trip.round(2), width="stretch", hide_index=True)
+                    st.dataframe(competition_names(by_trip.round(2)), width="stretch", hide_index=True)
 
                 st.markdown(f"**{label} fuera de casa según descanso y viaje**")
                 st.caption("El color compara con la media de los partidos fuera. Las celdas con menos de 15 partidos quedan en blanco.")
