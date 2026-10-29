@@ -44,6 +44,7 @@ CREATE TABLE IF NOT EXISTS sede (
     nombre     TEXT NOT NULL,
     direccion  TEXT,
     pais       TEXT,
+    ciudad     TEXT,
     lat        REAL NOT NULL CHECK (lat BETWEEN -90 AND 90),
     lon        REAL NOT NULL CHECK (lon BETWEEN -180 AND 180),
     precision  TEXT NOT NULL CHECK (precision IN ('pabellon', 'calle', 'ciudad')),

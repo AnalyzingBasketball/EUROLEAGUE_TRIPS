@@ -4,14 +4,17 @@ import pytest
 from controllers.metrics import build_metrics
 from controllers.views import (
     club_names,
+    country_name,
     fatigue_table,
     filter_metrics,
     seasons_label,
     trip_table,
     upcoming_games,
+    venues_table,
 )
 
-SEDES = pd.DataFrame({"id": [10, 20], "nombre": ["Madrid", "Barcelona"], "lat": [40.4, 41.4], "lon": [-3.7, 2.1]})
+SEDES = pd.DataFrame({"id": [10, 20], "nombre": ["Madrid", "Barcelona"], "ciudad": ["Madrid", "Barcelona"],
+                      "pais": ["es", "es"], "lat": [40.4, 41.4], "lon": [-3.7, 2.1]})
 GAMES = pd.DataFrame([
     ("g1", "ACB", 2025, "2025-10-01", None, 1, 2, 10, 1, 90, 80),
     ("g2", "E", 2025, "2025-10-05", None, 2, 1, 20, 1, 70, 75),
@@ -47,7 +50,17 @@ def test_trip_table_columns_and_result(metrics):
     assert t.loc[0, "Resultado"] == "90-80"
     assert t.loc[0, "Condición"] == "Local"
     assert t.loc[0, "Sede"] == "Madrid"
+    assert t.loc[0, "Ciudad"] == "Madrid"
+    assert t.loc[0, "País"] == "España"
     assert "Km 7 días" in t.columns
+
+
+def test_country_name_and_venues_table():
+    assert country_name("gb") == "Reino Unido"
+    assert country_name("xx") == "XX"
+    t = venues_table(SEDES.assign(precision="pabellon", revisar=0))
+    assert list(t.columns[:4]) == ["Id", "Sede", "Ciudad", "País"]
+    assert set(t["País"]) == {"España"}
 
 
 def test_fatigue_table_handles_missing_minutes(metrics):

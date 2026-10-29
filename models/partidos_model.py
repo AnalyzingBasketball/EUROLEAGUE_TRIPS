@@ -15,7 +15,7 @@ def load_games(conn: sqlite3.Connection) -> pd.DataFrame:
 
 def load_venues(conn: sqlite3.Connection) -> pd.DataFrame:
     """Sedes con coordenadas y marca de revisión."""
-    return pd.read_sql_query("SELECT id, nombre, pais, lat, lon, precision, revisar FROM sede", conn)
+    return pd.read_sql_query("SELECT id, nombre, ciudad, pais, lat, lon, precision, revisar FROM sede", conn)
 
 
 def load_clubs(conn: sqlite3.Connection) -> pd.DataFrame:

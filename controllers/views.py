@@ -1,6 +1,26 @@
 """Tablas de presentación: filtran y renombran las métricas para mostrarlas."""
 import pandas as pd
 
+COUNTRY_NAMES = {
+    "ad": "Andorra", "ae": "Emiratos Árabes Unidos", "ba": "Bosnia y Herzegovina", "be": "Bélgica", "bg": "Bulgaria",
+    "de": "Alemania", "es": "España", "fr": "Francia", "gb": "Reino Unido", "gr": "Grecia", "il": "Israel", "it": "Italia",
+    "lt": "Lituania", "lv": "Letonia", "mc": "Mónaco", "me": "Montenegro", "pl": "Polonia", "ro": "Rumanía", "rs": "Serbia",
+    "ru": "Rusia", "si": "Eslovenia", "tr": "Turquía",
+}
+
+
+def country_name(code: object) -> object:
+    """Código ISO de dos letras -> nombre en español (si no se conoce, el mismo código en mayúsculas)."""
+    return COUNTRY_NAMES.get(code, str(code).upper()) if isinstance(code, str) else code
+
+
+def venues_table(venues: pd.DataFrame) -> pd.DataFrame:
+    """Catálogo de sedes con nombres de columna y país en español, listo para mostrar."""
+    return pd.DataFrame({
+        "Id": venues["id"], "Sede": venues["nombre"], "Ciudad": venues["ciudad"], "País": venues["pais"].map(country_name),
+        "Latitud": venues["lat"], "Longitud": venues["lon"], "Precisión": venues["precision"], "Revisar": venues["revisar"],
+    })
+
 
 def club_names(clubs: pd.DataFrame) -> dict[int, str]:
     """Mapa id -> nombre de club."""
@@ -24,14 +44,16 @@ def filter_metrics(
 
 def trip_table(metrics: pd.DataFrame, names: dict[int, str], venues: pd.DataFrame) -> pd.DataFrame:
     """Calendario con descanso y km, listo para mostrar."""
-    sedes = venues.set_index("id")["nombre"]
+    sedes = venues.set_index("id")
     out = pd.DataFrame({
         "Fecha": metrics["fecha"].dt.date,
         "Competición": metrics["competicion_id"],
         "Club": metrics["club_id"].map(names),
         "Rival": metrics["rival_id"].map(names),
         "Condición": metrics["home"].map({1: "Local", 0: "Visitante"}),
-        "Sede": metrics["sede_id"].map(sedes),
+        "Sede": metrics["sede_id"].map(sedes["nombre"]),
+        "Ciudad": metrics["sede_id"].map(sedes["ciudad"]),
+        "País": metrics["sede_id"].map(sedes["pais"]).map(country_name),
         "Resultado": metrics["pts_for"].astype(int).astype(str) + "-" + metrics["pts_against"].astype(int).astype(str),
         "Descanso (días)": metrics["rest_days"],
         "Km del viaje": metrics["km_trip"].round(0),

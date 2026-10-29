@@ -6,7 +6,13 @@ from common.theme import is_dark
 from controllers.chart_data import default_season, km_by_club, trip_lines, venue_counts
 from controllers.charts import km_by_club_figure, trip_map_figure
 from controllers.reports import trip_report
-from controllers.views import club_names, filter_metrics, seasons_label, trip_table
+from controllers.views import (
+    club_names,
+    filter_metrics,
+    seasons_label,
+    trip_table,
+    venues_table,
+)
 from models.csv_model import get_venues_csv
 from models.sqlite_model import get_clubs, get_metrics, get_venues
 
@@ -35,7 +41,7 @@ if iniciar_pagina("Calendario y viajes", "✈️"):
 
     st.subheader("Fuente 2 · CSV: sedes y coordenadas")
     st.caption("Geocodificadas con OpenStreetMap (ODbL). Las filas con «revisar» tienen una coordenada aproximada.")
-    st.dataframe(get_venues_csv(), width="stretch", hide_index=True, height=260)
+    st.dataframe(venues_table(get_venues_csv()), width="stretch", hide_index=True, height=260)
 
     st.subheader("Gráficos")
     if filtered.empty:
@@ -62,7 +68,7 @@ if iniciar_pagina("Calendario y viajes", "✈️"):
         b1, b2, _ = st.columns([3, 3, 4], vertical_alignment="center")
         with b1:
             print_button()
-        trips = trip_table(filtered, names, venues)
+        trips = trip_table(filtered, names, venues).drop(columns="País")  # el PDF ya va justo de ancho
         km_data = km_by_club(filtered, names) if options[club_label] is None and not filtered.empty else None
         trip_data = trip_lines(filtered, venues) if options[club_label] is not None and not filtered.empty else None
         report_filters = {"Temporada": seasons_label(season), "Competiciones": ", ".join(COMPETITIONS[c] for c in comps),
