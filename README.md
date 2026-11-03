@@ -33,7 +33,7 @@ controllers/             lógica: métricas, datos de gráficas, figuras, inform
 models/                  acceso a datos: SQLite, CSV y API, con esquema SQL
 data/                    viajes_fatiga.db, sedes.csv y paises.json (contornos del mapa del PDF)
 .streamlit/config.toml   oculta el menú automático de Streamlit
-tests/                   pruebas con pytest (113)
+tests/                   pruebas con pytest (114)
 ```
 
 ## Fuentes de datos
@@ -57,7 +57,7 @@ La base se construye fuera de la aplicación con dos scripts (`fetch_euroleague.
 - Horas de viaje (aproximadas): para cada trayecto, el menor entre autobús a 75 km/h y avión a 750 km/h más 3 horas de aeropuerto, por la ida y la vuelta. Es una estimación, no un dato.
 - Margen ajustado: margen real menos el esperado por la fuerza de ambos clubes y la ventaja de campo, con una regresión ridge por competición y temporada.
 
-Las gráficas muestran medias con ±1,96 errores estándar. Son correlaciones, no causas.
+Las gráficas muestran medias con ±1,96 errores estándar y omiten los tramos con menos de 5 partidos; en el mapa de calor, las celdas con menos de 15 quedan en blanco. Son correlaciones, no causas.
 
 ## Caché
 

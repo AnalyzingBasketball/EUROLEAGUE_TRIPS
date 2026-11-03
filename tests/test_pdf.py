@@ -57,9 +57,10 @@ def test_trip_and_fatigue_reports_build():
     venues = pd.DataFrame({"nombre": ["A"], "pais": ["es"], "lat": [40.0], "lon": [-3.0], "partidos": [3], "revisar": [0]})
     km = pd.DataFrame({"Club": ["A"], "Competición": ["E"], "Km": [1.0]})
     assert trip_report("admin", {}, trips, km, venues, None).startswith(b"%PDF")
-    scope = pd.DataFrame({"competicion_id": ["E", "E"], "rest_days": [2.0, 6.0], "km_7d": [0.0, 500.0],
-                          "margin_resid": [1.0, -1.0], "players_10": [9, 10], "home": [1, 0], "win": [1.0, 0.0],
-                          "margin": [5.0, -5.0], "km_trip": [0.0, 800.0]})
+    # 6 partidos en casa y 6 fuera: cada tramo llega a los 5 partidos mínimos para dibujar su barra
+    scope = pd.DataFrame({"competicion_id": ["E"] * 12, "rest_days": [2.0] * 6 + [6.0] * 6, "km_7d": [0.0] * 6 + [500.0] * 6,
+                          "margin_resid": [1.0, -1.0] * 6, "players_10": [9, 10] * 6, "home": [1] * 6 + [0] * 6,
+                          "win": [1.0, 0.0] * 6, "margin": [5.0, -5.0] * 6, "km_trip": [0.0] * 6 + [800.0] * 6})
     pdf = fatigue_report("admin", {}, trips, scope, "players_10", "Jugadores ≥10 min")
     assert pdf.startswith(b"%PDF")
     assert _pages(pdf) >= 2

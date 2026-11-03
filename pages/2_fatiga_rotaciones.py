@@ -45,7 +45,7 @@ if iniciar_pagina("Fatiga y rotaciones", "🏀"):
                           format_func=seasons_label, key="season_f")
     comps = c2.multiselect("Competición", ["ACB", "E", "U"], default=["ACB", "E", "U"],
                            format_func={"ACB": "ACB", "E": "Euroliga", "U": "EuroCup"}.get, key="comps_f")
-    only_dual = c3.checkbox("Solo clubes con doble competición", value=True, key="dual_f")
+    only_dual = c3.checkbox("Solo doble competición", value=True, key="dual_f")
     scope = filter_metrics(metrics, season, comps)
     if only_dual:
         scope = scope[scope["dual"]]
@@ -73,7 +73,7 @@ if iniciar_pagina("Fatiga y rotaciones", "🏀"):
         st.error(f"No se pudo consultar la API de Euroliga: {exc}")
 
     st.subheader("Gráficos")
-    st.caption("Barras: media por tramo con ±1,96 errores estándar. Mide correlación, no causa. Todas las temporadas de la selección de competición.")
+    st.caption("Barras: media por tramo con ±1,96 errores estándar. Mide correlación, no causa. Se omiten los tramos con menos de 5 partidos. Todas las temporadas de la selección de competición.")
     all_seasons = metrics[metrics["competicion_id"].isin(comps)]
     if only_dual:
         all_seasons = all_seasons[all_seasons["dual"]]

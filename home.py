@@ -16,7 +16,8 @@ if iniciar_pagina("Viajes y fatiga", "🏀"):
     col1, col2, col3 = st.columns(3)
     col1.metric("Partidos jugados", f"{metrics['partido_id'].nunique():,}".replace(",", "."))
     col2.metric("Clubes", clubs["club_id"].nunique())
-    col3.metric("Doble competición (club-temporada)", int((dual >= 2).sum()))
+    col3.metric("Doble competición", int((dual >= 2).sum()),
+                help="Combinaciones de club y temporada con partidos en dos o más competiciones.")
 
     st.subheader("Cómo se usa")
     st.markdown(
@@ -60,8 +61,8 @@ if iniciar_pagina("Viajes y fatiga", "🏀"):
 
     st.info(
         "Los resultados muestran correlaciones, no causas, y con pocos partidos una diferencia puede ser casualidad: "
-        "las gráficas indican cuántos partidos hay detrás de cada barra y el mapa de calor deja en blanco las celdas "
-        "con menos de 15. Los clubes con doble competición suelen ser los más fuertes, así que sus porcentajes de "
+        "las gráficas indican cuántos partidos hay detrás de cada barra, omiten los tramos con menos de 5 y el "
+        "mapa de calor deja en blanco las celdas con menos de 15. Los clubes con doble competición suelen ser los más fuertes, así que sus porcentajes de "
         "victoria salen altos. La rotación solo se conoce en ACB y Euroliga, porque no hay minutos de EuroCup. "
         "Quedan fuera la Champions League, la Copa del Rey y las ligas nacionales de los clubes extranjeros, de modo "
         "que la carga de Unicaja y Tenerife, que juegan la Champions, está subestimada."

@@ -22,6 +22,7 @@ BINS = {
 RESULT_MEASURES = {"win_pct": "Victorias (%)", "margin": "Margen (puntos)", "margin_resid": "Margen ajustado (puntos)"}
 TRIP_UNITS = {"km_trip": "Km del viaje (ida y vuelta)", "trip_hours": "Horas de viaje aproximadas (ida y vuelta)"}
 MIN_CELL = 15  # partidos mínimos para colorear una celda del mapa de calor
+MIN_BAR = 5  # partidos mínimos para dibujar una barra: con menos, la media y su error no dicen nada
 
 # Estimación del tiempo de viaje: el mejor de autobús o avión (con 3 h de aeropuerto) para la mitad del trayecto.
 BUS_KMH, FLIGHT_KMH, AIRPORT_HOURS = 75.0, 750.0, 3.0
@@ -86,14 +87,16 @@ def add_result_columns(metrics: pd.DataFrame) -> pd.DataFrame:
     return out
 
 
-def _aggregate(data: pd.DataFrame, by: list[str], value: str) -> pd.DataFrame:
-    """Media de `value` por grupos, con n y error estándar."""
+def _aggregate(data: pd.DataFrame, by: list[str], value: str, min_n: int = MIN_BAR) -> pd.DataFrame:
+    """Media de `value` por grupos, con n y error estándar; se omiten los grupos con menos de `min_n` partidos."""
     agg = data.groupby(by, observed=True)[value].agg(media="mean", n="size", sd="std").reset_index()
+    agg = agg[agg["n"] >= min_n].reset_index(drop=True)
     agg["se"] = (agg["sd"] / np.sqrt(agg["n"])).fillna(0.0)
     return agg.drop(columns="sd")
 
 
-def binned_effect(metrics: pd.DataFrame, column: str, value: str, group: str = "competicion_id") -> pd.DataFrame:
+def binned_effect(metrics: pd.DataFrame, column: str, value: str, group: str = "competicion_id",
+                  min_n: int = MIN_BAR) -> pd.DataFrame:
     """Media de `value` por tramo de `column` y grupo, con n y error estándar.
 
     `column` debe estar en BINS. Los tramos sin datos no aparecen.
@@ -101,19 +104,19 @@ def binned_effect(metrics: pd.DataFrame, column: str, value: str, group: str = "
     bins, labels = BINS[column]
     data = metrics.dropna(subset=[column, value]).copy()
     data["tramo"] = pd.cut(data[column], bins=bins, labels=labels, right=True)
-    return _aggregate(data, ["tramo", group], value)
+    return _aggregate(data, ["tramo", group], value, min_n)
 
 
-def home_away_effect(metrics: pd.DataFrame, value: str = "win_pct") -> pd.DataFrame:
+def home_away_effect(metrics: pd.DataFrame, value: str = "win_pct", min_n: int = MIN_BAR) -> pd.DataFrame:
     """Media de `value` en casa y fuera por competición (columna `tramo` = Local o Visitante)."""
     data = metrics.dropna(subset=[value]).copy()
     data["tramo"] = pd.Categorical(data["home"].map({1: "Local", 0: "Visitante"}), categories=["Local", "Visitante"])
-    return _aggregate(data, ["tramo", "competicion_id"], value)
+    return _aggregate(data, ["tramo", "competicion_id"], value, min_n)
 
 
-def away_trip_effect(metrics: pd.DataFrame, unit: str, value: str) -> pd.DataFrame:
+def away_trip_effect(metrics: pd.DataFrame, unit: str, value: str, min_n: int = MIN_BAR) -> pd.DataFrame:
     """Resultado de los partidos fuera según el viaje; `unit` es "km_trip" o "trip_hours"."""
-    return binned_effect(metrics[metrics["home"] == 0], unit, value)
+    return binned_effect(metrics[metrics["home"] == 0], unit, value, min_n=min_n)
 
 
 def rest_trip_grid(metrics: pd.DataFrame, value: str, min_n: int = MIN_CELL) -> pd.DataFrame:

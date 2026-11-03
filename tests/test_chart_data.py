@@ -64,7 +64,7 @@ def test_trip_lines_only_away_games():
 def test_binned_effect_means_counts_and_se():
     m = _metrics([("a", 1, "E", 2025, 0, 1, 1, 0, 2, 0, 4.0), ("b", 1, "E", 2025, 0, 1, 1, 0, 2, 0, 6.0),
                   ("c", 1, "E", 2025, 0, 1, 1, 0, 6, 0, -2.0), ("d", 1, "E", 2025, 0, 1, 1, 0, np.nan, 0, 9.0)])
-    out = binned_effect(m, "rest_days", "margin_resid").set_index("tramo")
+    out = binned_effect(m, "rest_days", "margin_resid", min_n=1).set_index("tramo")
     assert out.loc["2 días o menos", "media"] == 5.0
     assert out.loc["2 días o menos", "n"] == 2
     assert out.loc["2 días o menos", "se"] == pytest.approx(1.0)
@@ -74,7 +74,7 @@ def test_binned_effect_means_counts_and_se():
 
 def test_binned_effect_zero_km_has_its_own_bin():
     m = _metrics([("a", 1, "E", 2025, 1, 1, 1, 0, 3, 0.0, 1.0), ("b", 1, "E", 2025, 0, 1, 1, 0, 3, 500.0, 1.0)])
-    out = binned_effect(m, "km_7d", "margin_resid")
+    out = binned_effect(m, "km_7d", "margin_resid", min_n=1)
     assert set(out["tramo"].astype(str)) == {"Sin viaje (0 km)", "1-1.000 km"}
 
 
@@ -108,14 +108,14 @@ def test_add_result_columns_does_not_touch_the_input():
 
 
 def test_home_away_effect_orders_and_counts():
-    e = home_away_effect(_results(), "win_pct")
+    e = home_away_effect(_results(), "win_pct", min_n=1)
     assert list(e["tramo"].astype(str).unique()) == ["Local", "Visitante"]
     row = e[(e["competicion_id"] == "E") & (e["tramo"] == "Visitante")].iloc[0]
     assert (row["n"], row["media"]) == (2, 50.0)
 
 
 def test_away_trip_effect_only_counts_away_games():
-    e = away_trip_effect(_results(), "km_trip", "win_pct")
+    e = away_trip_effect(_results(), "km_trip", "win_pct", min_n=1)
     assert e["n"].sum() == 2
     assert set(e["tramo"].astype(str)) == {"500-1.000 km", "2.000-3.000 km"}
 
@@ -126,3 +126,10 @@ def test_rest_trip_grid_hides_cells_with_few_games():
     low = rest_trip_grid(_results(), "margin_resid", min_n=1)
     assert low["media"].notna().sum() == 2
     assert MIN_CELL == 15
+
+
+def test_groups_with_few_games_are_omitted_by_default():
+    m = _results()
+    assert home_away_effect(m, "win_pct").empty  # ningún grupo llega a 5 partidos
+    assert len(home_away_effect(m, "win_pct", min_n=2)) == 1  # solo Euroliga fuera tiene 2
+    assert away_trip_effect(m, "km_trip", "win_pct").empty
