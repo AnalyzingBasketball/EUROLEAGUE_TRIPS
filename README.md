@@ -28,12 +28,14 @@ Se ejecuta desde la carpeta que contiene `home.py`. Se ha probado con Python 3.1
 ```
 home.py                  portada: configuración, login y resumen
 pages/                   una página por análisis (solo presentación)
-common/                  login, menú, tema, botón de imprimir, generador de PDF
+common/                  login, menú, tema, utilidades (carga de CSS), botón de imprimir, generador de PDF
 controllers/             lógica: métricas, datos de gráficas, figuras, informes
 models/                  acceso a datos: SQLite, CSV y API, con esquema SQL
-data/                    viajes_fatiga.db, sedes.csv y paises.json (contornos del mapa del PDF)
+data/                    viajes_fatiga.db, sedes.csv, escudos.csv y paises.json (contornos del mapa del PDF)
+assets/escudos/          escudos de los 78 clubes (PNG de hasta 128 px)
+styles/print.css         estilos de la vista de impresión (oculta menú y botones)
 .streamlit/config.toml   oculta el menú automático de Streamlit
-tests/                   pruebas con pytest (114)
+tests/                   pruebas con pytest (121)
 ```
 
 ## Fuentes de datos
@@ -45,6 +47,8 @@ tests/                   pruebas con pytest (114)
 | API de Euroliga | Próximos partidos de la temporada en curso | `api-live.euroleague.net/v2` (pública) |
 
 Las coordenadas y la ciudad de cada sede proceden de OpenStreetMap (© colaboradores de OpenStreetMap, licencia ODbL); la ciudad de las sedes de la ACB es la del club. Los contornos de países del mapa del PDF son de Natural Earth (dominio público), reducidos a Europa y Oriente Medio. Las sedes marcadas `revisar` tienen una coordenada aproximada, a nivel de ciudad.
+
+Los escudos de los 78 clubes están en `assets/escudos/` y `data/escudos.csv` indica de dónde sale cada uno. Los 64 clubes de Euroliga y EuroCup usan el escudo que publica la API de Euroliga, y los 14 clubes de la ACB que no juegan esas competiciones usan el logo de su ficha en acb.com. Los escudos son marcas de sus clubes y se incluyen solo con fines académicos. Las tablas los muestran en una columna de imagen: cada escudo se convierte en una miniatura de 32 px incrustada en la propia tabla, y como categoría viaja una sola vez al navegador, no una por fila.
 
 La base se construye fuera de la aplicación con dos scripts (`fetch_euroleague.py` y `build_db.py`), que no forman parte de la entrega. Un mismo club cambia de código y de nombre según la competición y la temporada, por lo que el modelo separa el club (identificador propio), sus alias por competición y temporada, y los clubes que juegan cada competición cada año. Valencia Basket cambia de pabellón en 2025 y el modelo lo recoge.
 

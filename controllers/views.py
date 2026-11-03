@@ -49,8 +49,19 @@ def _whole(values: pd.Series) -> pd.Series:
     return values.round(0)
 
 
-def trip_table(metrics: pd.DataFrame, names: dict[int, str], venues: pd.DataFrame) -> pd.DataFrame:
-    """Calendario con descanso y km, listo para mostrar."""
+def add_crests(table: pd.DataFrame, crests: dict[str, str] | None) -> pd.DataFrame:
+    """Inserta las columnas «Escudo» (antes de Club) y «Escudo rival» (antes de Rival) con la dirección de cada escudo."""
+    if not crests:
+        return table
+    # Como categoría, cada escudo viaja una sola vez al navegador (78 distintos) en lugar de una por fila.
+    table.insert(table.columns.get_loc("Club"), "Escudo", table["Club"].map(crests).astype("category"))
+    table.insert(table.columns.get_loc("Rival"), "Escudo rival", table["Rival"].map(crests).astype("category"))
+    return table
+
+
+def trip_table(metrics: pd.DataFrame, names: dict[int, str], venues: pd.DataFrame,
+               crests: dict[str, str] | None = None) -> pd.DataFrame:
+    """Calendario con descanso y km, listo para mostrar; con `crests`, añade los escudos del club y del rival."""
     sedes = venues.set_index("id")
     out = pd.DataFrame({
         "Fecha": metrics["fecha"].dt.date,
@@ -68,11 +79,11 @@ def trip_table(metrics: pd.DataFrame, names: dict[int, str], venues: pd.DataFram
         "Km 7 días": _whole(metrics["km_7d"]),
         "Km 14 días": _whole(metrics["km_14d"]),
     })
-    return out.sort_values(["Fecha", "Club"]).reset_index(drop=True)
+    return add_crests(out.sort_values(["Fecha", "Club"]).reset_index(drop=True), crests)
 
 
-def fatigue_table(metrics: pd.DataFrame, names: dict[int, str]) -> pd.DataFrame:
-    """Descanso, carga y rotación por partido, listo para mostrar."""
+def fatigue_table(metrics: pd.DataFrame, names: dict[int, str], crests: dict[str, str] | None = None) -> pd.DataFrame:
+    """Descanso, carga y rotación por partido, listo para mostrar; con `crests`, añade los escudos."""
     out = pd.DataFrame({
         "Fecha": metrics["fecha"].dt.date,
         "Competición": metrics["competicion_id"].map(COMP_NAMES),
@@ -87,7 +98,7 @@ def fatigue_table(metrics: pd.DataFrame, names: dict[int, str]) -> pd.DataFrame:
         "Margen": _whole(metrics["margin"]),
         "Margen ajustado": metrics["margin_resid"].round(1),
     })
-    return out.sort_values(["Fecha", "Club"]).reset_index(drop=True)
+    return add_crests(out.sort_values(["Fecha", "Club"]).reset_index(drop=True), crests)
 
 
 def upcoming_games(live: pd.DataFrame, limit: int = 20) -> pd.DataFrame:

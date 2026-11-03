@@ -5,3 +5,7 @@ __pycache__/
 .pytest_cache/
 .venv/
 temp/
+.venv/
+venv/
+.ruff_cache/
+.DS_Store

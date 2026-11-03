@@ -10,6 +10,11 @@ def number_formats(**formats: str) -> dict:
     return {name: st.column_config.NumberColumn(format=fmt) for name, fmt in formats.items()}
 
 
+def crest_columns() -> dict:
+    """Columnas de escudo de las tablas: imagen pequeña y sin título."""
+    return {name: st.column_config.ImageColumn(" ", width="small") for name in ("Escudo", "Escudo rival")}
+
+
 def crear_menu() -> None:
     """Enlaces a las páginas, usuario activo y botón de salir."""
     with st.sidebar:

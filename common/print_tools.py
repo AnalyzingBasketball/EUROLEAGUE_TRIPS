@@ -1,16 +1,7 @@
 """Botón de imprimir la página y estilos de impresión."""
 import streamlit as st
 
-PRINT_CSS = """
-<style>
-@media print {
-  [data-testid="stSidebar"], [data-testid="stHeader"], [data-testid="stToolbar"],
-  [data-testid="stDownloadButton"], iframe, .no-print { display: none !important; }
-  [data-testid="stMain"], .main { margin: 0 !important; overflow: visible !important; }
-  .block-container { max-width: 100% !important; padding: 0.5rem !important; }
-}
-</style>
-"""
+from common.utils import inject_css
 
 PRINT_BUTTON = """
 <style>
@@ -25,8 +16,8 @@ button:hover { border-color: #ff6b6b; background: #ff6b6b; }
 
 
 def inject_print_css() -> None:
-    """Estilos de impresión: ocultan menú y botones. Se llama desde el menú para no añadir un hueco junto a los botones."""
-    st.markdown(PRINT_CSS, unsafe_allow_html=True)
+    """Estilos de impresión (styles/print.css): ocultan menú y botones. Se llama desde el menú para no añadir un hueco junto a los botones."""
+    inject_css("print.css")
 
 
 def print_button() -> None:

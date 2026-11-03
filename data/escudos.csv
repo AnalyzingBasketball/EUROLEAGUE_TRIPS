@@ -1,0 +1,79 @@
+club_id,club,archivo,fuente,url_origen
+1,ALBA Berlin,alba-berlin.png,API de Euroliga,https://media-cdn.incrowdsports.com/ccc34858-22b0-47dc-904c-9940b0a16ff3.png
+2,AS Monaco,as-monaco.png,API de Euroliga,https://media-cdn.incrowdsports.com/89ed276a-2ba3-413f-8ea2-b3be209ca129.png
+3,Anadolu Efes Istanbul,anadolu-efes-istanbul.png,API de Euroliga,https://media-cdn.cortextech.io/1dU3kpCqReRp93/1BSdBWIjCgOCxM/a844756c-a58d-4666-93b8-48f7337bc79d.png
+4,Aris Thessaloniki,aris-thessaloniki.png,API de Euroliga,https://media-cdn.cortextech.io/1dU3kpCqReRp93/1BSdBWIjHGF4tl/056002af-8da9-4134-b3b6-8d3ac5e8945b.png
+5,Armani Olimpia Milan,armani-olimpia-milan.png,API de Euroliga,https://media-cdn.cortextech.io/1dU3kpCqReRp93/1BSdBWIjChWbHH/5c2f0ab6-f86a-4df0-b2f3-f9ab92f7267b.png
+7,Baglietto Derthona Tortona,baglietto-derthona-tortona.png,API de Euroliga,https://media-cdn.cortextech.io/1dU3kpCqReRp93/1BSdBWIjCjnONv/4976fa46-8eb4-471c-b6dd-4704866c5769.png
+8,Bahcesehir College Istanbul,bahcesehir-college-istanbul.png,API de Euroliga,https://media-cdn.incrowdsports.com/1d3274d8-da86-4d21-9e97-6810ab88babe.png
+9,Balkan Botevgrad,balkan-botevgrad.png,API de Euroliga,https://media-cdn.cortextech.io/1dU3kpCqReRp93/1BSdBWIjCgOCpC/ba6e2d99-3ea9-4730-a0ce-830cccca4657.png
+10,Baskonia,baskonia.png,API de Euroliga,https://media-cdn.cortextech.io/cbc49cb0-99ce-4462-bdb7-56983ee03cf4.png
+11,Besiktas Istanbul,besiktas-istanbul.png,API de Euroliga,https://media-cdn.cortextech.io/1dU3kpCqReRp93/1BSdBWIjChWbHH/b05e3c54-e672-4b31-9f86-c91e9de7715c.png
+12,Bilbao Basket,bilbao-basket.png,acb.com,https://static.acb.com/img/www/clubes2022/logo_surnebb_pos.png
+6,Bosna BH Telecom Sarajevo,bosna-bh-telecom-sarajevo.png,API de Euroliga,https://media-cdn.cortextech.io/1dU3kpCqReRp93/1BSdBWIjCjnOJl/0024f0d4-55d9-4ed0-be41-68c0e90c41d5.png
+13,Buducnost VOLI Podgorica,buducnost-voli-podgorica.png,API de Euroliga,https://media-cdn.incrowdsports.com/47161285-94b3-4266-9d23-b722e8600945.png
+14,Bàsquet Girona,basquet-girona.png,acb.com,https://static.acb.com/img/www/clubes2026/202627FIATCGironaLogoPositivo.png
+15,Casademont Zaragoza,casademont-zaragoza.png,acb.com,https://static.acb.com/img/www/clubes2024/2425CasademontZaragoza.png
+16,Cedevita Olimpija Ljubljana,cedevita-olimpija-ljubljana.png,API de Euroliga,https://media-cdn.incrowdsports.com/73b33d13-570e-4e49-a9cb-fe806831eaa7.png
+17,Cosea JL Bourg-en-Bresse,cosea-jl-bourg-en-bresse.png,API de Euroliga,https://media-cdn.incrowdsports.com/d4225e1b-7c1b-4382-98d4-ca8511c64441.png
+18,Covirán Granada,coviran-granada.png,acb.com,https://static.acb.com/img/www/clubes2024/2425CoviranGranadapositivo.png
+19,Crvena Zvezda Meridianbet Belgrade,crvena-zvezda-meridianbet-belgrade.png,API de Euroliga,https://media-cdn.incrowdsports.com/d2eef4a8-62df-4fdd-9076-276004268515.png
+20,Dolomiti Energia Trento,dolomiti-energia-trento.png,API de Euroliga,https://media-cdn.cortextech.io/1dU3kpCqReRp93/1BSdBWIjCcz1CG/e4ce6137-6d3f-4072-9480-c0b9a9cd617d.png
+21,Dubai Basketball,dubai-basketball.png,API de Euroliga,https://media-cdn.incrowdsports.com/1efae090-16e2-4963-ae47-4b94f249c244.png
+22,FC Barcelona,fc-barcelona.png,API de Euroliga,https://media-cdn.incrowdsports.com/35dfa503-e417-481f-963a-bdf6f013763e.png
+23,FC Bayern Munich,fc-bayern-munich.png,API de Euroliga,https://media-cdn.incrowdsports.com/817b0e58-d595-4b09-ab0b-1e7cc26249ff.png
+24,Fenerbahce Tarfin Istanbul,fenerbahce-tarfin-istanbul.png,API de Euroliga,https://media-cdn.cortextech.io/1dU3kpCqReRp93/1BSdBWIjCiezrk/aa39750a-6203-49ee-a87d-edd0c6f0397d.png
+25,Frutti Extra Bursaspor,frutti-extra-bursaspor.png,API de Euroliga,https://media-cdn.incrowdsports.com/d1e4cf6d-94c5-4c57-9e6b-ac38107be4b1.png
+26,Fuenlabrada,fuenlabrada.png,acb.com,https://static.acb.com/img/www/clubes2023/CarplusFuenlabrada-Logo-56.png
+27,Germani Brescia,germani-brescia.png,API de Euroliga,https://media-cdn.incrowdsports.com/6e44327d-88cd-4060-a495-b5763dd981c3.png
+28,Gran Canaria,gran-canaria.png,API de Euroliga,https://media-cdn.incrowdsports.com/a074edc1-e180-4515-a876-447884b570b1.png
+29,Hapoel IBI Tel Aviv,hapoel-ibi-tel-aviv.png,API de Euroliga,https://media-cdn.incrowdsports.com/cbb1c3ad-03d5-426a-b5ef-2832a4eee484.png
+30,Hapoel Midtown Jerusalem,hapoel-midtown-jerusalem.png,API de Euroliga,https://media-cdn.cortextech.io/1dU3kpCqReRp93/1BSdBWIjCiezvp/6d6e8da8-550f-4d1f-8a06-4611227e0c31.png
+31,Joventut Badalona,joventut-badalona.png,API de Euroliga,https://media-cdn.incrowdsports.com/4867b9ca-abc6-48fd-a47f-011904a74bf8.png
+32,LDLC ASVEL Villeurbanne,ldlc-asvel-villeurbanne.png,API de Euroliga,https://media-cdn.incrowdsports.com/e33c6d1a-95ca-4dbc-b8cb-0201812104cc.png
+33,Le Mans Sarthe Basket,le-mans-sarthe-basket.png,API de Euroliga,https://media-cdn.cortextech.io/1dU3kpCqReRp93/1BSdBWIjCgOCpC/b8ec3298-5030-4865-8469-722a21b471c3.png
+34,Lenovo Tenerife,lenovo-tenerife.png,API de Euroliga,https://media-cdn.cortextech.io/1dU3kpCqReRp93/1BSdBWIjCgOCpC/59bf7582-6c0b-4e14-bce6-1380aad90f34.png
+35,Leyma Coruña,leyma-coruna.png,acb.com,https://static.acb.com/img/www/clubes2026/202627LeymaCorunaLogoPositivoOK.png
+36,Lietkabelis Panevezys,lietkabelis-panevezys.png,API de Euroliga,https://media-cdn.cortextech.io/ffcb6e37-31f4-48f6-91c2-a8c9a6f791a9.png
+37,Lleida,lleida.png,acb.com,https://static.acb.com/img/www/clubes2026/202526IlernaLleidaLogoPositivo.png
+38,London Lions,london-lions.png,API de Euroliga,https://media-cdn.cortextech.io/102de468-9e41-4b8e-b44d-23bebb9e916f.png
+39,Maccabi Rapyd Tel Aviv,maccabi-rapyd-tel-aviv.png,API de Euroliga,https://media-cdn.cortextech.io/1b533342-78f5-4932-b714-a7d80b5826b5.png
+40,Manresa,manresa.png,API de Euroliga,https://media-cdn.cortextech.io/1dU3kpCqReRp93/1BSdBWIjCgOCpC/06792bed-0383-4de2-80b9-95ecca3fd973.png
+41,Maxima Roma,maxima-roma.png,API de Euroliga,https://media-cdn.cortextech.io/1dU3kpCqReRp93/1BSdBWIjChWbHH/f1547a87-c0bf-41ab-bf7e-a0001649430d.png
+42,MoraBanc Andorra,morabanc-andorra.png,acb.com,https://static.acb.com/img/www/clubes2026/20252026MorabancAndorraLogoPositivoOK.png
+44,Napoli Basketball,napoli-basketball.png,API de Euroliga,https://media-cdn.cortextech.io/1dU3kpCqReRp93/1BSdBWIjCgOCpC/c2de1d20-72f4-4453-95de-b4534db6d57f.png
+45,Neptunas Klaipeda,neptunas-klaipeda.png,API de Euroliga,https://media-cdn.cortextech.io/ed0df5cd-c9e4-4387-bcd4-3606270cd255.png
+43,Niners Chemnitz,niners-chemnitz.png,API de Euroliga,https://media-cdn.cortextech.io/75ae96be-69f9-4e48-b5bd-b1056842db57.png
+46,Obradoiro,obradoiro.png,acb.com,https://static.acb.com/img/www/clubes2026/202627MonbusObradoiroLogoPositivoOK.png
+47,Olympiacos Piraeus,olympiacos-piraeus.png,API de Euroliga,https://media-cdn.incrowdsports.com/789423ac-3cdf-4b89-b11c-b458aa5f59a6.png
+48,PAOK Thessaloniki,paok-thessaloniki.png,API de Euroliga,https://media-cdn.cortextech.io/1dU3kpCqReRp93/1BSdBWIjChWbHH/0506e7c4-ec4b-460a-bc59-b033ad9e336c.png
+49,Panathinaikos AKTOR Athens,panathinaikos-aktor-athens.png,API de Euroliga,https://media-cdn.incrowdsports.com/e3dff28a-9ec6-4faf-9d96-ecbc68f75780.png
+50,Panionios Cosmorama Travel Athens,panionios-cosmorama-travel-athens.png,API de Euroliga,https://media-cdn.cortextech.io/b29ffd81-917d-4cc9-bcbc-05d4a3b481c5.png
+51,Paris Basketball,paris-basketball.png,API de Euroliga,https://media-cdn.incrowdsports.com/a033e5b3-0de7-48a3-98d9-d9a4b9df1f39.png
+52,Partizan Mozzart Bet Belgrade,partizan-mozzart-bet-belgrade.png,API de Euroliga,https://media-cdn.incrowdsports.com/2681304e-77dd-4331-88b1-683078c0fb49.png
+53,Prometey Slobozhanske,prometey-slobozhanske.png,API de Euroliga,https://media-cdn.incrowdsports.com/277839cf-b5b3-48be-bacf-a1291cee44cc.png
+54,Promitheas Patras,promitheas-patras.png,API de Euroliga,https://media-cdn.incrowdsports.com/808f1bd0-aad0-470a-b621-3eba9efc6997.png
+78,Ratiopharm Ulm,ratiopharm-ulm.png,API de Euroliga,https://media-cdn.cortextech.io/5750bc8b-dd63-48e4-8586-10d4e5e2b4e2.png
+55,Real Betis,real-betis.png,acb.com,https://static.acb.com/img/www/clubes2023/RealBetisBaloncestoLogoPos.png
+56,Real Madrid,real-madrid.png,API de Euroliga,https://media-cdn.incrowdsports.com/371b0d9b-9250-4c09-bda7-0686cf024657.png
+57,Riga Zelli,riga-zelli.png,API de Euroliga,https://media-cdn.cortextech.io/1dU3kpCqReRp93/1BSdBWIjCgOCpC/0ab8fe2a-5972-48c5-bdff-f5159ca0abe7.png
+58,Roma Basketball,roma-basketball.png,API de Euroliga,https://media-cdn.cortextech.io/1dU3kpCqReRp93/1BSdBWIjCjnOS1/1e9e0379-db30-4234-89b0-19576709c285.png
+59,Rostock Seawolves,rostock-seawolves.png,API de Euroliga,https://media-cdn.cortextech.io/1dU3kpCqReRp93/1BSdBWIjCgOCpC/de14cdb9-c0f7-485f-84ac-f305ace44723.png
+60,Río Breogán,rio-breogan.png,acb.com,https://static.acb.com/logos/1718/breogan_00.png
+61,San Pablo Burgos,san-pablo-burgos.png,API de Euroliga,https://media-cdn.cortextech.io/1dU3kpCqReRp93/1BSdBWIjCgOCxM/40c97670-177e-4c74-9f5f-76b528a0da86.png
+62,Siauliai Basketball,siauliai-basketball.png,API de Euroliga,https://media-cdn.cortextech.io/1dU3kpCqReRp93/1BSdBWIjCgOCpC/55a49aa3-e91f-45cc-88d0-670896ce5825.png
+63,Skyliners Frankfurt,skyliners-frankfurt.png,API de Euroliga,https://media-cdn.cortextech.io/1dU3kpCqReRp93/1BSdBWIjCgOCpC/6afb32b8-e6dc-4f79-b14a-2d99fdb34cde.png
+64,Slask Wroclaw,slask-wroclaw.png,API de Euroliga,https://media-cdn.incrowdsports.com/0415061b-5374-4a0d-bc04-8fcbc8ad0bb3.png
+65,Tofas Bursa,tofas-bursa.png,API de Euroliga,https://media-cdn.cortextech.io/1dU3kpCqReRp93/1BSdBWIjChWbHH/72e5c4e0-abe1-43ce-bfb7-dcb025bb4adc.png
+66,Trefl Sopot,trefl-sopot.png,API de Euroliga,https://media-cdn.incrowdsports.com/9ef7b3dd-9f80-4639-964d-9db4dfe436ee.png
+67,Turk Telekom Ankara,turk-telekom-ankara.png,API de Euroliga,https://media-cdn.incrowdsports.com/4ba35608-54ca-4800-a59c-f2571e6f8e13.png
+68,U-BT Cluj-Napoca,u-bt-cluj-napoca.png,API de Euroliga,https://media-cdn.incrowdsports.com/ae3e2844-0615-41bb-a788-a4f0d54b8d5e.png
+69,UCAM Murcia,ucam-murcia.png,acb.com,https://static.acb.com/img/www/clubes2026/202627ucamcblogoverticalcolor.png
+70,Umana Reyer Venice,umana-reyer-venice.png,API de Euroliga,https://media-cdn.incrowdsports.com/104f5074-9f23-47da-a21f-f2078db8244c.png
+71,Unicaja,unicaja.png,acb.com,https://static.acb.com/img/www/clubes2024/2324UnicajaLogo.png
+72,Valencia Basket,valencia-basket.png,API de Euroliga,https://media-cdn.cortextech.io/1dU3kpCqReRp93/1BSdBWIjChWbHL/bc3e00b2-fea4-40be-a7ec-1e633129bde3.png
+73,Veolia Towers Hamburg,veolia-towers-hamburg.png,API de Euroliga,https://media-cdn.incrowdsports.com/5ef8be01-ad71-42c2-aa02-d5c7a9495258.png
+74,Virtus Bologna,virtus-bologna.png,API de Euroliga,https://media-cdn.cortextech.io/1dU3kpCqReRp93/1BSdBWIjCiezvk/a92d4c3b-9f9c-4163-8a10-bcf8fc15893e.png
+75,Wolves Twinsbet Vilnius,wolves-twinsbet-vilnius.png,API de Euroliga,https://media-cdn.incrowdsports.com/bab91c74-fc2e-4176-9db5-06f40e0e6759.png
+76,Zalgiris Kaunas,zalgiris-kaunas.png,API de Euroliga,https://media-cdn.incrowdsports.com/0aa09358-3847-4c4e-b228-3582ee4e536d.png
+77,Zunder Palencia,zunder-palencia.png,acb.com,https://static.acb.com/img/www/clubes2024/2324ZunderPalenciaLogo.png
