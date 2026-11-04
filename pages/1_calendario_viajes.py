@@ -5,6 +5,15 @@ from common.print_tools import print_button
 from common.theme import is_dark
 from controllers.chart_data import default_season, km_by_club, trip_lines, venue_counts
 from controllers.charts import km_by_club_figure, trip_map_figure
+from controllers.map_charts import animated_map_figure, detail_map_figure
+from controllers.map_data import (
+    TOP_ROUTES,
+    month_frames,
+    route_lines,
+    venue_games,
+    venue_options,
+    venue_stats,
+)
 from controllers.reports import trip_report
 from controllers.views import (
     club_names,
@@ -65,11 +74,36 @@ if iniciar_pagina("Calendario y viajes", "✈️"):
             lines = None
         else:
             lines = trip_lines(filtered, venues)
-        st.markdown("**Sedes de los partidos**" + (" y viajes del club" if lines is not None else ""))
-        counts = venue_counts(filtered, venues)
-        st.plotly_chart(trip_map_figure(counts, lines, dark), theme=None, width="stretch")
-        if counts["revisar"].any():
-            st.caption("Algunas sedes tienen coordenada aproximada (ciudad): el punto puede desviarse unos kilómetros.")
+        st.markdown("**Mapa de sedes y viajes**")
+        m1, m2 = st.columns(2)
+        view = m1.radio("Vista del mapa", ["Temporada completa", "Animación por meses"], horizontal=True, key="map_view")
+        ground = m2.radio("Fondo del mapa", ["Detallado", "Simple"], horizontal=True, key="map_ground",
+                          help="El fondo detallado descarga las teselas de Carto. Si no cargan, el simple no necesita conexión.")
+        club_chosen = options[club_label] is not None
+        if ground == "Simple":
+            counts = venue_counts(filtered, venues)
+            st.plotly_chart(trip_map_figure(counts, lines, dark), theme=None, width="stretch")
+            if counts["revisar"].any():
+                st.caption("Algunas sedes tienen coordenada aproximada (ciudad): el punto puede desviarse unos kilómetros.")
+        elif view == "Animación por meses":
+            frames = month_frames(filtered, venues, names, with_routes=club_chosen)
+            st.plotly_chart(animated_map_figure(frames, dark), theme=None, width="stretch")
+            st.caption("Pulsa Reproducir o arrastra el control: cada mes suma los partidos jugados hasta entonces."
+                       + ("" if club_chosen else " Elige un club para ver también sus viajes."))
+        else:
+            stats = venue_stats(filtered, venues, names)
+            routes = route_lines(filtered, venues, None if club_chosen else TOP_ROUTES)
+            choices = venue_options(stats)
+            venue_id = st.selectbox("Ver los partidos de una sede (se resalta en el mapa)", [None, *choices],
+                                    format_func=lambda i: "Ninguna" if i is None else choices[i], key="venue_pick")
+            st.plotly_chart(detail_map_figure(stats, routes, dark, venue_id), theme=None, width="stretch")
+            st.caption("Pasa el cursor por una sede para ver sus partidos y clubes. La leyenda enciende y apaga cada competición. "
+                       + ("Se dibujan todos los viajes del club." if club_chosen
+                          else f"Se dibujan las {TOP_ROUTES} rutas más repetidas; elige un club para ver las suyas."))
+            if venue_id is not None:
+                games_here = venue_games(filtered, venue_id, names, get_crest_uris())
+                st.markdown(f"**Partidos en {venues.set_index('id')['nombre'][venue_id]}** ({len(games_here)})")
+                st.dataframe(games_here, width="stretch", hide_index=True, height=260, column_config=image_columns())
 
     user = st.session_state["usuario"]  # el PDF se genera al pulsar, fuera del hilo del script: no puede leer la sesión
     with actions:

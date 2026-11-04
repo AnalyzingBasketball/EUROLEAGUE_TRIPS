@@ -29,14 +29,14 @@ Se ejecuta desde la carpeta que contiene `home.py`. Se ha probado con Python 3.1
 home.py                  portada: configuración, login y resumen
 pages/                   una página por análisis (solo presentación)
 common/                  login, menú, tema, utilidades (carga de CSS), botón de imprimir, generador de PDF
-controllers/             lógica: métricas, datos de gráficas, figuras, informes
+controllers/             lógica: métricas, datos de gráficas, mapa interactivo, figuras, informes
 models/                  acceso a datos: SQLite, CSV y API, con esquema SQL
 data/                    viajes_fatiga.db, sedes.csv, escudos.csv y paises.json (contornos del mapa del PDF)
 assets/escudos/          escudos de los 78 clubes (PNG de hasta 128 px)
 assets/banderas/         banderas de los 22 países de las sedes (PNG de 80 px, nombre = código ISO)
 styles/print.css         estilos de la vista de impresión (oculta menú y botones)
 .streamlit/config.toml   oculta el menú automático de Streamlit
-tests/                   pruebas con pytest (130)
+tests/                   pruebas con pytest (139)
 ```
 
 ## Fuentes de datos
@@ -52,6 +52,8 @@ Las coordenadas y la ciudad de cada sede proceden de OpenStreetMap (© colaborad
 Los escudos de los 78 clubes están en `assets/escudos/` y `data/escudos.csv` indica de dónde sale cada uno. Los 64 clubes de Euroliga y EuroCup usan el escudo que publica la API de Euroliga, y los 14 clubes de la ACB que no juegan esas competiciones usan el logo de su ficha en acb.com. Los escudos son marcas de sus clubes y se incluyen solo con fines académicos. Las tablas los muestran en una columna de imagen: cada escudo se convierte en una miniatura de 32 px incrustada en la propia tabla, y como categoría viaja una sola vez al navegador, no una por fila.
 
 La tabla de próximos partidos de la API también lleva escudos: la API escribe los nombres de otra forma (Kosner Baskonia Vitoria-Gasteiz, La Laguna Tenerife), así que cada club se reconoce por su código, competición y temporada en la tabla `club_alias`.
+
+El mapa de la página Calendario y viajes tiene tres modos. Con fondo detallado (teselas de OpenStreetMap servidas por Carto), dibuja las sedes por competición, con la leyenda como filtro, y las rutas de viaje: todas las del club elegido o las 25 más repetidas si no hay club, con el grosor según las veces. Un selector resalta una sede y muestra debajo sus partidos con escudos. La vista de animación por meses suma los partidos y los viajes mes a mes, con botones de reproducir y pausa y un control deslizante. Si las teselas no cargan, el fondo simple dibuja los países sin conexión. Streamlit no devuelve el clic sobre un mapa, por eso la sede se elige con un selector.
 
 Las tablas con país (partidos y catálogo de sedes) llevan además una columna con la bandera del país de la sede. Las 22 banderas están en `assets/banderas/` y se descargaron de flagcdn.com (PNG de 80 px, de uso libre). Se tratan igual que los escudos: miniatura de 40 × 27 px con marco fino (las banderas más altas se recortan y las más anchas se aplanan para que todas midan igual) y columna como categoría.
 
