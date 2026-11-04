@@ -1,7 +1,7 @@
 import requests
 import streamlit as st
 
-from common.menu import crest_columns, iniciar_pagina
+from common.menu import image_columns, iniciar_pagina
 from common.print_tools import print_button
 from common.theme import is_dark
 from controllers.chart_data import (
@@ -54,7 +54,7 @@ if iniciar_pagina("Fatiga y rotaciones", "🏀"):
     st.subheader("Fuente 1 · SQLite: descanso, carga y rotación por partido")
     st.caption("La rotación solo existe en ACB y Euroliga: no hay minutos de EuroCup.")
     st.dataframe(fatigue_table(scope, names, get_crest_uris()), width="stretch", hide_index=True, height=320,
-                 column_config=crest_columns())
+                 column_config=image_columns())
 
     current = int(seasons[0])
     st.subheader("Fuente 2 · API de Euroliga: próximos partidos")

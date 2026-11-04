@@ -1,6 +1,6 @@
 import streamlit as st
 
-from common.menu import crest_columns, iniciar_pagina, number_formats
+from common.menu import image_columns, iniciar_pagina, number_formats
 from common.print_tools import print_button
 from common.theme import is_dark
 from controllers.chart_data import default_season, km_by_club, trip_lines, venue_counts
@@ -14,6 +14,7 @@ from controllers.views import (
     trip_table,
     venues_table,
 )
+from models.banderas_model import get_flag_uris
 from models.csv_model import get_venues_csv
 from models.escudos_model import get_crest_uris
 from models.sqlite_model import get_clubs, get_metrics, get_venues
@@ -39,14 +40,15 @@ if iniciar_pagina("Calendario y viajes", "✈️"):
 
     st.subheader("Fuente 1 · SQLite: partidos jugados y kilómetros")
     st.caption("Un partido aparece dos veces, una por cada club. Km del viaje: ida y vuelta entre la sede base y la del partido.")
-    st.dataframe(trip_table(filtered, names, venues, get_crest_uris()), width="stretch", hide_index=True, height=320,
-                 column_config=crest_columns())
+    flags = get_flag_uris()
+    st.dataframe(trip_table(filtered, names, venues, get_crest_uris(), flags), width="stretch", hide_index=True,
+                 height=320, column_config=image_columns())
 
     st.subheader("Fuente 2 · CSV: sedes y coordenadas")
     st.caption("Geocodificadas con OpenStreetMap (ODbL). Las filas con «revisar» tienen una coordenada aproximada.")
     st.dataframe(
-        venues_table(get_venues_csv()), width="stretch", hide_index=True, height=260,
-        column_config=number_formats(Latitud="%.4f", Longitud="%.4f"),
+        venues_table(get_venues_csv(), flags), width="stretch", hide_index=True, height=260,
+        column_config=number_formats(Latitud="%.4f", Longitud="%.4f") | image_columns(),
     )
 
     st.subheader("Gráficos")

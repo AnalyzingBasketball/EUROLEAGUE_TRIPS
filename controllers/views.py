@@ -14,14 +14,24 @@ def competition_names(df: pd.DataFrame, column: str = "competicion_id") -> pd.Da
     return out.rename(columns={column: "Competición"})
 
 
-def venues_table(venues: pd.DataFrame) -> pd.DataFrame:
-    """Catálogo de sedes con nombres de columna y país en español, listo para mostrar."""
-    return pd.DataFrame({
+def add_flags(table: pd.DataFrame, codes: pd.Series, flags: dict[str, str] | None) -> pd.DataFrame:
+    """Inserta la columna «Bandera» antes de «País», con la bandera del código de país de cada fila."""
+    if not flags:
+        return table
+    # Como categoría, cada bandera viaja una sola vez al navegador (22 distintas) en lugar de una por fila.
+    table.insert(table.columns.get_loc("País"), "Bandera", codes.map(flags).astype("category"))
+    return table
+
+
+def venues_table(venues: pd.DataFrame, flags: dict[str, str] | None = None) -> pd.DataFrame:
+    """Catálogo de sedes con nombres de columna y país en español, listo para mostrar; con `flags`, añade la bandera."""
+    out = pd.DataFrame({
         "Id": venues["id"], "Sede": venues["nombre"], "Ciudad": venues["ciudad"], "País": venues["pais"].map(country_name),
         "Latitud": venues["lat"], "Longitud": venues["lon"],
         "Precisión": venues["precision"].map(PRECISION_NAMES).fillna(venues["precision"]),
         "Revisar": venues["revisar"].map({0: "No", 1: "Sí"}),
     })
+    return add_flags(out, venues["pais"], flags)
 
 
 def club_names(clubs: pd.DataFrame) -> dict[int, str]:
@@ -60,8 +70,8 @@ def add_crests(table: pd.DataFrame, crests: dict[str, str] | None) -> pd.DataFra
 
 
 def trip_table(metrics: pd.DataFrame, names: dict[int, str], venues: pd.DataFrame,
-               crests: dict[str, str] | None = None) -> pd.DataFrame:
-    """Calendario con descanso y km, listo para mostrar; con `crests`, añade los escudos del club y del rival."""
+               crests: dict[str, str] | None = None, flags: dict[str, str] | None = None) -> pd.DataFrame:
+    """Calendario con descanso y km, listo para mostrar; con `crests` añade los escudos y con `flags` la bandera de la sede."""
     sedes = venues.set_index("id")
     out = pd.DataFrame({
         "Fecha": metrics["fecha"].dt.date,
@@ -79,6 +89,7 @@ def trip_table(metrics: pd.DataFrame, names: dict[int, str], venues: pd.DataFram
         "Km 7 días": _whole(metrics["km_7d"]),
         "Km 14 días": _whole(metrics["km_14d"]),
     })
+    out = add_flags(out, metrics["sede_id"].map(sedes["pais"]), flags)
     return add_crests(out.sort_values(["Fecha", "Club"]).reset_index(drop=True), crests)
 
 
