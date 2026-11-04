@@ -31,12 +31,12 @@ pages/                   una página por análisis (solo presentación)
 common/                  login, menú, tema, utilidades (carga de CSS), botón de imprimir, generador de PDF
 controllers/             lógica: métricas, datos de gráficas, mapa interactivo, figuras, informes
 models/                  acceso a datos: SQLite, CSV y API, con esquema SQL
-data/                    viajes_fatiga.db, sedes.csv, escudos.csv y paises.json (contornos del mapa del PDF)
+data/                    viajes_fatiga.db, metricas.parquet (métricas ya calculadas), sedes.csv, escudos.csv y paises.json
 assets/escudos/          escudos de los 78 clubes (PNG de hasta 128 px)
 assets/banderas/         banderas de los 22 países de las sedes (PNG de 80 px, nombre = código ISO)
 styles/print.css         estilos de la vista de impresión (oculta menú y botones)
 .streamlit/config.toml   oculta el menú automático de Streamlit
-tests/                   pruebas con pytest (139)
+tests/                   pruebas con pytest (140)
 ```
 
 ## Fuentes de datos
@@ -75,7 +75,7 @@ Las gráficas muestran medias con ±1,96 errores estándar y omiten los tramos c
 | Función | `ttl` | Motivo |
 |---|---|---|
 | Conexión SQLite (`cache_resource`) | sin límite | Conexión de solo lectura compartida entre sesiones |
-| Métricas, clubes y sedes (`cache_data`) | 24 h | La base solo cambia al publicar de nuevo; el cálculo de métricas tarda más de un segundo |
+| Métricas, clubes y sedes (`cache_data`) | 24 h | La base solo cambia al publicar de nuevo. Las métricas se leen de `data/metricas.parquet`, calculadas de antemano, porque la regresión tarda más de un segundo y en un servidor compartido retrasaría la primera visita |
 | CSV de sedes | 24 h | Archivo estático dentro de cada publicación |
 | API de Euroliga | 1 h | El calendario cambia a diario como mucho y la API limita las peticiones |
 

@@ -3,3 +3,4 @@ showSidebarNavigation = false
 
 [server]
 headless = true
+fileWatcherType = "none"  # el código no cambia con la app en marcha: no hace falta vigilar los archivos

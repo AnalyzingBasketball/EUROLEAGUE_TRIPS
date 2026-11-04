@@ -22,6 +22,7 @@ load_dotenv(APP_DIR / ".env")
 
 # La base solo cambia al volver a publicar la app: un día de caché evita recalcular métricas en cada sesión.
 CACHE_TTL = 24 * 3600
+METRICS_FILE = APP_DIR / "data" / "metricas.parquet"
 
 
 def _db_path() -> Path:
@@ -52,9 +53,20 @@ def get_venues() -> pd.DataFrame:
     return load_venues(get_connection())
 
 
-@st.cache_data(ttl=CACHE_TTL)
-def get_metrics() -> pd.DataFrame:
-    """Métricas de viaje, descanso, rotación y margen ajustado por club y partido jugado, con marca de doble competición."""
-    conn = get_connection()
+def compute_metrics(conn) -> pd.DataFrame:
+    """Calcula las métricas de viaje, descanso, rotación y margen ajustado desde la base (tarda más de un segundo)."""
     metrics = build_metrics(load_games(conn), load_venues(conn), load_minutes(conn))
     return mark_dual(metrics, load_clubs(conn))
+
+
+@st.cache_data(ttl=CACHE_TTL)
+def get_metrics() -> pd.DataFrame:
+    """Métricas por club y partido jugado, con marca de doble competición.
+
+    Se leen ya calculadas de `data/metricas.parquet` (lo genera `scripts/precompute_metrics.py` tras construir la base):
+    así la primera visita no gasta CPU en la regresión y la app arranca antes. Si el archivo falta, o se usa otra base
+    con `DB_PATH`, se calculan al momento.
+    """
+    if METRICS_FILE.exists() and _db_path() == APP_DIR / "data" / "viajes_fatiga.db":
+        return pd.read_parquet(METRICS_FILE)
+    return compute_metrics(get_connection())
