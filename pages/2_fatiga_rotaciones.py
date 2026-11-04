@@ -26,7 +26,7 @@ from controllers.views import (
 )
 from models.api_model import get_live_games
 from models.escudos_model import get_crest_uris
-from models.sqlite_model import get_clubs, get_metrics
+from models.sqlite_model import get_aliases, get_clubs, get_metrics
 
 ROTATION = {
     "players_10": "Jugadores con 10 minutos o más",
@@ -66,11 +66,11 @@ if iniciar_pagina("Fatiga y rotaciones", "🏀"):
         if live.empty:
             st.info("La API no devuelve partidos para esta temporada.")
         else:
-            upcoming = upcoming_games(live)
+            upcoming = upcoming_games(live, crests=get_crest_uris(), aliases=get_aliases())
             if upcoming.empty:
                 st.info("No quedan partidos por jugar en la temporada en curso.")
             else:
-                st.dataframe(upcoming, width="stretch", hide_index=True, height=260)
+                st.dataframe(upcoming, width="stretch", hide_index=True, height=260, column_config=image_columns())
     except (requests.RequestException, ValueError, KeyError) as exc:  # la app no debe romperse si la API falla
         st.error(f"No se pudo consultar la API de Euroliga: {exc}")
 

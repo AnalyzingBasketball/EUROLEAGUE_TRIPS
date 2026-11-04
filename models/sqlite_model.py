@@ -9,7 +9,13 @@ from dotenv import load_dotenv
 from controllers.chart_data import mark_dual
 from controllers.metrics import build_metrics
 from models.db import connect
-from models.partidos_model import load_clubs, load_games, load_minutes, load_venues
+from models.partidos_model import (
+    load_aliases,
+    load_clubs,
+    load_games,
+    load_minutes,
+    load_venues,
+)
 
 APP_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(APP_DIR / ".env")
@@ -32,6 +38,12 @@ def get_connection():
 def get_clubs() -> pd.DataFrame:
     """Clubes y competiciones por temporada."""
     return load_clubs(get_connection())
+
+
+@st.cache_data(ttl=CACHE_TTL)
+def get_aliases() -> pd.DataFrame:
+    """Códigos de club por competición y temporada (para reconocer los clubes que devuelve la API)."""
+    return load_aliases(get_connection())
 
 
 @st.cache_data(ttl=CACHE_TTL)

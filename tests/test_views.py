@@ -89,3 +89,27 @@ def test_upcoming_games_only_unplayed_sorted_and_limited():
     t = upcoming_games(live, limit=1)
     assert list(t["Local"]) == ["B"]
     assert len(upcoming_games(live)) == 2
+
+
+def test_upcoming_games_crests_come_from_club_codes_not_api_names():
+    live = pd.DataFrame({
+        "fecha": ["2026-11-05"], "hora_utc": ["2026-11-05T19:00:00Z"], "jornada": [10], "jugado": [0], "comp": ["E"],
+        "season": [2026], "local_code": ["BAS"], "road_code": ["XXX"],
+        "local_name": ["Kosner Baskonia Vitoria-Gasteiz"], "road_name": ["Desconocido"],
+    })
+    aliases = pd.DataFrame({
+        "competicion_id": ["E"], "codigo": ["BAS"], "temporada_desde": [2025], "temporada_hasta": [None],
+        "club": ["Baskonia"],
+    })
+    out = upcoming_games(live, crests={"Baskonia": "data:b"}, aliases=aliases)
+    assert list(out.columns) == ["Fecha", "Hora UTC", "Jornada", "Escudo", "Local", "Escudo visitante", "Visitante"]
+    assert out.loc[0, "Escudo"] == "data:b" and pd.isna(out.loc[0, "Escudo visitante"])
+    assert out.loc[0, "Local"] == "Kosner Baskonia Vitoria-Gasteiz"  # el nombre mostrado sigue siendo el de la API
+
+
+def test_upcoming_games_without_crests_keeps_the_original_columns():
+    live = pd.DataFrame({
+        "fecha": ["2026-11-05"], "hora_utc": [None], "jornada": [10], "jugado": [0], "comp": ["E"], "season": [2026],
+        "local_code": ["A"], "road_code": ["B"], "local_name": ["A"], "road_name": ["B"],
+    })
+    assert list(upcoming_games(live).columns) == ["Fecha", "Hora UTC", "Jornada", "Local", "Visitante"]

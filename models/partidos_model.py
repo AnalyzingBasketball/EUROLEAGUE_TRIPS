@@ -27,6 +27,15 @@ def load_clubs(conn: sqlite3.Connection) -> pd.DataFrame:
     )
 
 
+def load_aliases(conn: sqlite3.Connection) -> pd.DataFrame:
+    """Código de cada club en cada competición, con las temporadas en que vale, y el nombre canónico del club."""
+    return pd.read_sql_query(
+        "SELECT a.competicion_id, a.codigo, a.temporada_desde, a.temporada_hasta, c.nombre AS club"
+        " FROM club_alias a JOIN club c ON c.id = a.club_id",
+        conn,
+    )
+
+
 def load_minutes(conn: sqlite3.Connection) -> pd.DataFrame:
     """Minutos por jugador y partido."""
     return pd.read_sql_query(

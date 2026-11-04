@@ -12,7 +12,7 @@ def number_formats(**formats: str) -> dict:
 
 def image_columns() -> dict:
     """Columnas de escudo y bandera de las tablas: imagen pequeña y sin título."""
-    return {name: st.column_config.ImageColumn(" ", width="small") for name in ("Escudo", "Escudo rival", "Bandera")}
+    return {name: st.column_config.ImageColumn(" ", width="small") for name in ("Escudo", "Escudo rival", "Escudo visitante", "Bandera")}
 
 
 def crear_menu() -> None:

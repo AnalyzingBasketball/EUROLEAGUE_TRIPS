@@ -112,13 +112,36 @@ def fatigue_table(metrics: pd.DataFrame, names: dict[int, str], crests: dict[str
     return add_crests(out.sort_values(["Fecha", "Club"]).reset_index(drop=True), crests)
 
 
-def upcoming_games(live: pd.DataFrame, limit: int = 20) -> pd.DataFrame:
-    """Próximos partidos sin jugar de la API, ordenados por fecha."""
+def api_club_names(live: pd.DataFrame, side: str, aliases: pd.DataFrame) -> pd.Series:
+    """Nombre canónico del club local (`side="local"`) o visitante (`"road"`) de cada partido de la API.
+
+    La API escribe los nombres de otra forma que la base (Kosner Baskonia Vitoria-Gasteiz frente a Baskonia), así que se
+    busca por código de club, competición y temporada en la tabla de alias.
+    """
+    def lookup(row: pd.Series) -> str | None:
+        rows = aliases[(aliases["competicion_id"] == row["comp"]) & (aliases["codigo"] == row[f"{side}_code"])
+                       & (aliases["temporada_desde"] <= row["season"])
+                       & (aliases["temporada_hasta"].isna() | (aliases["temporada_hasta"] >= row["season"]))]
+        return rows["club"].iloc[0] if len(rows) else None
+
+    return live.apply(lookup, axis=1)
+
+
+def upcoming_games(live: pd.DataFrame, limit: int = 20, crests: dict[str, str] | None = None,
+                   aliases: pd.DataFrame | None = None) -> pd.DataFrame:
+    """Próximos partidos sin jugar de la API, ordenados por fecha; con `crests` y `aliases`, añade los escudos."""
     pending = live[live["jugado"] == 0].sort_values(["fecha", "hora_utc"]).head(limit)
-    return pd.DataFrame({
+    out = pd.DataFrame({
         "Fecha": pending["fecha"],
         "Hora UTC": pending["hora_utc"].fillna("").str[11:16],
         "Jornada": pending["jornada"],
         "Local": pending["local_name"],
         "Visitante": pending["road_name"],
     }).reset_index(drop=True)
+    if not crests or aliases is None or pending.empty:
+        return out
+    pending = pending.reset_index(drop=True)
+    for column, side, label in (("Local", "local", "Escudo"), ("Visitante", "road", "Escudo visitante")):
+        crest = api_club_names(pending, side, aliases).map(crests).astype("category")
+        out.insert(out.columns.get_loc(column), label, crest)
+    return out
