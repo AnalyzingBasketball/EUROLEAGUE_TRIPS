@@ -58,3 +58,15 @@ def test_trip_table_flag_is_the_country_of_the_match_venue():
     out = trip_table(metrics, {1: "A", 2: "B"}, venues, flags={"tr": "data:tr"})
     assert list(out["Bandera"]) == ["data:tr", "data:tr"]
     assert list(out["País"]) == ["Turquía", "Turquía"]
+
+
+def test_all_flags_have_the_same_size_after_fitting():
+    import base64
+    from io import BytesIO
+
+    from models.banderas_model import BOX, flag_uri
+
+    for path in FOLDER.glob("*.png"):
+        uri = flag_uri(path)
+        with Image.open(BytesIO(base64.b64decode(uri.split(",", 1)[1]))) as img:
+            assert img.size == BOX, path.name

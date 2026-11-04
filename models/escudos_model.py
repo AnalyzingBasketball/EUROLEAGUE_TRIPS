@@ -14,15 +14,20 @@ THUMB = 32  # lado máximo en píxeles: basta para una celda de tabla y mantiene
 CACHE_TTL = 24 * 3600  # el índice y los archivos son estáticos dentro de una publicación
 
 
+def encode_data_uri(img: Image.Image) -> str:
+    """Imagen PNG de paleta reducida como data URI, el formato que admiten las columnas de imagen de Streamlit."""
+    quantized = img.convert("RGBA").quantize(colors=48, method=Image.Quantize.FASTOCTREE)  # PNG mucho más pequeño
+    buffer = BytesIO()
+    quantized.save(buffer, format="PNG", optimize=True)
+    return "data:image/png;base64," + base64.b64encode(buffer.getvalue()).decode("ascii")
+
+
 def to_data_uri(path: Path, size: int = THUMB) -> str:
-    """Miniatura PNG de un escudo como data URI, el formato que admiten las columnas de imagen de Streamlit."""
+    """Miniatura de un escudo como data URI, con el lado mayor limitado a `size` píxeles."""
     with Image.open(path) as img:
         thumb = img.convert("RGBA")
         thumb.thumbnail((size, size), Image.LANCZOS)
-        thumb = thumb.quantize(colors=48, method=Image.Quantize.FASTOCTREE)  # paleta reducida: PNG mucho más pequeño
-        buffer = BytesIO()
-        thumb.save(buffer, format="PNG", optimize=True)
-    return "data:image/png;base64," + base64.b64encode(buffer.getvalue()).decode("ascii")
+        return encode_data_uri(thumb)
 
 
 @st.cache_data(ttl=CACHE_TTL)

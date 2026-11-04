@@ -36,7 +36,7 @@ assets/escudos/          escudos de los 78 clubes (PNG de hasta 128 px)
 assets/banderas/         banderas de los 22 países de las sedes (PNG de 80 px, nombre = código ISO)
 styles/print.css         estilos de la vista de impresión (oculta menú y botones)
 .streamlit/config.toml   oculta el menú automático de Streamlit
-tests/                   pruebas con pytest (127)
+tests/                   pruebas con pytest (128)
 ```
 
 ## Fuentes de datos
@@ -51,7 +51,7 @@ Las coordenadas y la ciudad de cada sede proceden de OpenStreetMap (© colaborad
 
 Los escudos de los 78 clubes están en `assets/escudos/` y `data/escudos.csv` indica de dónde sale cada uno. Los 64 clubes de Euroliga y EuroCup usan el escudo que publica la API de Euroliga, y los 14 clubes de la ACB que no juegan esas competiciones usan el logo de su ficha en acb.com. Los escudos son marcas de sus clubes y se incluyen solo con fines académicos. Las tablas los muestran en una columna de imagen: cada escudo se convierte en una miniatura de 32 px incrustada en la propia tabla, y como categoría viaja una sola vez al navegador, no una por fila.
 
-Las tablas con país (partidos y catálogo de sedes) llevan además una columna con la bandera del país de la sede. Las 22 banderas están en `assets/banderas/` y se descargaron de flagcdn.com (PNG de 80 px, de uso libre). Se tratan igual que los escudos: miniatura de 40 px incrustada y columna como categoría.
+Las tablas con país (partidos y catálogo de sedes) llevan además una columna con la bandera del país de la sede. Las 22 banderas están en `assets/banderas/` y se descargaron de flagcdn.com (PNG de 80 px, de uso libre). Se tratan igual que los escudos: miniatura de 40 × 27 px con marco fino (las banderas más altas se recortan y las más anchas se aplanan para que todas midan igual) y columna como categoría.
 
 La base se construye fuera de la aplicación con dos scripts (`fetch_euroleague.py` y `build_db.py`), que no forman parte de la entrega. Un mismo club cambia de código y de nombre según la competición y la temporada, por lo que el modelo separa el club (identificador propio), sus alias por competición y temporada, y los clubes que juegan cada competición cada año. Valencia Basket cambia de pabellón en 2025 y el modelo lo recoge.
 
