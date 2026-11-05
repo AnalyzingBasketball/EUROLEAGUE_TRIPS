@@ -73,7 +73,7 @@ CREATE TABLE IF NOT EXISTS partido (
     competicion_id   TEXT NOT NULL REFERENCES competicion(id),
     temporada_id     INTEGER NOT NULL REFERENCES temporada(id),
     fecha            TEXT NOT NULL,    -- día local del partido, YYYY-MM-DD
-    hora_utc         TEXT,             -- ISO 8601 en UTC; NULL en ACB (la fuente no trae hora)
+    hora_utc         TEXT,             -- ISO 8601 en UTC
     jornada          INTEGER,
     fase             TEXT,
     local_id         INTEGER NOT NULL REFERENCES club(id),

@@ -32,6 +32,12 @@ def test_default_season_skips_season_in_progress():
     assert default_season(m) == 2025
 
 
+def test_default_season_prefers_latest_season_with_dual_clubs():
+    m = pd.DataFrame({"partido_id": list("abcd"), "temporada_id": [2025, 2025, 2026, 2024],
+                      "dual": [False, False, True, True]})
+    assert default_season(m) == 2026
+
+
 def test_mark_dual_flags_clubs_with_two_competitions():
     m = pd.DataFrame({"club_id": [1, 2], "temporada_id": [2025, 2025]})
     clubs = pd.DataFrame({"club_id": [1, 1, 2], "temporada_id": [2025] * 3, "competicion_id": ["ACB", "E", "E"]})

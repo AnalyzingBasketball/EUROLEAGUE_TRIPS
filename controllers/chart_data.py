@@ -29,7 +29,13 @@ BUS_KMH, FLIGHT_KMH, AIRPORT_HOURS = 75.0, 750.0, 3.0
 
 
 def default_season(metrics: pd.DataFrame) -> int:
-    """Temporada más reciente con al menos la mitad de partidos que la más completa (evita abrir en una en curso)."""
+    """Temporada con la que abre la app.
+
+    Si hay clubes con doble competición, la más reciente que los tenga (sin ellos las tablas por defecto saldrían
+    vacías). Si no, la más reciente con al menos la mitad de partidos que la más completa (evita abrir en una en curso).
+    """
+    if "dual" in metrics and metrics["dual"].any():
+        return int(metrics.loc[metrics["dual"], "temporada_id"].max())
     counts = metrics.groupby("temporada_id")["partido_id"].nunique()
     return int(counts[counts >= counts.max() / 2].index.max())
 

@@ -50,17 +50,17 @@ def test_club_alias_has_no_overlapping_names_for_same_code(conn):
     assert dup == []
 
 
-def test_valencia_changes_arena_in_acb(conn):
+def test_valencia_plays_acb_at_roig_arena(conn):
     rows = {r[0] for r in conn.execute("""SELECT DISTINCT s.nombre FROM partido p JOIN club c ON c.id = p.local_id
                                           JOIN sede s ON s.id = p.sede_id
                                           WHERE c.nombre = 'Valencia Basket' AND p.competicion_id = 'ACB'""")}
-    assert len(rows) == 2
+    assert rows == {"Roig Arena"}  # ACB solo tiene la temporada 2026/27, ya en el pabellón nuevo
 
 
 def test_minutes_sum_close_to_game_length(conn):
-    # 400 min en 40 de juego (+50 por prórroga); hay partidos con 3 prórrogas y uno con minutos incompletos en la fuente (380).
+    # 400 min en 40 de juego (+50 por prórroga); hay partidos con 3 prórrogas y dos con minutos incompletos en la fuente (380 y 373).
     bad = _one(conn, """SELECT COUNT(*) FROM (SELECT partido_id, SUM(minutos) m FROM minutos_jugador
-                        GROUP BY partido_id HAVING m < 375 OR m > 650)""")
+                        GROUP BY partido_id HAVING m < 370 OR m > 650)""")
     assert bad == 0
 
 

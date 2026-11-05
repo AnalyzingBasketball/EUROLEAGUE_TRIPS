@@ -8,7 +8,7 @@ if iniciar_pagina("Viajes y fatiga", "🏀"):
     st.write(
         "¿Se notan los kilómetros y el poco descanso en los resultados y en las rotaciones de los clubes españoles "
         "que juegan a la vez la ACB y la Euroliga o la EuroCup? La aplicación reúne los calendarios de las tres "
-        "competiciones desde 2022/23 y calcula, para cada partido, los días de descanso, los kilómetros de viaje y "
+        "competiciones (Euroliga y EuroCup desde 2022/23, ACB solo la temporada 2026/27) y calcula, para cada partido, los días de descanso, los kilómetros de viaje y "
         "cuántos jugadores usa el entrenador."
     )
     metrics, clubs = get_metrics(), get_clubs()
@@ -63,7 +63,7 @@ if iniciar_pagina("Viajes y fatiga", "🏀"):
         "Los resultados muestran correlaciones, no causas, y con pocos partidos una diferencia puede ser casualidad: "
         "las gráficas indican cuántos partidos hay detrás de cada barra, omiten los tramos con menos de 5 y el "
         "mapa de calor deja en blanco las celdas con menos de 15. Los clubes con doble competición suelen ser los más fuertes, así que sus porcentajes de "
-        "victoria salen altos. La rotación solo se conoce en ACB y Euroliga, porque no hay minutos de EuroCup. "
+        "victoria salen altos. Solo la temporada 2026/27 reúne a la vez ACB y competición europea, así que la doble competición se estudia en esa temporada. "
         "Quedan fuera la Champions League, la Copa del Rey y las ligas nacionales de los clubes extranjeros, de modo "
-        "que la carga de Unicaja y Tenerife, que juegan la Champions, está subestimada."
+        "que la carga de los clubes que además juegan esas competiciones, como Unicaja, está subestimada."
     )

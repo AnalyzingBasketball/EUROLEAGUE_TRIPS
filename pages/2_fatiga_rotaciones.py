@@ -52,7 +52,7 @@ if iniciar_pagina("Fatiga y rotaciones", "🏀"):
         scope = scope[scope["dual"]]
 
     st.subheader("Fuente 1 · SQLite: descanso, carga y rotación por partido")
-    st.caption("La rotación solo existe en ACB y Euroliga: no hay minutos de EuroCup.")
+    st.caption("Los minutos por jugador salen de las estadísticas de Euroliga y EuroCup (API) y de las de la ACB (live.acb.com).")
     st.dataframe(fatigue_table(scope, names, get_crest_uris()), width="stretch", hide_index=True, height=320,
                  column_config=image_columns())
 
@@ -130,8 +130,12 @@ if iniciar_pagina("Fatiga y rotaciones", "🏀"):
             st.markdown(f"**{label} fuera de casa según descanso y viaje**")
             st.caption("El color compara con la media de los partidos fuera. Las celdas con menos de 15 partidos quedan en blanco.")
             grid = rest_trip_grid(results, measure)
-            st.plotly_chart(rest_trip_heatmap(grid, label, float(away_games[measure].mean()), dark),
-                            theme=None, width="stretch")
+            if grid["media"].notna().any():
+                st.plotly_chart(rest_trip_heatmap(grid, label, float(away_games[measure].mean()), dark),
+                                theme=None, width="stretch")
+            else:
+                st.info("Con esta selección ninguna combinación de descanso y viaje reúne 15 partidos. "
+                        "Quita «Solo doble competición» o añade competiciones para ver el mapa de calor.")
             with st.expander("Ver los datos del gráfico"):
                 st.dataframe(grid.round(2), width="stretch", hide_index=True)
 

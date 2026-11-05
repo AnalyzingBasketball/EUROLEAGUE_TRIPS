@@ -51,12 +51,14 @@ def result_blocks(scope: pd.DataFrame, measure: str, unit: str) -> list[Table | 
             f"{label} fuera de casa según el viaje", away_trip_effect(scope, unit, measure), label, TRIP_UNITS[unit],
             "Solo partidos fuera. Las horas son una estimación (autobús o avión con 3 h de aeropuerto). " + CAVEAT,
         )
-        blocks.append(Image(
-            f"{label} fuera de casa según descanso y viaje",
-            rest_trip_heatmap_png(rest_trip_grid(scope, measure), label, float(away[measure].mean())),
-            f"Color respecto a la media de los partidos fuera ({round(away[measure].mean(), 1) + 0.0:.1f}). "
-            "Celdas con menos de 15 partidos en blanco. " + CAVEAT,
-        ))
+        grid = rest_trip_grid(scope, measure)
+        if grid["media"].notna().any():  # sin ninguna celda con 15 partidos el mapa saldría vacío
+            blocks.append(Image(
+                f"{label} fuera de casa según descanso y viaje",
+                rest_trip_heatmap_png(grid, label, float(away[measure].mean())),
+                f"Color respecto a la media de los partidos fuera ({round(away[measure].mean(), 1) + 0.0:.1f}). "
+                "Celdas con menos de 15 partidos en blanco. " + CAVEAT,
+            ))
     return blocks
 
 
