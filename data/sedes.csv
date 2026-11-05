@@ -8,6 +8,7 @@ id,nombre,ciudad,pais,lat,lon,precision,revisar
 61,Arena 8888 Sofia,Sofía,bg,42.6712266,23.3693538,pabellon,0
 58,Arena Botevgrad,Botevgrad,bg,42.8999822,23.7884018,pabellon,0
 96,Samokov Arena,Samokov,bg,42.3323777,23.5551227,pabellon,0
+116,Spyros Kyprianou Athletic Center,Limasol,cy,34.7138602,32.999103,pabellon,0
 28,Audi Dome,Múnich,de,48.1260284,11.5253684,pabellon,0
 86,Edel-Optics.de Arena,Hamburgo,de,53.4967487,10.0031084,calle,0
 25,Lanxess Arena,Colonia,de,50.9386614,6.9845688,calle,0

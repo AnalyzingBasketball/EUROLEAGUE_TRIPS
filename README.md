@@ -33,7 +33,7 @@ controllers/             lógica: métricas, datos de gráficas, mapa interactiv
 models/                  acceso a datos: SQLite, CSV y API, con esquema SQL
 data/                    viajes_fatiga.db, metricas.parquet (métricas ya calculadas), sedes.csv, escudos.csv y paises.json
 assets/escudos/          escudos de los 78 clubes (PNG de hasta 128 px)
-assets/banderas/         banderas de los 22 países de las sedes (PNG de 80 px, nombre = código ISO)
+assets/banderas/         banderas de los 23 países de las sedes (PNG de 80 px, nombre = código ISO)
 styles/print.css         estilos de la vista de impresión (oculta menú y botones)
 .streamlit/config.toml   oculta el menú automático de Streamlit
 tests/                   pruebas con pytest (140)
@@ -55,7 +55,7 @@ La tabla de próximos partidos de la API también lleva escudos: la API escribe 
 
 El mapa de la página Calendario y viajes tiene tres modos. Con fondo detallado (teselas de OpenStreetMap servidas por Carto), dibuja las sedes por competición, con la leyenda como filtro, y las rutas de viaje: todas las del club elegido o las 25 más repetidas si no hay club, con el grosor según las veces. Un selector resalta una sede y muestra debajo sus partidos con escudos. La vista de animación por meses suma los partidos y los viajes mes a mes, con botones de reproducir y pausa y un control deslizante. Si las teselas no cargan, el fondo simple dibuja los países sin conexión. Streamlit no devuelve el clic sobre un mapa, por eso la sede se elige con un selector.
 
-Las tablas con país (partidos y catálogo de sedes) llevan además una columna con la bandera del país de la sede. Las 22 banderas están en `assets/banderas/` y se descargaron de flagcdn.com (PNG de 80 px, de uso libre). Se tratan igual que los escudos: miniatura de 40 × 27 px con marco fino (las banderas más altas se recortan y las más anchas se aplanan para que todas midan igual) y columna como categoría.
+Las tablas con país (partidos y catálogo de sedes) llevan además una columna con la bandera del país de la sede. Las 23 banderas están en `assets/banderas/` y se descargaron de flagcdn.com (PNG de 80 px, de uso libre). Se tratan igual que los escudos: miniatura de 40 × 27 px con marco fino (las banderas más altas se recortan y las más anchas se aplanan para que todas midan igual) y columna como categoría.
 
 La base se construye fuera de la aplicación con dos scripts (`fetch_euroleague.py` y `build_db.py`), que no forman parte de la entrega. Un mismo club cambia de código y de nombre según la competición y la temporada, por lo que el modelo separa el club (identificador propio), sus alias por competición y temporada, y los clubes que juegan cada competición cada año. Valencia Basket cambia de pabellón en 2025 y el modelo lo recoge.
 
@@ -78,6 +78,18 @@ Las gráficas muestran medias con ±1,96 errores estándar y omiten los tramos c
 | Métricas, clubes y sedes (`cache_data`) | 24 h | La base solo cambia al publicar de nuevo. Las métricas se leen de `data/metricas.parquet`, calculadas de antemano, porque la regresión tarda más de un segundo y en un servidor compartido retrasaría la primera visita |
 | CSV de sedes | 24 h | Archivo estático dentro de cada publicación |
 | API de Euroliga | 1 h | El calendario cambia a diario como mucho y la API limita las peticiones |
+
+## Actualizar los datos
+
+Con la temporada en curso, los resultados nuevos llegan a la base volviendo a construirla (los tres scripts están en `tarea/scripts/` y no forman parte del zip):
+
+1. `python scripts/fetch_euroleague.py --force --from 2026 --to 2026` descarga de nuevo el calendario y los resultados de Euroliga y EuroCup de la temporada.
+2. `python scripts/build_db.py --ab-dataset <ruta al dataset de ACB y minutos>` recrea la base. Si un partido nuevo se juega en un pabellón que aún no está en `data/raw/sedes_euroliga_eurocup.csv`, el script lo indica en «sin sede» y hay que añadir esa fila (código, nombre, país y coordenadas) y su ciudad en `data/raw/ciudades_sedes.csv`.
+3. `python scripts/precompute_metrics.py` guarda las métricas calculadas en `data/metricas.parquet`.
+4. `cd app && pytest` comprueba que los datos son coherentes.
+5. Se sube el cambio a GitHub y se reinicia la app en Streamlit Cloud.
+
+La tabla de próximos partidos no necesita nada de esto: se pide en directo a la API y se renueva cada hora.
 
 ## Limitaciones
 

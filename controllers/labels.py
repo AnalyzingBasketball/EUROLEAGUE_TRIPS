@@ -1,7 +1,7 @@
 """Etiquetas en español para códigos: países y competiciones."""
 
 COUNTRY_NAMES = {
-    "ad": "Andorra", "ae": "Emiratos Árabes Unidos", "ba": "Bosnia y Herzegovina", "be": "Bélgica", "bg": "Bulgaria",
+    "ad": "Andorra", "ae": "Emiratos Árabes Unidos", "ba": "Bosnia y Herzegovina", "be": "Bélgica", "bg": "Bulgaria", "cy": "Chipre",
     "de": "Alemania", "es": "España", "fr": "Francia", "gb": "Reino Unido", "gr": "Grecia", "il": "Israel", "it": "Italia",
     "lt": "Lituania", "lv": "Letonia", "mc": "Mónaco", "me": "Montenegro", "pl": "Polonia", "ro": "Rumanía", "rs": "Serbia",
     "ru": "Rusia", "si": "Eslovenia", "tr": "Turquía",
