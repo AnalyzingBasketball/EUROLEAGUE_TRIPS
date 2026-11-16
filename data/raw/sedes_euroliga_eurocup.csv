@@ -1,0 +1,166 @@
+vcode,nombre,direccion,pais,lat,lon,precision,origen_coordenada,revisar
+AUO,LANXESS ARENA,"Willy-Brandt-Platz 3, 50679 Cologne, Germany",de,50.9386614,6.9845688,calle,dirección,False
+AMH,PALAU BLAUGRANA,"Aristides Maillol Av S/N, 08028 Barcelona",es,41.3800318,2.1200886,pabellon,nombre+país,False
+ASX,MEDIOLANUM FORUM,"Via G. Di Vittorio 6, 20090 Assago",it,45.4013593,9.1423018,pabellon,nombre+país,False
+ATF,SINAN ERDEM SPORTS HALL,,tr,41.006381,28.9758715,ciudad,"2ª pasada (nominatim, ciudad)",True
+AMV,AUDI DOME,"Grasweg 74, 81373 Munich",de,48.1260284,11.5253684,pabellon,nombre+dirección,False
+AQF,SIBUR ARENA,"Futbolnaya Alleya 8, 197110 St Petersburg, Russian Federation",ru,59.9606739,30.1586551,ciudad,3ª pasada (ciudad),True
+ATI,WIZINK CENTER,"Avenida de Felipe II 1, 28009, Madrid",es,40.4239865,-3.6742244,calle,dirección,False
+AMY,ULKER SPORTS AND EVENT HALL,"Barbaros Mah. Ihlamur Sok. Batı Ataşehir, 34764 Istanbul, Turkiye",tr,40.9929379,29.1135187,ciudad,3ª pasada (ciudad),True
+ARX,MEGASPORT ARENA,"3, Khodynskiy Blv., 125252 Moscow, Russian Federation",ru,55.625578,37.6063916,ciudad,3ª pasada (ciudad),True
+ADM,USH CSKA,"39 bld.3 Leningradskiy Prospect, Moscow, Russia",ru,55.625578,37.6063916,ciudad,3ª pasada (ciudad),True
+ASJ,YUBILEYNY SPORTS PALACE,"Dobrolyubova Pr., 18 A - 197198 Saint Petersburg",ru,59.9606739,30.1586551,ciudad,3ª pasada (ciudad),True
+ASF,PEACE AND FRIENDSHIP STADIUM,"Ethnarchou Makariou Av., Piraeus",gr,37.9448062,23.6696675,calle,dirección,False
+APQ,LA FONTETA,Av. Hermanos Maristas 16 46013 Valencia,es,39.451555,-0.3675944,calle,"2ª pasada (nominatim, calle)",False
+ASY,MERCEDES-BENZ ARENA,"Mercedes-Platz 1, Berlin",de,52.5049039,13.4431471,calle,dirección,False
+ATJ,ZALGIRIO ARENA,"Karaliaus Mindaugo Av. 50, 44287 Kaunas",lt,54.8904082,23.9144444,pabellon,nombre+país,False
+AQO,MENORA MIVTACHIM ARENA,"51, Igal Alon, 67062 Tel Aviv",il,32.0611271,34.7913062,pabellon,nombre+país,False
+AUF,ALEKSANDAR NIKOLIC HALL,"Carlija Caplina 39, Belgrade 11000, Serbia",rs,44.8155267,20.4850396,pabellon,nombre+dirección,False
+AUM,OAKA Altion,"37 Kifisias Avenue, 15123 Marousi",gr,38.0398372,23.8014802,calle,dirección,False
+AUC,BUESA ARENA,"Ctra. Zurbano s/n, 01013 Vitoria",es,42.864447,-2.6441312,calle,nombre+país,False
+AQQ,ARENA MYTISHCHI,"Letnaya 17, 141008 Mytishchi, Russian Federation",ru,55.9108142,37.7266856,pabellon,nombre+país,False
+ASR,ASTROBALLE,"40/44 Av. Marcel Cerdan, 69100 Villeurbanne, France",fr,45.7670766,4.906332,calle,dirección,False
+ABN,OAKA,"37 Kifisias Avenue, 15123 Marousi",gr,38.0398372,23.8014802,calle,dirección,False
+ATM,STARK ARENA,"Bulevar Arsenija Carnojevica 58, 11070 Belgrade - Serbia",rs,44.8141229,20.4213881,calle,dirección,False
+AUR,SALLE GASTON MEDECIN,"3 et 7 Avenue des Castelans, 98000, Monaco",mc,43.7285178,7.4162138,calle,dirección,False
+AQD,BASKET HALL KAZAN,"Spartakovskaya Street 1, 420107 Kazan",ru,55.7819118,49.126913,calle,dirección,False
+ADT,MAX SCHMELING HALLE,,de,52.5447995,13.4044944,pabellon,nombre+dirección,False
+ATM5,STARK ARENA,"Bulevar Arsenija Carnojevica 58, 11070 Belgrade - Serbia",rs,44.8141229,20.4213881,calle,dirección,False
+AUT1,SINAN ERDEM SPORTS HALL,"Zuhuratbaba, Ataköy Blv. No:14, 34147, Bakirköy/Istanbul, Turkiye",tr,41.006381,28.9758715,ciudad,"2ª pasada (nominatim, ciudad)",True
+AUK,VIRTUS SEGAFREDO ARENA,"Viale della Fiera, 40128, Bologna",it,44.5095552,11.3701862,calle,dirección,False
+APQ2,PABELLON FUENTE DE SAN LUIS,Av. Hermanos Maristas 16 46013 Valencia,es,39.451555,-0.3675944,calle,"2ª pasada (nominatim, calle)",False
+AIG,PALADOZZA,"Via Nannetti 1, 40122 Bologna - Italy",it,44.499528,11.3321649,calle,dirección,False
+AUF4,ALEKSANDAR NIKOLIC HALL,"Carlija Caplina 39, Belgrade 11000, Serbia",rs,44.8155267,20.4850396,pabellon,nombre+dirección,False
+ATK,SINAN ERDEM SPORTS HALL,,tr,41.006381,28.9758715,ciudad,"2ª pasada (nominatim, ciudad)",True
+ASY4,UBER ARENA,"Mercedes-Platz 1, Berlin",de,52.5049039,13.4431471,calle,dirección,False
+AMH3,PALAU BLAUGRANA,"Aristides Maillol Av S/N, 08028 Barcelona",es,41.3800318,2.1200886,pabellon,nombre+país,False
+AUR2,SALLE GASTON MEDECIN,"3 et 7 Avenue des Castelans, 98000, Monaco",mc,43.7285178,7.4162138,calle,dirección,False
+AMY3,ULKER SPORTS AND EVENT HALL,"Barbaros Mah. Ihlamur Sok. Batı Ataşehir, 34764 Istanbul, Turkiye",tr,40.9929379,29.1135187,ciudad,3ª pasada (ciudad),True
+ASF6,PEACE AND FRIENDSHIP STADIUM,"Ethnarchou Makariou Av., Piraeus",gr,37.9448062,23.6696675,calle,dirección,False
+ATK1,SINAN ERDEM SPORTS HALL,,tr,41.006381,28.9758715,ciudad,"2ª pasada (nominatim, ciudad)",True
+ATM7,BELGRADE ARENA,"Bulevar Arsenija Carnojevica 58, 11070 Belgrade - Serbia",rs,44.8141229,20.4213881,pabellon,nombre+dirección,False
+AUZ1,LDLC ARENA,"Avenue Simone Veil 5, 69150 Décines-Charpieu - France",fr,45.7695176,4.9799456,calle,nombre+dirección,False
+AUK1,VIRTUS SEGAFREDO ARENA,"Viale della Fiera, 40128, Bologna",it,44.5095552,11.3701862,calle,dirección,False
+AMV1,BMW PARK,"Grasweg 74, 81373 Munich",de,48.1260284,11.5253684,pabellon,nombre+dirección,False
+ASX6,FORUM,"Via G. Di Vittorio 6, 20090 Assago",it,45.4015471,9.1424748,pabellon,nombre+país,False
+ATM6,STARK ARENA,"Bulevar Arsenija Carnojevica 58, 11070 Belgrade - Serbia",rs,44.8141229,20.4213881,calle,dirección,False
+AHO,ARENA RIGA,"Skanstes Street 21, LV1013 Riga, Latvia",lv,56.9678573,24.1212654,pabellon,nombre+país,False
+AFX,ASTROBALLE,"40/44 Av. Marcel Cerdan, 69100 Villeurbanne, France",fr,45.7670766,4.906332,calle,dirección,False
+ASS2,KALNAPILIO ARENA,Parko Str. 12 - LT-37310 Panevezys - Lithuania,lt,55.7333555,24.339312,pabellon,nombre+país,False
+ASX5,MEDIOLANUM FORUM,"Via G. Di Vittorio 6, 20090 Assago",it,45.4013593,9.1423018,pabellon,nombre+país,False
+AVH1,ETIHAD ARENA,,ae,24.4603646,54.6042249,pabellon,nombre+dirección,False
+AVG1,BASKETBALL DEVELOPMENT CENTER,Kazliçesme Mah. 10. Yil Caddesi No: 2/1 Zeytinburnu / Turkiye,tr,40.9898653,28.9037467,ciudad,3ª pasada (ciudad),True
+ATI7,MOVISTAR ARENA,"Avenida de Felipe II 1, 28009, Madrid",es,40.4239865,-3.6742244,calle,dirección,False
+AVB11,ADIDAS ARENA,"56 Boulevard Ney, 75018 Paris, France",fr,48.8995985,2.3607486,pabellon,nombre+dirección,False
+AVE1,SAP GARDEN,"Toni-Merkens-Weg 4, 80809 Munich - Germany",de,48.1698727,11.5409874,calle,dirección,False
+ASX7,UNIPOL FORUM,"Via G. Di Vittorio 6, 20090 Assago",it,45.4013593,9.1423018,pabellon,nombre+país,False
+AHO1,XIAOMI ARENA,"Skanstes Street 21, LV1013 Riga, Latvia",lv,56.9678573,24.1212654,pabellon,nombre+país,False
+AKW2,ACCOR ARENA,,fr,48.8387085,2.3787666,pabellon,nombre+dirección,False
+AAM2,UNIPOL ARENA,,it,44.4859531,11.2481515,pabellon,nombre+dirección,False
+AUM6,TELEKOM CENTER ATHENS,"37 Kifisias Avenue, 15123 Marousi",gr,38.0398372,23.8014802,calle,dirección,False
+AVJ1,ROIG ARENA,"C/ del Bomber Ramon Duart, 12, Quatre Carreres, 46013 Valencia",es,39.4491041,-0.3643501,pabellon,nombre+dirección,False
+AVN1,ARENA BOTEVGRAD,"2 Zahari Stoyanov Str, Botevgrad, 2140, Bulgaria",bg,42.8999822,23.7884018,pabellon,nombre+país,False
+AVS1,ARENA HUSEJIN SMAJLOVIC ZENICA,,ba,44.2029526,17.9135052,pabellon,nombre+dirección,False
+ATM8,BELGRADE ARENA,"Bulevar Arsenija Carnojevica 58, 11070 Belgrade - Serbia",rs,44.8141229,20.4213881,pabellon,nombre+dirección,False
+AUK2,VIRTUS ARENA,"Viale della Fiera, 40128, Bologna",it,44.5095552,11.3701862,calle,dirección,False
+AHX1,ZETRA ARENA,,ba,43.8717815,18.4095313,calle,"2ª pasada (photon, pabellon)",False
+AVK1,ARENA 8888 SOFIA,,bg,42.6712266,23.3693538,pabellon,nombre+dirección,False
+AVG2,TURKCELL BASKETBALL DEVELOPMENT CENTER,Kazliçesme Mah. 10. Yil Caddesi No: 2/1 Zeytinburnu / Turkiye,tr,40.9898653,28.9037467,ciudad,3ª pasada (ciudad),True
+AUD,ALLIANZ CLOUD,"Via Marco Cremosano, 2, 20148 Milano",it,45.4831552,9.1418918,calle,dirección,False
+ACA4,COCA-COLA ARENA,Al Wasl - سٹی واک - Dubai - United Arab Emirates,ae,25.2036463,55.2658062,pabellon,nombre+dirección,False
+ASZ2,PAIS ARENA JERUSALEM,"Benbenishti Road, 94101 Jerusalem",il,31.7512767,35.1941056,pabellon,nombre+país,False
+AVO1,ANTALYA SPORTS HALL,,tr,36.8624877,31.0528676,calle,"2ª pasada (photon, pabellon)",False
+AUA,MORACA,Ivana Milutinovica BB - 81000 Podgorica - Montenegro,me,42.4383933,19.2530815,calle,dirección,False
+ASX8,UNIPOL FORUM,"Via G. Di Vittorio 6, 20090 Assago",it,45.4013593,9.1423018,pabellon,nombre+país,False
+AUK3,VIRTUS ARENA,"Viale della Fiera, 40128, Bologna",it,44.5095552,11.3701862,calle,dirección,False
+AVT1,SUNEL ARENA,"Konstantinoupoleos 59, Ano Liosia, 13342 Athens, Greece",gr,38.0816894,23.6865247,pabellon,nombre+dirección,False
+AVN2,ARENA BOTEVGRAD,"2 Zahari Stoyanov Str, Botevgrad, 2140, Bulgaria",bg,42.8999822,23.7884018,pabellon,nombre+país,False
+ATQ,STADE LOUIS II,"3ème étage – 7 Avenue des Castelans, 98000 Monaco",mc,43.7275713,7.4154577,pabellon,nombre+país,False
+AQA,GRAN CANARIA ARENA,Fondos de Segura S/N - 35019 Las Palmas de Gran Canaria,es,28.1030082,-15.456938,pabellon,nombre+país,False
+ABW,PALAU OLIMPIC DE BADALONA,"C/ Ponent, 143-161 08912 Badalona - Spain",es,41.442918,2.2326418,calle,dirección,False
+AKX,ARENA STOZICE,"Vojkova Cesta 100, 1000 Ljubljana, Slovenia",si,46.0813706,14.5214603,pabellon,nombre+dirección,False
+AMK,BASKET HALL,"Prigorodnaya str. 24, 350000 Krasnodar",ru,45.1174181,38.9811819,pabellon,nombre+país,False
+ATB,MARCEL CERDAN,"141 Rue Danton, 92300 Levallois, France",fr,48.8959663,2.2778636,pabellon,nombre+dirección,False
+ATD,POLIESPORTIU D'ANDORRA,"Baixada del Molí 31-35 AD500, Andorra La Vella, Andorra",ad,42.5052269,1.5184261,calle,dirección,False
+AQU,MAURICE THOREZ,"Av/ Frederic et Irene Joliot Curie 136, 92000 Naterre - France",fr,48.8892543,2.2042343,calle,parche: corregida: la dirección dice Naterre (Nanterre),False
+AMI,MARTIN CARPENA,"c/ Miguel Merida Nicolich 2, Malaga",es,36.6825228,-4.4605156,calle,dirección,False
+AUJ,EKINOX,"25 Avenue Marechal Juin, 01000 Bourg en Bresse, France",fr,46.1882788,5.2464861,calle,dirección,False
+ATS,BLM GROUP ARENA,"Via Fersina 11, 38123 Trento, Italy",it,46.0449396,11.1215473,calle,dirección,False
+ATP,TOPOLICA SPORTS HALL,"Bulevar Revolucije 85, Bar, Montenegro",me,42.103403,19.0939582,calle,dirección,False
+AUL,HALA SPORTOVA RANKO ZERAVICA,,rs,44.8276535,20.4063521,pabellon,nombre+dirección,False
+ARE,PALASPORT TALIERCIO,"Via Vendramin 10, 30174 Venezia, Italy",it,45.4899003,12.2775644,calle,dirección,False
+ATY,DIMITRIS TOFALOS ARENA,"Penepistimiou 480, 26443 Patras - Greece",gr,38.246242,21.7350847,ciudad,3ª pasada (ciudad),True
+ATG,TOFAS SPOR SALONU,"Fethiye Mahallesi, Nilüfer Hatun Cd. No:133, 16140 Nilüfer/Bursa, Turkiye",tr,40.2271512,28.9717272,pabellon,nombre+país,False
+ASS,CIDO ARENA,Parko Str. 12 - LT-37310 Panevezys - Lithuania,lt,55.7333555,24.339312,calle,"2ª pasada (photon, pabellon)",False
+AUH,AKATLAR ARENA,"5 Gazeteciler Sitesi. Akatlar/Etiler-Besiktas/Istanbul, 34335 Istanbul - Turkey",tr,41.086865,29.0235417,pabellon,nombre+país,False
+AUB,PALALEONESSA A2A,"Via Caprera, 5 – 25125 – Brescia, Italy",it,45.5285775,10.1739836,calle,dirección,False
+AHB,LOTTO ARENA,"Schijnpoortweg 119, 2170 Merksem - Belgium",be,51.2311025,4.4412828,calle,dirección,False
+ATE,RATIOPHARM ARENA,"Europastrasse 25 - 89231 Neu-Ulm, Germany",de,48.3817426,10.0047373,pabellon,nombre+dirección,False
+ATT,ANKARA SPOR SALONU,"Bati Sitesi Magallesi, Ankara Hipodromu Kavsagi No:2, 06370, Ankara, Turkiye",tr,39.9379155,32.8439139,pabellon,nombre+país,False
+AUS,CENTENNIAL HALL,"Wystawowa 1Str, 51-618 Wroclaw, Poland",pl,51.1077795,17.0735475,calle,dirección,False
+AUP,EDEL-OPTICS.DE ARENA,"Kurt-Emmerich-Platz 10-12 21109 Hamburg, Germany",de,53.4967487,10.0031084,calle,dirección,False
+ANK,RATIOPHARM ARENA,"Europastrasse 25 - 89231 Neu-Ulm, Germany",de,48.3817426,10.0047373,pabellon,nombre+dirección,False
+AQY,RATIOPHARM ARENA,"Europastrasse 25 - 89231 Neu-Ulm, Germany",de,48.3817426,10.0047373,pabellon,nombre+dirección,False
+ACQ,HALA ORBITA,"Ul. Wejherowska 34, 54-239 Wroclaw, Poland",pl,51.1325055,16.9871101,pabellon,nombre+país,False
+ASU,GRAN CANARIA ARENA,Fondos de Segura S/N - 35019 Las Palmas de Gran Canaria,es,28.1030082,-15.456938,pabellon,nombre+país,False
+ABW1,PALAU OLIMPIC DE BADALONA,"C/ Ponent, 143-161 08912 Badalona - Spain",es,41.442918,2.2326418,calle,dirección,False
+AUX2,SHLOMO GROUP ARENA,Tel Aviv,il,32.0852997,34.7818064,calle,dirección,False
+ATE3,RATIOPHARM ARENA,"Europastrasse 25 - 89231 Neu-Ulm, Germany",de,48.3817426,10.0047373,pabellon,nombre+dirección,False
+AUY2,Halle Georges Carpentier,Paris,fr,48.8199691,2.3676543,pabellon,nombre+dirección,False
+AUX1,Shlomo Group Arena,Tel Aviv,il,32.0852997,34.7818064,calle,dirección,False
+ATG1,TOFAS SPOR SALONU,"Fethiye Mahallesi, Nilüfer Hatun Cd. No:133, 16140 Nilüfer/Bursa, Turkiye",tr,40.2271512,28.9717272,pabellon,nombre+país,False
+AUW1,The Copperbox Arena,"Queen Elizabeth Olympic Park, London, United Kingdom",gb,51.54496,-0.0171772,calle,dirección,False
+ACQ1,HALA ORBITA,"Ul. Wejherowska 34, 54-239 Wroclaw, Poland",pl,51.1325055,16.9871101,pabellon,nombre+país,False
+AUV2,BT-Arena,"4 Aleea Stadionului, Cluj-Napoca 400375, Romania",ro,46.7671453,23.5704316,calle,dirección,False
+ASC,CIDO ARENA,Parko Str. 12 - LT-37310 Panevezys - Lithuania,lt,55.7333555,24.339312,calle,"2ª pasada (photon, pabellon)",False
+AUB2,PALALEONESSA A2A,"Via Caprera, 5 – 25125 – Brescia, Italy",it,45.5285775,10.1739836,calle,dirección,False
+FYJ1,OVO Arena Wembley,,gb,51.5579996,-0.2827922,pabellon,nombre+dirección,False
+FYJ2,OVO Arena Wembley,,gb,51.5579996,-0.2827922,pabellon,nombre+dirección,False
+AQC3,AVIA SOLUTIONS GROUP ARENA,"Ozo Str. 14, LT 08200 Vilnius",lt,54.7135324,25.2814,calle,dirección,False
+AUV3,BT-Arena,"4 Aleea Stadionului, Cluj-Napoca 400375, Romania",ro,46.7671453,23.5704316,calle,dirección,False
+ATE4,RATIOPHARM ARENA,"Europastrasse 25 - 89231 Neu-Ulm, Germany",de,48.3817426,10.0047373,pabellon,nombre+dirección,False
+AFZ1,PALAIS DE SPORTS,"Grigoriou Lambraki 2, 54638 Thessaloniki, Greece",gr,40.6473837,22.9511432,calle,dirección,False
+AKX2,ARENA STOZICE,"Vojkova Cesta 100, 1000 Ljubljana, Slovenia",si,46.0813706,14.5214603,pabellon,nombre+dirección,False
+ATS2,IL T QUOTIDIANO ARENA,"Via Fersina 11, 38123 Trento, Italy",it,46.0449396,11.1215473,calle,dirección,False
+ATT2,ANKARA SPOR SALONU,"Bati Sitesi Magallesi, Ankara Hipodromu Kavsagi No:2, 06370, Ankara, Turkiye",tr,39.9379155,32.8439139,pabellon,nombre+país,False
+APX3,BJK EMLAKJET SPORTS&EVENT HALL,"Yildirim Oguz Goker Caddesi Gelincik Sokak 2, 34354 Istanbul, Turkiye",tr,41.0428465,29.0075283,ciudad,3ª pasada (ciudad),True
+AUY1,Halle Georges Carpinter,Paris,fr,48.8199691,2.3676543,pabellon,parche: dirección solo decía Paris,False
+AVF1,SAMOKOV ARENA,,bg,42.3323777,23.5551227,pabellon,nombre+dirección,False
+AQC4,TWINSBET ARENA,"Ozo Str. 14, LT 08200 Vilnius",lt,54.7135324,25.2814,calle,dirección,False
+AUP1,INSELPARK ARENA,"Kurt-Emmerich-Platz 10-12 21109 Hamburg, Germany",de,53.4967487,10.0031084,calle,dirección,False
+APX4,BESIKTAS FIBABANKA SPORTS COMPLEX,"Yildirim Oguz Goker Caddesi Gelincik Sokak 2, 34354 Istanbul, Turkiye",tr,41.0428465,29.0075283,ciudad,3ª pasada (ciudad),True
+ANC,ERGO ARENA,,pl,54.4265278,18.5805248,pabellon,nombre+dirección,False
+APX5,BJK GAIN SPORTS COMPLEX,"Yildirim Oguz Goker Caddesi Gelincik Sokak 2, 34354 Istanbul, Turkiye",tr,41.0428465,29.0075283,ciudad,3ª pasada (ciudad),True
+ATK2,SINAN ERDEM SPORTS HALL,,tr,41.006381,28.9758715,ciudad,"2ª pasada (nominatim, ciudad)",True
+AUL1,RANKO ZERAVICA SPORTS HALL,,rs,44.8276535,20.4063521,pabellon,nombre+dirección,False
+AUW2,COPPER BOX ARENA,"Queen Elizabeth Olympic Park, London, United Kingdom",gb,51.5443061,-0.0200648,pabellon,nombre+dirección,False
+AOL1,SVYTURIO ARENA,"Dubysos Str. 10, 93231 Klaipeda, Lithuania",lt,55.688477,21.1504876,calle,dirección,False
+AUV4,BT ARENA,"4 Aleea Stadionului, Cluj-Napoca 400375, Romania",ro,46.7671453,23.5704316,calle,dirección,False
+ATS3,BTS ARENA,"Via Fersina 11, 38123 Trento, Italy",it,46.0449396,11.1215473,calle,dirección,False
+ACQ2,HALA ORBITA,"Ul. Wejherowska 34, 54-239 Wroclaw, Poland",pl,51.1325055,16.9871101,pabellon,nombre+país,False
+AGG2,NATIONAL ATHLETIC CENTER MAKIS LIOUGAS,"Lambrou Katsoni Str., 3 GR - 11472 Athens, Greece",gr,37.9755648,23.7348324,ciudad,3ª pasada (ciudad),True
+AVM1,PAVELLO NOU CONGOST,"Ctra. de Sant Joan, s/n, 08241 Manresa, Barcelona",es,41.7239841,1.8134728,calle,dirección,False
+AVL2,MESSE CHEMNITZ,"Messeplatz 1, 09116 Chemnitz, Germany",de,50.8178179,12.8816621,calle,dirección,False
+ASK1,HALA TIVOLI,"Tivoli City Park, Ljubljana, Slovenia",si,46.0599189,14.4951791,pabellon,nombre+país,False
+APX2,BESIKTAS AKATLAR SPORTS & EVENTS HALL,"Yildirim Oguz Goker Caddesi Gelincik Sokak 2, 34354 Istanbul, Turkiye",tr,41.0428465,29.0075283,ciudad,3ª pasada (ciudad),True
+AVQ1,TOTO HOLON ARENA,,il,32.0021785,34.7708279,calle,"2ª pasada (photon, pabellon)",False
+AVP1,NOVA PG ARENA,,es,46.769379,23.5899542,ciudad,"parche: sede sin dirección, 1 partido; posible sede alternativa",True
+AID1,PABELLON SANTIAGO MARTIN,"Calle Mercedes S/N, La Laguna, 38108, Spain",es,28.4578295,-16.2979564,calle,dirección,False
+AII1,COLISEUM BURGOS,"C/ La Chopera 1, Burgos, 09006, Spain",es,42.3469125,-3.6806862,calle,dirección,False
+AIB1,ALCOTT ARENA,"Viale Giochi Del Mediterraneo SNC, Napoli, 80125, Italy",it,40.8686454,14.2647622,calle,"2ª pasada (photon, pabellon)",False
+AAI1,PAOK SPORTS ARENA,"Antoni Tritsi 12 St., 55510 Thessaloniki, Greece",gr,40.6403167,22.9352716,ciudad,3ª pasada (ciudad),True
+AJK,PALAZZETTO DELLO SPORT,,it,41.9295974,12.4707467,pabellon,nombre+dirección,False
+ATE6,RATIOPHARM ARENA,"Europastrasse 25 - 89231 Neu-Ulm, Germany",de,48.3817426,10.0047373,pabellon,nombre+dirección,False
+ATG2,TOFAS SPOR SALONU,"Fethiye Mahallesi, Nilüfer Hatun Cd. No:133, 16140 Nilüfer/Bursa, Turkiye",tr,40.2271512,28.9717272,pabellon,nombre+país,False
+AHO2,XIAOMI ARENA,"Skanstes Street 21, LV1013 Riga, Latvia",lv,56.9678573,24.1212654,pabellon,nombre+país,False
+AOR1,PALAZZETTO DELLO SPORT,"Piazza Apollodoro 10, 00196 Roma, Italy",it,41.92864,12.4693026,calle,dirección,False
+ATN1,SUWAG ENERGIE ARENA,"Silostraße 46, 65929 Frankfurt AM Main, Germany",de,50.101227,8.5272321,pabellon,nombre+dirección,False
+AIF1,NOVA ARENA,Strada Comunale Bosco snc 15057 Tortona (AL),it,44.89666,8.8641282,ciudad,3ª pasada (ciudad),True
+AHP1,SIAULIAI ARENA,"J. Jablonskio ST. 16, LT-76001, Siauliai, Lithuania",lt,55.926081,23.279521,calle,dirección,False
+AUW3,COPPER BOX ARENA,"Queen Elizabeth Olympic Park, London, United Kingdom",gb,51.5443061,-0.0200648,pabellon,nombre+dirección,False
+ACU1,ANTARES ARENA,"Avenue Antares 2, Le Mans 72100, France",fr,47.9561565,0.226224,calle,nombre+dirección,False
+AIH2,STADTHALLE ROSTOCK,"Sudring 90, Rostock 18059, Germany",de,54.0772155,12.1255356,pabellon,nombre+dirección,False
+AFZ3,ALEXANDREIO ATHLITIKO MELATHRO,"Grigoriou Lambraki 2, 54638 Thessaloniki, Greece",gr,40.6473837,22.9511432,calle,dirección,False
+ACS1,PALAEUR,"Piazzale Pier Luigi Nervi 1, 00144 Roma, Italy",it,41.8242168,12.4659149,calle,dirección,False
+AUA4,M:TEL DVORANA MORACA,Ivana Milutinovica BB - 81000 Podgorica - Montenegro,me,42.4383933,19.2530815,calle,dirección,False
+AVU1,SPYROS KYPRIANOU ATHLETIC CENTER,"Limassol, Cyprus",cy,34.7138602,32.999103,pabellon,nombre+país,False

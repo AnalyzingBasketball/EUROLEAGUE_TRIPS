@@ -21,7 +21,7 @@ pip install -r requirements.txt
 streamlit run home.py
 ```
 
-Se ejecuta desde la carpeta que contiene `home.py`. Se ha probado con Python 3.12 y 3.14. La aplicación no necesita un archivo `.env`; si existe, `DB_PATH` cambia la ruta de la base y `APP_USER` y `APP_PASSWORD` cambian las credenciales (por defecto `admin` / `admin`). En Streamlit Cloud se usarían los _Secrets_.
+Se ejecuta desde la carpeta que contiene `home.py`. Se ha probado con Python 3.12 y 3.14. La aplicación no necesita secretos para funcionar. El ZIP incluye un `.env` de prueba generado desde `.env.example` (base local y credenciales `admin` / `admin`); no contiene claves de servicios. En Streamlit Cloud se usarían los _Secrets_.
 
 ## Estructura
 
@@ -31,19 +31,21 @@ pages/                   una página por análisis (solo presentación)
 common/                  login, menú, tema, utilidades (carga de CSS), botón de imprimir, generador de PDF
 controllers/             lógica: métricas, datos de gráficas, mapa interactivo, figuras, informes
 models/                  acceso a datos: SQLite, CSV y API, con esquema SQL
-data/                    viajes_fatiga.db, metricas.parquet (métricas ya calculadas), sedes.csv, escudos.csv y paises.json
+data/                    base, métricas, catálogos y descargas públicas usadas para construirlos
 assets/escudos/          escudos de los 74 clubes (PNG de hasta 128 px)
 assets/banderas/         banderas de los 23 países de las sedes (PNG de 80 px, nombre = código ISO)
 styles/print.css         estilos de la vista de impresión (oculta menú y botones)
 .streamlit/config.toml   oculta el menú automático de Streamlit
-tests/                   pruebas con pytest (140)
+scripts/                descarga pública, construcción de SQLite y precálculo de métricas
+data/raw/                calendarios, minutos y catálogos descargados de Euroliga, EuroCup y ACB
+tests/                   pruebas con pytest (147)
 ```
 
 ## Fuentes de datos
 
 | Fuente | Uso | Origen |
 |---|---|---|
-| SQLite `data/viajes_fatiga.db` | Partidos, clubes, sedes y minutos por jugador | API pública de Euroliga (calendario, resultados y estadísticas de Euroliga y EuroCup) y webs públicas de la ACB, `acb.com` (calendario) y `live.acb.com` (minutos), descargadas con los scripts de `tarea/scripts/` |
+| SQLite `data/viajes_fatiga.db` | Partidos, clubes, sedes y minutos por jugador | API pública de Euroliga (calendario, resultados y estadísticas de Euroliga y EuroCup) y webs públicas de la ACB, `acb.com` (calendario) y `live.acb.com` (minutos), descargadas con los scripts incluidos en `scripts/` |
 | CSV `data/sedes.csv` | Catálogo de sedes con coordenadas | Direcciones de la API y de los clubes, geocodificadas con Nominatim |
 | API de Euroliga | Próximos partidos de la temporada en curso | `api-live.euroleague.net/v2` (pública) |
 
@@ -57,7 +59,7 @@ El mapa de la página Calendario y viajes tiene tres modos. Con fondo detallado 
 
 Las tablas con país (partidos y catálogo de sedes) llevan además una columna con la bandera del país de la sede. Las 23 banderas están en `assets/banderas/` y se descargaron de flagcdn.com (PNG de 80 px, de uso libre). Se tratan igual que los escudos: miniatura de 40 × 27 px con marco fino (las banderas más altas se recortan y las más anchas se aplanan para que todas midan igual) y columna como categoría.
 
-La base se construye fuera de la aplicación con cuatro scripts (`fetch_euroleague.py`, `fetch_acb.py`, `build_db.py` y `precompute_metrics.py`), que no forman parte de la entrega. Un mismo club cambia de código y de nombre según la competición y la temporada, por lo que el modelo separa el club (identificador propio), sus alias por competición y temporada, y los clubes que juegan cada competición cada año. Valencia Basket cambia de pabellón en 2025 y el modelo lo recoge.
+La base se construye fuera de la aplicación con los scripts incluidos en `scripts/`: `fetch_euroleague.py`, `fetch_acb.py`, `build_db.py` y `precompute_metrics.py`. Los JSON de origen y catálogos usados en esta entrega están en `data/raw/`. Un mismo club cambia de código y de nombre según la competición y la temporada, por lo que el modelo separa el club (identificador propio), sus alias por competición y temporada, y los clubes que juegan cada competición cada año. Valencia Basket cambia de pabellón en 2025 y el modelo lo recoge.
 
 ## Métricas
 
@@ -81,13 +83,13 @@ Las gráficas muestran medias con ±1,96 errores estándar y omiten los tramos c
 
 ## Actualizar los datos
 
-Con la temporada en curso, los resultados nuevos llegan a la base volviendo a construirla (los tres scripts están en `tarea/scripts/` y no forman parte del zip):
+Con la temporada en curso, los resultados nuevos llegan a la base al ejecutar los scripts incluidos en el ZIP, desde la carpeta que contiene `home.py`:
 
 1. `python scripts/fetch_euroleague.py --force --from 2026 --to 2026` descarga de nuevo el calendario y los resultados de Euroliga y EuroCup de la temporada y pide los minutos de los partidos jugados que aún no tiene.
 2. `python scripts/fetch_acb.py` descarga el calendario de la ACB y los minutos de los partidos nuevos. Las dos webs permiten el acceso en su `robots.txt`; el script se identifica con un `User-Agent` propio y espera un segundo entre peticiones.
 3. `python scripts/build_db.py` recrea la base solo con lo descargado en `data/raw/`. Si un partido nuevo se juega en un pabellón que aún no está en `data/raw/sedes_euroliga_eurocup.csv`, el script lo indica en «sin sede» y hay que añadir esa fila (código, nombre, país y coordenadas) y su ciudad en `data/raw/ciudades_sedes.csv`.
 4. `python scripts/precompute_metrics.py` guarda las métricas calculadas en `data/metricas.parquet`.
-5. `cd app && pytest` comprueba que los datos son coherentes.
+5. `pytest` comprueba que los datos son coherentes.
 6. Se sube el cambio a GitHub y se reinicia la app en Streamlit Cloud.
 
 La tabla de próximos partidos no necesita nada de esto: se pide en directo a la API y se renueva cada hora.
