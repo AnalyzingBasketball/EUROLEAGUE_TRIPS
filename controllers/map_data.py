@@ -5,7 +5,7 @@ from controllers.charts import COMP_NAMES
 from controllers.ingest import haversine_km
 from controllers.views import add_crests
 
-TOP_ROUTES = 25  # sin club elegido, el mapa dibuja solo las rutas más repetidas para no taparse
+TOP_ROUTES = 15  # sin club elegido, el mapa dibuja solo las rutas más repetidas de cada competición para no taparse
 MONTHS = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre",
           "noviembre", "diciembre"]
 ROUTE_COLUMNS = ["competicion_id", "veces", "km", "origen_nombre", "origen_lat", "origen_lon",
@@ -25,7 +25,12 @@ def venue_stats(metrics: pd.DataFrame, venues: pd.DataFrame, names: dict[int, st
 
 
 def route_lines(metrics: pd.DataFrame, venues: pd.DataFrame, top: int | None = None) -> pd.DataFrame:
-    """Viajes como visitante de la sede base a la del partido, por competición, con número de veces y km (ida y vuelta)."""
+    """Viajes como visitante de la sede base a la del partido, por competición, con número de veces y km (ida y vuelta).
+
+    Con `top` quedan las `top` rutas más repetidas de cada competición y, a igualdad de veces, las más largas. Se
+    eligen por competición porque en la ACB cada viaje se hace una vez por temporada: en un único ranking las rutas
+    europeas, que se repiten entre temporadas y fases, la dejarían fuera del mapa.
+    """
     away = metrics[metrics["home"] == 0].dropna(subset=["base_sede_id", "sede_id"])
     if away.empty:
         return pd.DataFrame(columns=ROUTE_COLUMNS)
@@ -36,7 +41,9 @@ def route_lines(metrics: pd.DataFrame, venues: pd.DataFrame, top: int | None = N
     out = pd.concat([trips.reset_index(drop=True), origin, target], axis=1)
     out["km"] = [2 * haversine_km(r.origen_lat, r.origen_lon, r.destino_lat, r.destino_lon) for r in out.itertuples()]
     out = out[out["km"] > 0].sort_values(["veces", "km"], ascending=False)
-    return (out.head(top) if top else out)[ROUTE_COLUMNS].reset_index(drop=True)
+    if top:
+        out = out.groupby("competicion_id", sort=False).head(top)
+    return out[ROUTE_COLUMNS].reset_index(drop=True)
 
 
 def month_label(period: pd.Period) -> str:

@@ -99,7 +99,8 @@ if iniciar_pagina("Calendario y viajes", "✈️"):
             st.plotly_chart(detail_map_figure(stats, routes, dark, venue_id), theme=None, width="stretch")
             st.caption("Pasa el cursor por una sede para ver sus partidos y clubes. La leyenda enciende y apaga cada competición. "
                        + ("Se dibujan todos los viajes del club." if club_chosen
-                          else f"Se dibujan las {TOP_ROUTES} rutas más repetidas; elige un club para ver las suyas."))
+                          else f"Se dibujan las {TOP_ROUTES} rutas más repetidas de cada competición (a igualdad, las más largas); "
+                               "elige un club para ver las suyas."))
             if venue_id is not None:
                 games_here = venue_games(filtered, venue_id, names, get_crest_uris())
                 st.markdown(f"**Partidos en {venues.set_index('id')['nombre'][venue_id]}** ({len(games_here)})")

@@ -43,7 +43,13 @@ def test_route_lines_only_away_trips_with_round_trip_km():
     routes = route_lines(_metrics(), VENUES)
     assert len(routes) == 2  # B viaja de la sede 20 a la 10 y A de la 10 a la 20
     assert (routes["km"] > 4000).all()
-    assert route_lines(_metrics(), VENUES, top=1).shape[0] == 1
+
+
+def test_route_lines_top_keeps_the_most_repeated_routes_of_each_competition():
+    """La ruta de ACB se hace una vez y la de Euroliga, dos: en un ranking único con `top=1` la ACB desaparecería."""
+    again = _metrics()[lambda d: d["partido_id"] == 200].assign(partido_id=300)
+    routes = route_lines(pd.concat([_metrics(), again]), VENUES, top=1)
+    assert dict(zip(routes["competicion_id"], routes["veces"])) == {"E": 2, "ACB": 1}
 
 
 def test_route_lines_without_away_games_is_empty():
