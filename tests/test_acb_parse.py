@@ -71,6 +71,13 @@ def test_match_stats_swaps_sides_when_the_score_says_so():
 
 
 @needs_bs4
+def test_match_stats_ignores_header_only_tables():
+    header = "<table><tr><th>Jugador</th><th>Min</th><th>Pts</th></tr></table>"
+    html = STATS.replace("<table>", f"{header}<table>")
+    assert parse_match_stats(html, 20, 15) == parse_match_stats(STATS, 20, 15)
+
+
+@needs_bs4
 def test_match_stats_rejects_totals_that_do_not_match():
     with pytest.raises(ValueError):
         parse_match_stats(STATS, 99, 15)

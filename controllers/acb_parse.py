@@ -94,17 +94,19 @@ def _team_rows(table) -> tuple[list[dict], int]:
 def parse_match_stats(html: str, pts_local: int, pts_visitante: int) -> dict:
     """Minutos, puntos y titulares de un partido: {«local»: [...], «visitante»: [...]}.
 
-    La página trae dos tablas de jugadores (local y visitante) y repite una en una vista alternativa. Se comprueba
-    con el marcador cuál es cuál y se falla si los puntos de la fila «Totales» no cuadran, para no guardar un
-    partido mal leído.
+    La página trae dos tablas de jugadores (local y visitante) y repite una en una vista alternativa. Desde
+    noviembre de 2026 antepone a cada una otra tabla solo con la cabecera, que se descarta por no tener jugadores.
+    Se comprueba con el marcador cuál es cuál y se falla si los puntos de la fila «Totales» no cuadran, para no
+    guardar un partido mal leído.
     """
     from bs4 import BeautifulSoup
 
     soup = BeautifulSoup(html, "html.parser")
     tables = [t for t in soup.find_all("table") if any(th.get_text(strip=True) == "Jugador" for th in t.find_all("th"))]
-    if len(tables) < 2:
+    teams = [team for team in map(_team_rows, tables) if team[0]]
+    if len(teams) < 2:
         raise ValueError("Faltan las tablas de jugadores del partido.")
-    first, second = _team_rows(tables[0]), _team_rows(tables[1])
+    first, second = teams[0], teams[1]
     if (first[1], second[1]) == (pts_local, pts_visitante):
         local, away = first[0], second[0]
     elif (second[1], first[1]) == (pts_local, pts_visitante):

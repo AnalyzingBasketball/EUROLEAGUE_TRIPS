@@ -65,5 +65,5 @@ if iniciar_pagina("Viajes y fatiga", "🏀"):
         "mapa de calor deja en blanco las celdas con menos de 15. Los clubes con doble competición suelen ser los más fuertes, así que sus porcentajes de "
         "victoria salen altos. Solo la temporada 2026/27 reúne a la vez ACB y competición europea, así que la doble competición se estudia en esa temporada. "
         "Quedan fuera la Champions League, la Copa del Rey y las ligas nacionales de los clubes extranjeros, de modo "
-        "que la carga de los clubes que además juegan esas competiciones, como Unicaja, está subestimada."
+        "que la carga de los clubes que además juegan esas competiciones está subestimada."
     )

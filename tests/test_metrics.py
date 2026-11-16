@@ -7,6 +7,7 @@ from controllers.metrics import (
     add_rotation,
     build_club_games,
     build_metrics,
+    player_key,
 )
 
 # Madrid (1), Barcelona (2) y Atenas (3). Distancias aproximadas: MAD-BCN 505 km, MAD-ATH 2.370 km.
@@ -135,6 +136,42 @@ def test_starters_changed_vs_previous_game():
     out = add_rotation(build_club_games(games, SEDES), minutes)
     assert pd.isna(_row(out, "g1", 1).starters_changed)
     assert _row(out, "g2", 1).starters_changed == 1
+
+
+@pytest.mark.parametrize(("acb", "euroleague"), [
+    ("L. Kolenda", "KOLENDA, LEON"),
+    ("A. Galán", "GALAN, ALEX"),
+    ("JD Notae", "NOTAE, JD"),
+    ("F. Dos Anjos", "DOS ANJOS, FELIPE"),
+    ("D.Radosavljevic", "RADOSAVLJEVIC, DUSAN"),
+    ("Luwawu-Cabarrot", "LUWAWU-CABARROT, TIMOTHE"),
+    ("N. Smith", "SMITH JR, NICK"),
+])
+def test_player_key_matches_acb_and_euroleague_spellings(acb, euroleague):
+    assert player_key(acb) == player_key(euroleague)
+
+
+def test_player_key_keeps_different_players_apart():
+    assert player_key("L. Kolenda") != player_key("JD Notae")
+    assert player_key("A") != player_key("B")
+
+
+def test_starters_changed_compares_players_across_competitions():
+    games = _games([
+        ("g1", "ACB", 2025, "2025-10-01", None, 1, 2, 10, 1, 90, 80),
+        ("g2", "E", 2025, "2025-10-05", None, 1, 2, 10, 1, 90, 80),
+    ])
+    acb = ["L. Kolenda", "H. Benitez", "L. Scuka", "E. Vila", "L. Beaufort"]
+    euroleague = ["KOLENDA, LEON", "BENITEZ, HUGO", "SCUKA, LUKA", "VILA, ERIC", "ORIOLA, PIERRE"]
+    minutes = pd.DataFrame({
+        "partido_id": ["g1"] * 5 + ["g2"] * 5,
+        "club_id": [1] * 10,
+        "jugador": acb + euroleague,
+        "titular": [1] * 10,
+        "minutos": [20.0] * 10,
+    })
+    out = add_rotation(build_club_games(games, SEDES), minutes)
+    assert _row(out, "g2", 1).starters_changed == 1  # solo cambia Beaufort por Oriola
 
 
 def test_adjusted_margin_is_zero_sum_per_game_and_rewards_overperformance():

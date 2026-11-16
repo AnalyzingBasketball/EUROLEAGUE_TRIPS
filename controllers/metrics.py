@@ -3,11 +3,16 @@
 Todas las funciones son puras (DataFrame entra, DataFrame sale) y no dependen de Streamlit ni de SQLite.
 Un partido jugado genera dos filas, una por club ("formato largo").
 """
+import re
+import unicodedata
+
 import numpy as np
 import pandas as pd
 
 from controllers.ingest import haversine_km
 
+_INITIAL = re.compile(r"^(?:[A-Z]\.\s*|[A-Z]{2}\s+)")  # «L. », «D.» o «JD » delante del apellido (formato de la ACB)
+_SUFFIX = re.compile(r"\b(?:JR|SR|II|III|IV)\b")
 WINDOWS = (7, 14)
 HOME_ADVANTAGE_RIDGE = 1.0  # regularización de la fuerza de cada club en el ajuste del margen
 
@@ -96,13 +101,25 @@ def add_rest_and_travel(cg: pd.DataFrame, sedes: pd.DataFrame) -> pd.DataFrame:
     return cg
 
 
+def player_key(name: str) -> str:
+    """Apellido sin tildes ni signos, para reconocer a un jugador entre competiciones.
+
+    La ACB escribe «L. Kolenda» y la Euroliga «KOLENDA, LEON»: las dos formas dan «KOLENDA». Dos jugadores del mismo
+    club con el mismo apellido se confundirían, y un jugador escrito con nombres distintos en cada fuente no casa.
+    """
+    text = unicodedata.normalize("NFKD", name).encode("ascii", "ignore").decode().strip()
+    surname = text.split(",")[0] if "," in text else _INITIAL.sub("", text, count=1)
+    return re.sub(r"[^A-Z]", "", _SUFFIX.sub("", surname.upper())) or text.upper()
+
+
 def add_rotation(cg: pd.DataFrame, minutes: pd.DataFrame) -> pd.DataFrame:
     """Añade métricas de rotación a partir de los minutos por jugador.
 
     - players_used / players_10: jugadores con minutos / con al menos 10 minutos.
     - top5_share: fracción de los minutos del equipo que juegan los 5 con más minutos.
     - hhi: concentración de minutos (suma de cuadrados de cada cuota); más alto = menos rotación.
-    - starters_changed: titulares que no eran titulares en el partido anterior del club (misma temporada).
+    - starters_changed: titulares que no eran titulares en el partido anterior del club (misma temporada), comparados
+      por apellido (`player_key`) porque cada competición escribe los nombres a su manera.
     """
     cg = sort_club_games(cg)
     m = minutes[minutes["minutos"] > 0]
@@ -113,7 +130,7 @@ def add_rotation(cg: pd.DataFrame, minutes: pd.DataFrame) -> pd.DataFrame:
         stats.append({
             "partido_id": pid, "club_id": club, "players_used": len(mins), "players_10": int((mins >= 10).sum()),
             "top5_share": share[:5].sum(), "hhi": float((share ** 2).sum()),
-            "starters": frozenset(g.loc[g["titular"] == 1, "jugador"]),
+            "starters": frozenset(g.loc[g["titular"] == 1, "jugador"].map(player_key)),
         })
     cols = ["partido_id", "club_id", "players_used", "players_10", "top5_share", "hhi", "starters"]
     stats = pd.DataFrame(stats, columns=cols)

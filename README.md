@@ -38,7 +38,7 @@ styles/print.css         estilos de la vista de impresión (oculta menú y boton
 .streamlit/config.toml   oculta el menú automático de Streamlit
 scripts/                descarga pública, construcción de SQLite y precálculo de métricas
 data/raw/                calendarios, minutos y catálogos descargados de Euroliga, EuroCup y ACB
-tests/                   pruebas con pytest (147)
+tests/                   pruebas con pytest (158)
 ```
 
 ## Fuentes de datos
@@ -55,7 +55,7 @@ Los escudos de los 74 clubes están en `assets/escudos/` y `data/escudos.csv` in
 
 La tabla de próximos partidos de la API también lleva escudos: la API escribe los nombres de otra forma (Kosner Baskonia Vitoria-Gasteiz, La Laguna Tenerife), así que cada club se reconoce por su código, competición y temporada en la tabla `club_alias`.
 
-El mapa de la página Calendario y viajes tiene tres modos. Con fondo detallado (teselas de OpenStreetMap servidas por Carto), dibuja las sedes por competición, con la leyenda como filtro, y las rutas de viaje: todas las del club elegido o las 25 más repetidas si no hay club, con el grosor según las veces. Un selector resalta una sede y muestra debajo sus partidos con escudos. La vista de animación por meses suma los partidos y los viajes mes a mes, con botones de reproducir y pausa y un control deslizante. Si las teselas no cargan, el fondo simple dibuja los países sin conexión. Streamlit no devuelve el clic sobre un mapa, por eso la sede se elige con un selector.
+El mapa de la página Calendario y viajes tiene tres modos. Con fondo detallado (teselas de OpenStreetMap servidas por Carto), dibuja las sedes por competición, con la leyenda como filtro, y las rutas de viaje: todas las del club elegido o las 15 más repetidas de cada competición si no hay club, con el grosor según las veces. Un selector resalta una sede y muestra debajo sus partidos con escudos. La vista de animación por meses suma los partidos y los viajes mes a mes, con botones de reproducir y pausa y un control deslizante. Si las teselas no cargan, el fondo simple dibuja los países sin conexión. Streamlit no devuelve el clic sobre un mapa, por eso la sede se elige con un selector.
 
 Las tablas con país (partidos y catálogo de sedes) llevan además una columna con la bandera del país de la sede. Las 23 banderas están en `assets/banderas/` y se descargaron de flagcdn.com (PNG de 80 px, de uso libre). Se tratan igual que los escudos: miniatura de 40 × 27 px con marco fino (las banderas más altas se recortan y las más anchas se aplanan para que todas midan igual) y columna como categoría.
 
@@ -98,7 +98,7 @@ La tabla de próximos partidos no necesita nada de esto: se pide en directo a la
 
 - La web de la ACB solo muestra la temporada en curso y no ofrece un modo público de listar las anteriores, de modo que la doble competición solo se puede estudiar en 2026/27. Euroliga y EuroCup sí cubren las cinco temporadas.
 - Los partidos de la ACB aún sin fecha fija (los marca la web como «sin programar») no se incluyen.
-- Quedan fuera la Champions League, la Copa del Rey y las ligas domésticas de los clubes extranjeros. La carga de los clubes que además juegan la Champions o la Copa, como Unicaja, está subestimada.
+- Quedan fuera la Champions League, la Copa del Rey y las ligas domésticas de los clubes extranjeros. La carga de los clubes que además juegan la Champions o la Copa está subestimada.
 - En ACB la sede del partido es el pabellón habitual del local.
 - Solo 7 clubes españoles juegan dos competiciones en 2026/27 (Barcelona, Real Madrid, Baskonia, Valencia, Tenerife, Manresa y Burgos); el resto sirve de rival y de referencia.
 - La temporada 2026/27 está en curso y tiene pocos partidos.
