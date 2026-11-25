@@ -1,0 +1,4 @@
+# El cuaderno reúne el código de muchos archivos en celdas de un mismo documento, así que las redefiniciones (F811) y el
+# orden de imports entre celdas (I001) son esperables. El código exportado se revisa ya como archivos .py.
+[lint]
+ignore = ["F811", "I001"]

@@ -39,7 +39,10 @@ styles/print.css         estilos de la vista de impresión (oculta menú y boton
 scripts/                descarga pública, construcción de SQLite y precálculo de métricas
 data/raw/                calendarios, minutos y catálogos descargados de Euroliga, EuroCup y ACB
 tests/                   pruebas con pytest (158)
+docs/cuaderno_app.ipynb   cuaderno que contiene el código de la aplicación y lo exporta a los .py
 ```
+
+El cuaderno `docs/cuaderno_app.ipynb` es la fuente de los 29 archivos `.py` de la aplicación (más el esquema SQL, la hoja de estilos de impresión y `config.toml`). Cada archivo vive en una celda marcada con `#| archivo: ruta`, precedida de su explicación, y la última sección los exporta y comprueba que coinciden con los de la aplicación. Recorre la app en el orden en que viaja un dato: descarga, base SQLite, modelos, métricas, gráficas, PDF, login y páginas. Por defecto no sobrescribe nada; para regenerar la aplicación se ejecuta `exportar(APP)` a mano. Hace falta Jupyter (`pip install jupyter`), que no forma parte de `requirements.txt` porque la aplicación publicada no lo necesita.
 
 ## Fuentes de datos
 
