@@ -90,7 +90,7 @@ Con la temporada en curso, los resultados nuevos llegan a la base al ejecutar lo
 
 1. `python scripts/fetch_euroleague.py --force --from 2026 --to 2026` descarga de nuevo el calendario y los resultados de Euroliga y EuroCup de la temporada y pide los minutos de los partidos jugados que aún no tiene.
 2. `python scripts/fetch_acb.py` descarga el calendario de la ACB y los minutos de los partidos nuevos. Las dos webs permiten el acceso en su `robots.txt`; el script se identifica con un `User-Agent` propio y espera un segundo entre peticiones.
-3. `python scripts/build_db.py` recrea la base solo con lo descargado en `data/raw/`. Si un partido nuevo se juega en un pabellón que aún no está en `data/raw/sedes_euroliga_eurocup.csv`, el script lo indica en «sin sede» y hay que añadir esa fila (código, nombre, país y coordenadas) y su ciudad en `data/raw/ciudades_sedes.csv`.
+3. `python scripts/build_db.py` recrea la base solo con lo descargado en `data/raw/`. Si un partido nuevo se juega en un pabellón que aún no está en `data/raw/sedes_euroliga_eurocup.csv`, el script lo indica en «sin sede» y hay que añadir esa fila (código, nombre, país y coordenadas) y su ciudad en `data/raw/ciudades_sedes.csv`. Si la API cambia el nombre de un club (por un patrocinador nuevo, por ejemplo), el nombre se fija en `data/raw/clubes_crosswalk.csv`, con una fila por competición y código.
 4. `python scripts/precompute_metrics.py` guarda las métricas calculadas en `data/metricas.parquet`.
 5. `pytest` comprueba que los datos son coherentes.
 6. Se sube el cambio a GitHub y se reinicia la app en Streamlit Cloud.
