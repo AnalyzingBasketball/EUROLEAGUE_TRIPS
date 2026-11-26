@@ -22,13 +22,13 @@ CAVEAT = "Las gráficas muestran correlaciones, no causas. Se omiten los tramos 
 
 
 def trip_report(user: str, filters: dict[str, str], trips: pd.DataFrame, km: pd.DataFrame | None,
-                venues: pd.DataFrame, lines: pd.DataFrame | None) -> bytes:
+                venues: pd.DataFrame, routes: pd.DataFrame | None) -> bytes:
     """Informe de la página Calendario y viajes."""
     blocks: list[Table | Image] = [Table("Partidos jugados y kilómetros", trips)]
     if km is not None and not km.empty:
         blocks.append(Image("Km de viaje acumulados por club", km_by_club_png(km), "Ida y vuelta entre la sede base y la del partido."))
     if not venues.empty:
-        blocks.append(Image("Sedes de los partidos", venue_map_png(venues, lines)))
+        blocks.append(Image("Sedes de los partidos", venue_map_png(venues, routes), "Rutas como visitante; color por competición."))
     return build_report("Calendario y viajes", user, filters, blocks)
 
 

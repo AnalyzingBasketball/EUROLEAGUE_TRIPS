@@ -25,7 +25,8 @@ def test_effect_png_handles_missing_competition_in_a_bin():
 
 def test_venue_map_png_with_and_without_lines():
     venues = pd.DataFrame({"nombre": ["A"], "pais": ["es"], "lat": [40.0], "lon": [-3.0], "partidos": [3], "revisar": [0]})
-    lines = pd.DataFrame({"base_lat": [40.0], "base_lon": [-3.0], "destino_lat": [38.0], "destino_lon": [23.0]})
+    lines = pd.DataFrame({"competicion_id": ["E"], "veces": [2], "origen_lat": [40.0], "origen_lon": [-3.0],
+                          "destino_lat": [38.0], "destino_lon": [23.0]})
     assert venue_map_png(venues, lines).startswith(PNG)
     assert venue_map_png(venues, None).startswith(PNG)
 

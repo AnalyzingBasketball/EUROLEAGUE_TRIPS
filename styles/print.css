@@ -13,10 +13,11 @@
   /* La tabla interactiva se sustituye por una copia estática que se ajusta a la hoja. */
   [data-testid="stDataFrame"], [data-testid="stElementContainer"]:has([data-testid="stDataFrame"]) { display: none !important; }
   .print-only { display: block !important; }
-  .print-only table { width: 100%; border-collapse: collapse; font-size: 7pt; table-layout: auto; }
+  .print-only table { width: 100%; border-collapse: collapse; font-size: 7pt; table-layout: fixed; }
+  .print-chunk { break-inside: avoid; page-break-inside: avoid; }
   .print-only th, .print-only td { border: 1px solid #bbb; padding: 1px 3px; text-align: left; }
   .print-only th { background: #eee; }
-  .print-only td:first-child { white-space: nowrap; }
+  .print-only td { overflow-wrap: anywhere; }
   .print-only tr { break-inside: avoid; page-break-inside: avoid; }
   .print-only p { font-size: 8pt; margin: 2px 0 0; }
 
@@ -28,11 +29,7 @@
 
   /* Gráficos y títulos no se parten entre páginas. */
   [data-testid="stPlotlyChart"], [data-testid="stImage"],
-  [data-testid="stElementContainer"]:has([data-testid="stPlotlyChart"]) { break-inside: avoid; page-break-inside: avoid; }
+  [data-testid="stElementContainer"]:has([data-testid="stPlotlyChart"]),
+  [class*="st-key-keep_"] { break-inside: avoid; page-break-inside: avoid; }
   h1, h2, h3 { break-after: avoid; page-break-after: avoid; }
-
-  /* Todo lo que va antes de un gráfico (título, texto, selectores) se queda en su página. */
-  [data-testid="stElementContainer"]:not(:has([data-testid="stPlotlyChart"])):not(:has(.print-only)) {
-    break-after: avoid; page-break-after: avoid;
-  }
 }

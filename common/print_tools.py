@@ -43,11 +43,21 @@ def print_button() -> None:
     st.iframe(PRINT_BUTTON, height=40)
 
 
-def print_table(table: pd.DataFrame, rows: int = 40) -> None:
-    """Copia estática de una tabla, visible solo al imprimir: la tabla interactiva se dibuja en un lienzo y sale recortada."""
+def print_table(table: pd.DataFrame, rows: int = 40, chunk: int = 8) -> None:
+    """Copia estática de una tabla, visible solo al imprimir: la tabla interactiva se dibuja en un lienzo y sale recortada.
+
+    Se parte en bloques de `chunk` filas con la cabecera repetida: WebKit (Safari) no evita que una fila se corte entre
+    páginas, pero sí que se corte un bloque. Las columnas tienen el mismo ancho en todos los bloques.
+    """
     shown = table.drop(columns=[c for c in IMAGE_COLUMNS if c in table.columns]).head(rows)
     # Los números enteros guardados como decimales (4466.0) se muestran sin decimales.
     formats = {c: (lambda v: "" if pd.isna(v) else str(int(v)) if v == int(v) else str(round(v, 4)))
                for c in shown.select_dtypes("number").columns}
+    weights = [max(len(str(c)) * 0.6, min(shown[c].astype(str).str.len().max(), 22)) if len(shown) else 1 for c in shown.columns]
+    cols = "".join(f'<col style="width:{100 * w / sum(weights):.1f}%">' for w in weights)
+    parts = []
+    for start in range(0, len(shown), chunk):
+        html = shown.iloc[start:start + chunk].to_html(index=False, border=0, na_rep="", formatters=formats)
+        parts.append(f'<div class="print-chunk">{html.replace("<thead>", f"<colgroup>{cols}</colgroup><thead>", 1)}</div>')
     note = f"<p>Se imprimen las {len(shown)} primeras filas de {len(table)}.</p>" if len(table) > rows else ""
-    st.html(f'<div class="print-only">{shown.to_html(index=False, border=0, na_rep="", formatters=formats)}{note}</div>')
+    st.html(f'<div class="print-only">{"".join(parts)}{note}</div>')

@@ -5,6 +5,7 @@ import numpy as np
 import pandas as pd
 from matplotlib.colors import LinearSegmentedColormap, TwoSlopeNorm
 from matplotlib.figure import Figure
+from matplotlib.lines import Line2D
 from matplotlib.patches import Polygon
 
 from controllers.charts import COMP_NAMES, COMP_ORDER, PALETTES
@@ -70,23 +71,29 @@ def effect_png(data: pd.DataFrame, y_title: str, x_title: str) -> bytes:
     return _png(fig)
 
 
-def venue_map_png(venues: pd.DataFrame, lines: pd.DataFrame | None) -> bytes:
-    """Sedes (tamaño = partidos) y viajes del club sobre los contornos de los países."""
+def venue_map_png(venues: pd.DataFrame, routes: pd.DataFrame | None) -> bytes:
+    """Sedes (tamaño = partidos) y rutas de viaje (color = competición, grosor = veces) sobre los contornos de los países."""
     fig = Figure(figsize=(8, 4.8))
     ax = fig.subplots()
     for ring in load_country_rings():
         ax.add_patch(Polygon(ring, closed=True, facecolor="#ececea", edgecolor="white", linewidth=0.6, zorder=0))
-    if lines is not None:
-        for r in lines.itertuples():
-            ax.plot([r.base_lon, r.destino_lon], [r.base_lat, r.destino_lat], color=PAL["E"], linewidth=1, alpha=0.8)
+    lons, lats = [venues["lon"]], [venues["lat"]]
+    if routes is not None and not routes.empty:
+        for r in routes.itertuples():
+            ax.plot([r.origen_lon, r.destino_lon], [r.origen_lat, r.destino_lat], color=PAL.get(r.competicion_id, PAL["E"]),
+                    linewidth=min(0.8 + 0.4 * r.veces, 3), alpha=0.75, zorder=1)
+        lons += [routes["origen_lon"], routes["destino_lon"]]
+        lats += [routes["origen_lat"], routes["destino_lat"]]
     ax.scatter(venues["lon"], venues["lat"], s=venues["partidos"].clip(upper=60) * 4 + 12, color=PAL["ACB"],
-               alpha=0.8, edgecolor="white", linewidth=1.2)
-    lons = pd.concat([venues["lon"], lines[["base_lon", "destino_lon"]].stack()]) if lines is not None else venues["lon"]
-    lats = pd.concat([venues["lat"], lines[["base_lat", "destino_lat"]].stack()]) if lines is not None else venues["lat"]
-    ax.set_xlim(lons.min() - 4, lons.max() + 4)
-    ax.set_ylim(lats.min() - 3, lats.max() + 3)
-    ax.set_aspect(1 / np.cos(np.radians(lats.mean())))  # a latitudes altas los grados de longitud miden menos
+               alpha=0.8, edgecolor="white", linewidth=1.2, zorder=2)
+    lon, lat = pd.concat(lons), pd.concat(lats)
+    ax.set_xlim(lon.min() - 4, lon.max() + 4)
+    ax.set_ylim(lat.min() - 3, lat.max() + 3)
+    ax.set_aspect(1 / np.cos(np.radians(lat.mean())))  # a latitudes altas los grados de longitud miden menos
     ax.set_axis_off()
+    if routes is not None and not routes.empty:
+        handles = [Line2D([], [], color=PAL[c], linewidth=2, label=COMP_NAMES[c]) for c in COMP_ORDER if c in set(routes["competicion_id"])]
+        ax.legend(handles=handles, loc="lower left", frameon=False, fontsize=9)
     return _png(fig)
 
 
