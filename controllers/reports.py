@@ -18,7 +18,7 @@ from controllers.mpl_charts import (
     venue_map_png,
 )
 
-CAVEAT = "Las gráficas muestran correlaciones, no causas. Se omiten los tramos con menos de 5 partidos."
+CAVEAT = "Las gráficas muestran correlaciones, no causas. Los tramos con pocos partidos son poco fiables."
 
 
 def trip_report(user: str, filters: dict[str, str], trips: pd.DataFrame, km: pd.DataFrame | None,
@@ -28,7 +28,7 @@ def trip_report(user: str, filters: dict[str, str], trips: pd.DataFrame, km: pd.
     if km is not None and not km.empty:
         blocks.append(Image("Km de viaje acumulados por club", km_by_club_png(km), "Ida y vuelta entre la sede base y la del partido."))
     if not venues.empty:
-        blocks.append(Image("Sedes de los partidos", venue_map_png(venues, routes), "Rutas como visitante; color por competición."))
+        blocks.append(Image("Sedes de los partidos", venue_map_png(venues, routes), "Todos los desplazamientos desde la sede base; color por competición."))
     return build_report("Calendario y viajes", user, filters, blocks)
 
 

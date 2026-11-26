@@ -39,30 +39,35 @@ def test_venue_stats_counts_games_per_venue_and_competition():
     assert set(stats["sede_id"]) == {10, 20}
 
 
-def test_route_lines_only_away_trips_with_round_trip_km():
+def test_route_lines_one_per_trip_with_round_trip_km():
     routes = route_lines(_metrics(), VENUES)
     assert len(routes) == 2  # B viaja de la sede 20 a la 10 y A de la 10 a la 20
     assert (routes["km"] > 4000).all()
 
 
-def test_route_lines_top_keeps_the_most_repeated_routes_of_each_competition():
-    """La ruta de ACB se hace una vez y la de Euroliga, dos: en un ranking único con `top=1` la ACB desaparecería."""
+def test_route_lines_draws_every_trip_without_a_limit():
     again = _metrics()[lambda d: d["partido_id"] == 200].assign(partido_id=300)
-    routes = route_lines(pd.concat([_metrics(), again]), VENUES, top=1)
+    routes = route_lines(pd.concat([_metrics(), again]), VENUES)
     assert dict(zip(routes["competicion_id"], routes["veces"])) == {"E": 2, "ACB": 1}
 
 
-def test_route_lines_without_away_games_is_empty():
+def test_route_lines_includes_home_games_played_away_from_base():
+    moved = _metrics().assign(base_sede_id=lambda d: d["base_sede_id"].where(d["club_id"] != 3, 10))  # C «en casa» lejos de su base
+    routes = route_lines(moved[moved["home"] == 1], VENUES)
+    assert list(zip(routes["origen_nombre"], routes["destino_nombre"])) == [("Pabellón A", "Pabellón B")]
+
+
+def test_route_lines_without_trips_is_empty():
     home_only = _metrics()[lambda d: d["home"] == 1]
     assert route_lines(home_only, VENUES).empty
 
 
 def test_month_frames_are_cumulative_and_labelled_in_spanish():
-    frames = month_frames(_metrics(), VENUES, NAMES, with_routes=True)
+    frames = month_frames(_metrics(), VENUES, NAMES)
     assert [f[0] for f in frames] == ["octubre 2025", "noviembre 2025"]
     assert frames[0][1]["partidos"].sum() == 1 and frames[1][1]["partidos"].sum() == 2
     assert month_label(pd.Period("2026-01")) == "enero 2026"
-    assert month_frames(_metrics(), VENUES, NAMES, with_routes=False)[1][2].empty
+    assert len(frames[1][2]) == 2
 
 
 def test_venue_options_ranks_venues_by_games_with_a_readable_label():
@@ -79,16 +84,19 @@ def test_venue_games_shows_local_first_even_from_the_visitor_row():
     assert games.loc[0, "Resultado"] == "80-70"  # resultado desde el punto de vista del local
 
 
-def test_detail_map_has_one_trace_per_route_plus_venues():
+def test_detail_map_groups_routes_and_adds_venues():
     stats = venue_stats(_metrics(), VENUES, NAMES)
     fig = detail_map_figure(stats, route_lines(_metrics(), VENUES), dark=False)
-    assert len(fig.data) == 2 + 1 + 2  # dos rutas, puntos medios y una traza por competición con sedes
+    assert len(fig.data) == 2 + 2 + 2  # líneas, puntos medios y sedes de cada una de las dos competiciones
+    lines = [t for t in fig.data if t.mode == "lines"]
+    assert sum(sum(v is None for v in t.lat) for t in lines) == len(route_lines(_metrics(), VENUES))  # ninguna ruta se pierde
+    assert {t.legendgroup for t in lines} == {"ACB", "E"}
     assert fig.layout.map.style == "carto-positron"
     assert detail_map_figure(stats, route_lines(_metrics(), VENUES), dark=True).layout.map.style == "carto-darkmatter"
 
 
 def test_animated_map_has_fixed_traces_and_one_frame_per_month():
-    fig = animated_map_figure(month_frames(_metrics(), VENUES, NAMES, with_routes=True), dark=False)
+    fig = animated_map_figure(month_frames(_metrics(), VENUES, NAMES), dark=False)
     assert len(fig.data) == 6 and len(fig.frames) == 2
     assert [step["label"] for step in fig.layout.sliders[0].steps] == ["oct 2025", "nov 2025"]
 

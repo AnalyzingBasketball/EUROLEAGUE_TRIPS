@@ -5,7 +5,6 @@ from controllers.charts import COMP_NAMES
 from controllers.ingest import haversine_km
 from controllers.views import add_crests
 
-TOP_ROUTES = 15  # sin club elegido, el mapa dibuja solo las rutas más repetidas de cada competición para no taparse
 MONTHS = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre",
           "noviembre", "diciembre"]
 ROUTE_COLUMNS = ["competicion_id", "veces", "km", "origen_nombre", "origen_lat", "origen_lon",
@@ -24,25 +23,23 @@ def venue_stats(metrics: pd.DataFrame, venues: pd.DataFrame, names: dict[int, st
     return out.fillna({"clubes": ""})
 
 
-def route_lines(metrics: pd.DataFrame, venues: pd.DataFrame, top: int | None = None) -> pd.DataFrame:
-    """Viajes como visitante de la sede base a la del partido, por competición, con número de veces y km (ida y vuelta).
+def route_lines(metrics: pd.DataFrame, venues: pd.DataFrame) -> pd.DataFrame:
+    """Todos los desplazamientos: de la sede base a la del partido, por competición, con número de veces y km (ida y vuelta).
 
-    Con `top` quedan las `top` rutas más repetidas de cada competición y, a igualdad de veces, las más largas. Se
-    eligen por competición porque en la ACB cada viaje se hace una vez por temporada: en un único ranking las rutas
-    europeas, que se repiten entre temporadas y fases, la dejarían fuera del mapa.
+    Entra cualquier partido que se juegue lejos de la sede base, como visitante o «en casa» en otro pabellón. Solo
+    quedan fuera los que se juegan en la propia sede base, que no suponen viaje.
     """
-    away = metrics[metrics["home"] == 0].dropna(subset=["base_sede_id", "sede_id"])
-    if away.empty:
+    played = metrics.dropna(subset=["base_sede_id", "sede_id"])
+    played = played[played["base_sede_id"] != played["sede_id"]]
+    if played.empty:
         return pd.DataFrame(columns=ROUTE_COLUMNS)
-    trips = away.groupby(["base_sede_id", "sede_id", "competicion_id"]).size().rename("veces").reset_index()
+    trips = played.groupby(["base_sede_id", "sede_id", "competicion_id"]).size().rename("veces").reset_index()
     coords = venues.set_index("id")[["nombre", "lat", "lon"]]
     origin = coords.add_prefix("origen_").loc[trips["base_sede_id"]].reset_index(drop=True)
     target = coords.add_prefix("destino_").loc[trips["sede_id"]].reset_index(drop=True)
     out = pd.concat([trips.reset_index(drop=True), origin, target], axis=1)
     out["km"] = [2 * haversine_km(r.origen_lat, r.origen_lon, r.destino_lat, r.destino_lon) for r in out.itertuples()]
     out = out[out["km"] > 0].sort_values(["veces", "km"], ascending=False)
-    if top:
-        out = out.groupby("competicion_id", sort=False).head(top)
     return out[ROUTE_COLUMNS].reset_index(drop=True)
 
 
@@ -51,18 +48,13 @@ def month_label(period: pd.Period) -> str:
     return f"{MONTHS[period.month - 1]} {period.year}"
 
 
-def month_frames(metrics: pd.DataFrame, venues: pd.DataFrame, names: dict[int, str],
-                 with_routes: bool) -> list[tuple[str, pd.DataFrame, pd.DataFrame]]:
-    """Un cuadro por mes con lo acumulado hasta el final de ese mes: (etiqueta, sedes, rutas).
-
-    Las rutas solo se calculan con un club elegido: con todos los clubes se taparían entre sí.
-    """
+def month_frames(metrics: pd.DataFrame, venues: pd.DataFrame, names: dict[int, str]) -> list[tuple[str, pd.DataFrame, pd.DataFrame]]:
+    """Un cuadro por mes con lo acumulado hasta el final de ese mes: (etiqueta, sedes, rutas)."""
     months = metrics["fecha"].dt.to_period("M")
     frames = []
     for month in sorted(months.unique()):
         upto = metrics[months <= month]
-        routes = route_lines(upto, venues) if with_routes else pd.DataFrame(columns=ROUTE_COLUMNS)
-        frames.append((month_label(month), venue_stats(upto, venues, names), routes))
+        frames.append((month_label(month), venue_stats(upto, venues, names), route_lines(upto, venues)))
     return frames
 
 

@@ -22,7 +22,7 @@ BINS = {
 RESULT_MEASURES = {"win_pct": "Victorias (%)", "margin": "Margen (puntos)", "margin_resid": "Margen ajustado (puntos)"}
 TRIP_UNITS = {"km_trip": "Km del viaje (ida y vuelta)", "trip_hours": "Horas de viaje aproximadas (ida y vuelta)"}
 MIN_CELL = 15  # partidos mínimos para colorear una celda del mapa de calor
-MIN_BAR = 5  # partidos mínimos para dibujar una barra: con menos, la media y su error no dicen nada
+MIN_BAR = 1  # se dibujan todos los tramos con datos; con pocos partidos la barra es poco fiable (n en el tooltip y en la tabla)
 
 # Estimación del tiempo de viaje: el mejor de autobús o avión (con 3 h de aeropuerto) para la mitad del trayecto.
 BUS_KMH, FLIGHT_KMH, AIRPORT_HOURS = 75.0, 750.0, 3.0
@@ -67,16 +67,6 @@ def venue_counts(metrics: pd.DataFrame, venues: pd.DataFrame) -> pd.DataFrame:
     counts = one_per_game.groupby("sede_id").size().rename("partidos").reset_index()
     out = counts.merge(venues, left_on="sede_id", right_on="id")
     return out[["nombre", "pais", "lat", "lon", "partidos", "revisar"]]
-
-
-def trip_lines(metrics: pd.DataFrame, venues: pd.DataFrame) -> pd.DataFrame:
-    """Viajes de un club: sede base y sede de cada partido como visitante, con número de veces."""
-    away = metrics[metrics["home"] == 0].dropna(subset=["base_sede_id", "sede_id"])
-    trips = away.groupby(["base_sede_id", "sede_id"]).size().rename("veces").reset_index()
-    coords = venues.set_index("id")[["nombre", "lat", "lon"]]
-    base = coords.add_prefix("base_").loc[trips["base_sede_id"]].reset_index(drop=True)
-    dest = coords.add_prefix("destino_").loc[trips["sede_id"]].reset_index(drop=True)
-    return pd.concat([trips.reset_index(drop=True), base, dest], axis=1)
 
 
 def travel_hours(km_round_trip: pd.Series) -> pd.Series:

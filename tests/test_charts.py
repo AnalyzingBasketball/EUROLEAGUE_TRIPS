@@ -4,6 +4,7 @@ import pytest
 from controllers.charts import (
     PALETTES,
     effect_figure,
+    error_bars,
     km_by_club_figure,
     trip_map_figure,
 )
@@ -26,8 +27,9 @@ def test_competition_colors_do_not_depend_on_which_competitions_are_shown():
 def test_trip_map_draws_lines_and_markers():
     venues = pd.DataFrame({"nombre": ["A", "B"], "pais": ["es", "gr"], "lat": [40.0, 38.0], "lon": [-3.0, 23.0],
                            "partidos": [4, 1], "revisar": [0, 0]})
-    lines = pd.DataFrame({"base_lat": [40.0], "base_lon": [-3.0], "destino_lat": [38.0], "destino_lon": [23.0]})
-    assert len(trip_map_figure(venues, lines, False).data) == 2
+    routes = pd.DataFrame({"competicion_id": ["E"], "veces": [1], "origen_lat": [40.0], "origen_lon": [-3.0],
+                           "destino_lat": [38.0], "destino_lon": [23.0]})
+    assert len(trip_map_figure(venues, routes, False).data) == 2
     assert trip_map_figure(venues, None, False).data[0].text[1] == "B (Grecia)"
     assert len(trip_map_figure(venues, None, False).data) == 1
 
@@ -38,3 +40,11 @@ def test_effect_figure_has_error_bars_and_order():
     fig = effect_figure(data, "y", "x", True)
     assert list(fig.data[0].error_y.array) == pytest.approx([0.98, 0.392])
     assert fig.data[0].name == "ACB"
+
+
+def test_percentage_error_bars_stay_between_0_and_100():
+    data = pd.DataFrame({"media": [90.0, 10.0], "se": [20.0, 20.0]})
+    up, down = error_bars(data, "Victorias (%)")
+    assert list(up) == [10.0, 39.2] and list(down) == [39.2, 10.0]
+    up, down = error_bars(data, "Margen (puntos)")
+    assert list(up) == list(down) == [39.2, 39.2]

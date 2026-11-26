@@ -77,7 +77,7 @@ if iniciar_pagina("Fatiga y rotaciones", "🏀"):
             st.error(f"No se pudo consultar la API de Euroliga: {exc}")
 
     st.subheader("Gráficos")
-    st.caption("Barras: media por tramo con ±1,96 errores estándar. Mide correlación, no causa. Se omiten los tramos con menos de 5 partidos. Solo la temporada en curso, con los filtros de competición.")
+    st.caption("Barras: media por tramo con ±1,96 errores estándar. Mide correlación, no causa. Se dibujan todos los tramos: con pocos partidos la barra es poco fiable y con uno solo no tiene barra de error; el número de partidos sale al pasar el cursor y en «Ver los datos del gráfico». Solo la temporada en curso, con los filtros de competición.")
     chart_scope = metrics[metrics["competicion_id"].isin(comps)]
     if only_dual:
         chart_scope = chart_scope[chart_scope["dual"]]

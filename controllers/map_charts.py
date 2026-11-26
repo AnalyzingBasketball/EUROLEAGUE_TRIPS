@@ -16,15 +16,15 @@ def _marker_size(games: pd.Series) -> pd.Series:
 
 
 def _view(lat: pd.Series, lon: pd.Series) -> tuple[dict, float]:
-    """Centro y zoom que encuadran todos los puntos (aproximado para un mapa de unos 900 x 540 píxeles)."""
+    """Centro y zoom que encuadran todos los puntos, aunque el mapa sea estrecho (unos 440 píxeles de ancho)."""
     if lat.empty:
         return {"lat": 45.0, "lon": 12.0}, 3.0
     center = {"lat": float((lat.max() + lat.min()) / 2), "lon": float((lon.max() + lon.min()) / 2)}
-    lon_span = max(float(lon.max() - lon.min()), 1.0) * 1.3
+    lon_span = max(float(lon.max() - lon.min()), 1.0) * 1.05
     lat_span = max(float(lat.max() - lat.min()), 1.0) * 1.3
-    zoom_lon = np.log2(640 / lon_span)
+    zoom_lon = np.log2(440 * 360 / (512 * lon_span))  # a zoom z el mundo (360°) mide 512 * 2^z píxeles
     zoom_lat = np.log2(340 * np.cos(np.radians(center["lat"])) / lat_span)
-    return center, float(np.clip(min(zoom_lon, zoom_lat), 2.0, 9.0))
+    return center, float(np.clip(min(zoom_lon, zoom_lat), 1.5, 9.0))
 
 
 def _hover_text(stats: pd.DataFrame) -> pd.Series:
@@ -49,25 +49,40 @@ def _venue_trace(stats: pd.DataFrame, comp: str, pal: dict, show_legend: bool = 
     )
 
 
-def _route_traces(routes: pd.DataFrame, pal: dict) -> list[go.Scattermap]:
-    """Una línea por ruta, más gruesa cuanto más veces se repite, y un punto en su mitad con los datos del viaje."""
-    traces = []
-    mid_lat, mid_lon, mid_text, mid_color = [], [], [], []
+def _segments(routes: pd.DataFrame) -> tuple[list, list]:
+    """Latitudes y longitudes de varias rutas en una sola traza, separadas por huecos."""
+    lat, lon = [], []
     for r in routes.itertuples():
+        lat += [r.origen_lat, r.destino_lat, None]
+        lon += [r.origen_lon, r.destino_lon, None]
+    return lat, lon
+
+
+def _route_traces(routes: pd.DataFrame, pal: dict) -> list[go.Scattermap]:
+    """Todas las rutas, más gruesas cuanto más veces se repiten, y un punto en su mitad con los datos del viaje.
+
+    Las líneas se agrupan por competición y grosor: así caben cientos de rutas sin una traza para cada una, y la
+    leyenda enciende y apaga cada competición con sus líneas.
+    """
+    if routes.empty:
+        return []
+    many = len(routes) > 60  # con muchas rutas, líneas y puntos más finos para que el mapa se lea
+    traces = []
+    for (comp, times), part in routes.assign(grosor=routes["veces"].clip(upper=8)).groupby(["competicion_id", "grosor"]):
+        lat, lon = _segments(part)
         traces.append(go.Scattermap(
-            lat=[r.origen_lat, r.destino_lat], lon=[r.origen_lon, r.destino_lon], mode="lines", hoverinfo="skip",
-            line={"width": 1.5 + min(r.veces, 8) * 0.7, "color": pal[r.competicion_id]}, opacity=0.55,
-            showlegend=False,
+            lat=lat, lon=lon, mode="lines", hoverinfo="skip", legendgroup=comp, showlegend=False,
+            line={"width": (0.8 if many else 1.5) + times * (0.5 if many else 0.7), "color": pal[comp]},
+            opacity=0.45 if many else 0.55,
         ))
-        mid_lat.append((r.origen_lat + r.destino_lat) / 2)
-        mid_lon.append((r.origen_lon + r.destino_lon) / 2)
-        mid_color.append(pal[r.competicion_id])
-        mid_text.append(f"<b>{r.origen_nombre} → {r.destino_nombre}</b><br>{COMP_NAMES[r.competicion_id]}: "
-                        f"{r.veces} viajes<br>{r.km:,.0f} km ida y vuelta".replace(",", "."))
-    if mid_lat:
+    for comp, part in routes.groupby("competicion_id"):
+        text = [f"<b>{r.origen_nombre} → {r.destino_nombre}</b><br>{COMP_NAMES[comp]}: {r.veces} viajes<br>"
+                + f"{r.km:,.0f} km ida y vuelta".replace(",", ".") for r in part.itertuples()]
         traces.append(go.Scattermap(
-            lat=mid_lat, lon=mid_lon, mode="markers", marker={"size": 7, "color": mid_color, "opacity": 0.9},
-            text=mid_text, hovertemplate="%{text}<extra></extra>", showlegend=False,
+            lat=((part["origen_lat"] + part["destino_lat"]) / 2).tolist(),
+            lon=((part["origen_lon"] + part["destino_lon"]) / 2).tolist(), mode="markers",
+            marker={"size": 4 if many else 7, "color": pal[comp], "opacity": 0.9}, text=text,
+            hovertemplate="%{text}<extra></extra>", legendgroup=comp, showlegend=False,
         ))
     return traces
 
@@ -111,13 +126,9 @@ def _frame_traces(stats: pd.DataFrame, routes: pd.DataFrame, pal: dict) -> list[
     """Seis trazas fijas por cuadro: sedes de cada competición y rutas de cada competición."""
     traces = [_venue_trace(stats, comp, pal) for comp in COMP_ORDER]
     for comp in COMP_ORDER:
-        part = routes[routes["competicion_id"] == comp]
-        lat, lon = [], []
-        for r in part.itertuples():
-            lat += [r.origen_lat, r.destino_lat, None]
-            lon += [r.origen_lon, r.destino_lon, None]
-        traces.append(go.Scattermap(lat=lat, lon=lon, mode="lines", line={"width": 2.5, "color": pal[comp]},
-                                    opacity=0.55, hoverinfo="skip", showlegend=False))
+        lat, lon = _segments(routes[routes["competicion_id"] == comp])
+        traces.append(go.Scattermap(lat=lat, lon=lon, mode="lines", line={"width": 1.8, "color": pal[comp]},
+                                    opacity=0.45, hoverinfo="skip", legendgroup=comp, showlegend=False))
     return traces
 
 

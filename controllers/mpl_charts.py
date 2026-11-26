@@ -8,7 +8,7 @@ from matplotlib.figure import Figure
 from matplotlib.lines import Line2D
 from matplotlib.patches import Polygon
 
-from controllers.charts import COMP_NAMES, COMP_ORDER, PALETTES
+from controllers.charts import COMP_NAMES, COMP_ORDER, PALETTES, error_bars
 from models.geo_model import load_country_rings
 
 PAL = PALETTES[False]  # el PDF siempre sale sobre fondo blanco
@@ -48,6 +48,12 @@ def km_by_club_png(data: pd.DataFrame) -> bytes:
     return _png(fig)
 
 
+def _errors(part: pd.DataFrame, y_title: str) -> list:
+    """Errores [abajo, arriba] para Matplotlib, con los mismos límites que en pantalla; 0 en los huecos."""
+    up, down = error_bars(part, y_title)
+    return [down.fillna(0.0), up.fillna(0.0)]
+
+
 def effect_png(data: pd.DataFrame, y_title: str, x_title: str) -> bytes:
     """Barras agrupadas por tramo y competición con ±1,96 errores estándar."""
     labels = list(dict.fromkeys(data["tramo"].astype(str)))
@@ -60,7 +66,7 @@ def effect_png(data: pd.DataFrame, y_title: str, x_title: str) -> bytes:
         part = part.reindex(labels)
         xs = [j + (i - (len(comps) - 1) / 2) * width for j in range(len(labels))]
         ax.bar(xs, part["media"].fillna(0.0), width=width * 0.92, color=PAL[comp], edgecolor="white", linewidth=1.2,
-               label=COMP_NAMES[comp], yerr=1.96 * part["se"].fillna(0.0), ecolor="#52514e", capsize=2)
+               label=COMP_NAMES[comp], yerr=_errors(part, y_title), ecolor="#52514e", capsize=2)
     ax.axhline(0, color="#999999", linewidth=0.8)
     ax.set_xticks(range(len(labels)), labels, fontsize=8)
     ax.set_xlabel(x_title)
@@ -81,7 +87,7 @@ def venue_map_png(venues: pd.DataFrame, routes: pd.DataFrame | None) -> bytes:
     if routes is not None and not routes.empty:
         for r in routes.itertuples():
             ax.plot([r.origen_lon, r.destino_lon], [r.origen_lat, r.destino_lat], color=PAL.get(r.competicion_id, PAL["E"]),
-                    linewidth=min(0.8 + 0.4 * r.veces, 3), alpha=0.75, zorder=1)
+                    linewidth=min(0.4 + 0.3 * r.veces, 2.4), alpha=0.55, zorder=1)
         lons += [routes["origen_lon"], routes["destino_lon"]]
         lats += [routes["origen_lat"], routes["destino_lat"]]
     ax.scatter(venues["lon"], venues["lat"], s=venues["partidos"].clip(upper=60) * 4 + 12, color=PAL["ACB"],

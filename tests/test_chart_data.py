@@ -13,7 +13,6 @@ from controllers.chart_data import (
     mark_dual,
     rest_trip_grid,
     travel_hours,
-    trip_lines,
     venue_counts,
 )
 
@@ -57,14 +56,6 @@ def test_venue_counts_counts_each_game_once():
                   ("b", 1, "E", 2025, 1, 1, 1, 0, 3, 0, 0)])
     out = venue_counts(m, VENUES)
     assert out.loc[out["nombre"] == "A", "partidos"].iloc[0] == 2
-
-
-def test_trip_lines_only_away_games():
-    m = _metrics([("a", 1, "E", 2025, 1, 1, 1, 0, 3, 0, 0), ("b", 1, "E", 2025, 0, 3, 1, 10, 3, 0, 0),
-                  ("c", 1, "E", 2025, 0, 3, 1, 10, 3, 0, 0)])
-    out = trip_lines(m, VENUES)
-    assert len(out) == 1
-    assert (out.loc[0, "base_nombre"], out.loc[0, "destino_nombre"], out.loc[0, "veces"]) == ("A", "C", 2)
 
 
 def test_binned_effect_means_counts_and_se():
@@ -134,8 +125,10 @@ def test_rest_trip_grid_hides_cells_with_few_games():
     assert MIN_CELL == 15
 
 
-def test_groups_with_few_games_are_omitted_by_default():
+def test_groups_with_few_games_are_drawn_by_default():
     m = _results()
-    assert home_away_effect(m, "win_pct").empty  # ningún grupo llega a 5 partidos
+    drawn = home_away_effect(m, "win_pct")
+    assert not drawn.empty and drawn["n"].min() >= 1  # ningún grupo llega a 5 partidos y aun así se dibujan
     assert len(home_away_effect(m, "win_pct", min_n=2)) == 1  # solo Euroliga fuera tiene 2
-    assert away_trip_effect(m, "km_trip", "win_pct").empty
+    assert len(away_trip_effect(m, "km_trip", "win_pct")) == 2  # dos tramos de un partido cada uno
+    assert away_trip_effect(m, "km_trip", "win_pct", min_n=2).empty

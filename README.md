@@ -38,7 +38,7 @@ styles/print.css         estilos de la vista de impresión (oculta menú y boton
 .streamlit/config.toml   oculta el menú automático de Streamlit
 scripts/                descarga pública, construcción de SQLite y precálculo de métricas
 data/raw/                calendarios, minutos y catálogos descargados de Euroliga, EuroCup y ACB
-tests/                   pruebas con pytest (160)
+tests/                   pruebas con pytest (162)
 docs/cuaderno_app.ipynb   cuaderno que contiene el código de la aplicación y lo exporta a los .py
 ```
 
@@ -58,7 +58,7 @@ Los escudos de los 63 clubes están en `assets/escudos/` y `data/escudos.csv` in
 
 La tabla de próximos partidos de la API también lleva escudos: la API escribe los nombres de otra forma (Kosner Baskonia Vitoria-Gasteiz, La Laguna Tenerife), así que cada club se reconoce por su código, competición y temporada en la tabla `club_alias`.
 
-El mapa de la página Calendario y viajes tiene tres modos. Con fondo detallado (teselas de OpenStreetMap servidas por Carto), dibuja las sedes por competición, con la leyenda como filtro, y las rutas de viaje: todas las del club elegido o las 15 más repetidas de cada competición si no hay club, con el grosor según las veces. Un selector resalta una sede y muestra debajo sus partidos con escudos. La vista de animación por meses suma los partidos y los viajes mes a mes, con botones de reproducir y pausa y un control deslizante. Si las teselas no cargan, el fondo simple dibuja los países sin conexión. Streamlit no devuelve el clic sobre un mapa, por eso la sede se elige con un selector.
+El mapa de la página Calendario y viajes tiene tres modos. Con fondo detallado (teselas de OpenStreetMap servidas por Carto), dibuja las sedes por competición, con la leyenda como filtro, y todos los desplazamientos (los del club elegido o los de todos los clubes), de la sede base a la del partido, con el color de la competición y el grosor según las veces. Un selector resalta una sede y muestra debajo sus partidos con escudos. La vista de animación por meses suma los partidos y los viajes mes a mes, con botones de reproducir y pausa y un control deslizante. Si las teselas no cargan, el fondo simple dibuja los países sin conexión. Streamlit no devuelve el clic sobre un mapa, por eso la sede se elige con un selector.
 
 Las tablas con país (partidos y catálogo de sedes) llevan además una columna con la bandera del país de la sede. Las 19 banderas están en `assets/banderas/` y se descargaron de flagcdn.com (PNG de 80 px, de uso libre). Se tratan igual que los escudos: miniatura de 40 × 27 px con marco fino (las banderas más altas se recortan y las más anchas se aplanan para que todas midan igual) y columna como categoría.
 
@@ -67,13 +67,13 @@ La base se construye fuera de la aplicación con los scripts incluidos en `scrip
 ## Métricas
 
 - Descanso: días desde el partido anterior del club en la misma temporada, en cualquier competición.
-- Km del viaje: 0 en casa; fuera, ida y vuelta entre la sede base del club y la del partido (distancia de Haversine).
+- Km del viaje: ida y vuelta entre la sede base del club y la del partido (distancia de Haversine); 0 si se juega en la sede base. Un club que juega como local en otro pabellón (por ejemplo, un equipo israelí en Chipre) también suma ese viaje. Se supone que el club vuelve a su base entre partidos.
 - Km 7 y 14 días: kilómetros del viaje acumulados en esas ventanas, incluido el partido.
 - Rotación: jugadores con 10 minutos o más, cuota de minutos de los cinco que más juegan, titulares cambiados respecto al partido anterior.
 - Horas de viaje (aproximadas): para cada trayecto, el menor entre autobús a 75 km/h y avión a 750 km/h más 3 horas de aeropuerto, por la ida y la vuelta. Es una estimación, no un dato.
 - Margen ajustado: margen real menos el esperado por la fuerza de ambos clubes y la ventaja de campo, con una regresión ridge por competición y temporada.
 
-Las gráficas muestran medias con ±1,96 errores estándar y omiten los tramos con menos de 5 partidos; en el mapa de calor, las celdas con menos de 15 quedan en blanco. Son correlaciones, no causas.
+Las gráficas muestran medias con ±1,96 errores estándar y dibujan todos los tramos con datos (los que tienen pocos partidos son poco fiables y con uno solo no hay barra de error); en el mapa de calor, las celdas con menos de 15 quedan en blanco. Son correlaciones, no causas.
 
 ## Caché
 

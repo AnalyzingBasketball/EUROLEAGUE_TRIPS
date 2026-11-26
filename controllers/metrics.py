@@ -68,7 +68,8 @@ def add_rest_and_travel(cg: pd.DataFrame, sedes: pd.DataFrame) -> pd.DataFrame:
     """Añade descanso, km de viaje (ida y vuelta desde la base) y acumulados en 7 y 14 días.
 
     - rest_days: días desde el partido anterior del club en la misma temporada (cualquier competición).
-    - km_trip: 0 en casa; ida y vuelta base-sede fuera.
+    - km_trip: ida y vuelta entre la sede base y la del partido; 0 si se juega en la sede base. Un club que juega «en
+      casa» en otro pabellón (por ejemplo, un equipo israelí en Chipre) también viaja y suma esos kilómetros.
     - km_prev: distancia desde la sede del partido anterior (cota superior si el club no vuelve a casa).
     - km_Nd: km_trip acumulado en los N días que terminan en el partido, incluido éste.
     - games_prev_7d: partidos en los 7 días anteriores (sin contar éste).
@@ -82,7 +83,7 @@ def add_rest_and_travel(cg: pd.DataFrame, sedes: pd.DataFrame) -> pd.DataFrame:
         for a, b, c, d in zip(base_xy["lat"], base_xy["lon"], cg["lat"], cg["lon"])
     ])
     cg["base_sede_id"] = base
-    cg["km_trip"] = np.where(cg["home"] == 1, 0.0, 2 * one_way)
+    cg["km_trip"] = np.where((cg["home"] == 1) & np.isnan(one_way), 0.0, 2 * one_way)
 
     for col in ("rest_days", "km_prev", "games_prev_7d", *(f"km_{w}d" for w in WINDOWS)):
         cg[col] = np.nan

@@ -79,9 +79,18 @@ def test_metrics_two_rows_per_played_game(metrics, conn):
 def test_metrics_ranges(metrics):
     assert (metrics["rest_days"].dropna() >= 0).all()
     assert (metrics["km_trip"] >= 0).all()
-    assert (metrics.loc[metrics["home"] == 1, "km_trip"] == 0).all()
+    assert (metrics.loc[metrics["base_sede_id"] == metrics["sede_id"], "km_trip"] == 0).all()
     assert (metrics["km_14d"] >= metrics["km_7d"] - 1e-9).all()
 
 
 def test_metrics_residuals_sum_to_zero_per_game(metrics):
     assert metrics.groupby("partido_id")["margin_resid"].sum().abs().max() < 1e-6
+
+
+def test_map_draws_every_trip_in_the_database(metrics, conn):
+    from controllers.map_data import route_lines
+    from models.partidos_model import load_venues
+
+    routes = route_lines(metrics, load_venues(conn))
+    trips = metrics[metrics["km_trip"] > 0]
+    assert int(routes["veces"].sum()) == len(trips)  # cada viaje de cada club está en el mapa

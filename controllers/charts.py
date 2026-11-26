@@ -1,4 +1,5 @@
 """Figuras Plotly de la aplicación. Colores fijos por competición (la entidad, no su posición)."""
+import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
 
@@ -52,15 +53,22 @@ def km_by_club_figure(data: pd.DataFrame, dark: bool) -> go.Figure:
     return _layout(fig, pal, height)
 
 
-def trip_map_figure(venues: pd.DataFrame, lines: pd.DataFrame | None, dark: bool) -> go.Figure:
-    """Mapa: sedes (tamaño = partidos) y, si hay club elegido, líneas base-sede de cada viaje."""
+def trip_map_figure(venues: pd.DataFrame, routes: pd.DataFrame | None, dark: bool) -> go.Figure:
+    """Mapa simple: sedes (tamaño = partidos) y todas las rutas de viaje, con el color de su competición."""
     pal = PALETTES[dark]
     fig = go.Figure()
-    if lines is not None and not lines.empty:
-        for r in lines.itertuples():
+    if routes is not None and not routes.empty:
+        for comp in COMP_ORDER:
+            part = routes[routes["competicion_id"] == comp]
+            if part.empty:
+                continue
+            lon, lat = [], []
+            for r in part.itertuples():
+                lon += [r.origen_lon, r.destino_lon, None]
+                lat += [r.origen_lat, r.destino_lat, None]
             fig.add_trace(go.Scattergeo(
-                lon=[r.base_lon, r.destino_lon], lat=[r.base_lat, r.destino_lat], mode="lines",
-                line={"width": 1.5, "color": pal["E"]}, showlegend=False, hoverinfo="skip",
+                lon=lon, lat=lat, mode="lines", line={"width": 1.1, "color": pal[comp]}, opacity=0.5,
+                name=COMP_NAMES[comp], showlegend=True, hoverinfo="skip",
             ))
     fig.add_trace(go.Scattergeo(
         lon=venues["lon"], lat=venues["lat"], mode="markers", name="Sedes",
@@ -78,6 +86,14 @@ def trip_map_figure(venues: pd.DataFrame, lines: pd.DataFrame | None, dark: bool
     return _layout(fig, pal, 480)
 
 
+def error_bars(data: pd.DataFrame, y_title: str) -> tuple[pd.Series, pd.Series]:
+    """Longitud de la barra de error hacia arriba y hacia abajo; en porcentajes no sale del intervalo 0-100."""
+    half = 1.96 * data["se"]
+    if "%" not in y_title:
+        return half, half
+    return np.minimum(half, 100 - data["media"]).clip(lower=0), np.minimum(half, data["media"]).clip(lower=0)
+
+
 def effect_figure(data: pd.DataFrame, y_title: str, x_title: str, dark: bool) -> go.Figure:
     """Barras agrupadas por tramo y competición, con error estándar (±1,96 EE) y n en el tooltip."""
     pal = PALETTES[dark]
@@ -86,9 +102,10 @@ def effect_figure(data: pd.DataFrame, y_title: str, x_title: str, dark: bool) ->
         part = data[data["competicion_id"] == comp]
         if part.empty:
             continue
+        up, down = error_bars(part, y_title)
         fig.add_bar(
             x=part["tramo"].astype(str), y=part["media"], name=COMP_NAMES[comp], customdata=part["n"],
-            error_y={"type": "data", "array": 1.96 * part["se"], "thickness": 1.5, "color": pal["muted"]},
+            error_y={"type": "data", "symmetric": False, "array": up, "arrayminus": down, "thickness": 1.5, "color": pal["muted"]},
             marker={"color": pal[comp], "line": {"color": pal["surface"], "width": 2}},
             hovertemplate="%{x}<br>" + COMP_NAMES[comp] + ": %{y:.2f} (n=%{customdata})<extra></extra>",
         )

@@ -32,8 +32,8 @@ if iniciar_pagina("Viajes y fatiga", "🏀"):
     st.subheader("Qué hay en cada página")
     st.write(
         "Calendario y viajes reúne la tabla de partidos con descanso y kilómetros, el catálogo de sedes con su ciudad "
-        "y su país, el ranking de clubes por kilómetros y el mapa de sedes. Al elegir un club, el ranking se "
-        "sustituye por las líneas de sus viajes."
+        "y su país, el ranking de clubes por kilómetros y el mapa con todos los desplazamientos. "
+        "Al elegir un club, el ranking desaparece y el mapa muestra solo sus viajes."
     )
     st.write(
         "Fatiga y rotaciones muestra la tabla de descanso, carga y rotación, los próximos partidos que devuelve la "
@@ -44,8 +44,8 @@ if iniciar_pagina("Viajes y fatiga", "🏀"):
     st.subheader("Cómo leer los datos")
     st.markdown(
         "- El descanso son los días desde el partido anterior del club, en cualquier competición.\n"
-        "- El viaje se mide en kilómetros de ida y vuelta entre la sede del club y la del partido. En casa vale "
-        "cero. Las horas de viaje son una estimación hecha a partir de esos kilómetros.\n"
+        "- El viaje se mide en kilómetros de ida y vuelta entre la sede base del club y la del partido. Vale cero "
+        "cuando se juega en la sede base; un club que juega como local en otro pabellón también viaja. Las horas de viaje son una estimación hecha a partir de esos kilómetros.\n"
         "- El margen ajustado es el margen real menos el que se esperaba por la fuerza de los dos clubes y la "
         "ventaja de jugar en casa. Un valor positivo indica que el club rindió por encima de su nivel.\n"
         "- La rotación se mide con los jugadores que superan los 10 minutos, la cuota de minutos de los cinco que "
@@ -61,7 +61,7 @@ if iniciar_pagina("Viajes y fatiga", "🏀"):
 
     st.info(
         "Los resultados muestran correlaciones, no causas, y con pocos partidos una diferencia puede ser casualidad: "
-        "las gráficas indican cuántos partidos hay detrás de cada barra, omiten los tramos con menos de 5 y el "
+        "las gráficas indican cuántos partidos hay detrás de cada barra, los tramos con pocos partidos son poco fiables y el "
         "mapa de calor deja en blanco las celdas con menos de 15. Los clubes con doble competición suelen ser los más fuertes, así que sus porcentajes de "
         "victoria salen altos. Solo la temporada 2026/27 reúne a la vez ACB y competición europea, así que la doble competición se estudia en esa temporada. "
         "Quedan fuera la Champions League, la Copa del Rey y las ligas nacionales de los clubes extranjeros, de modo "
