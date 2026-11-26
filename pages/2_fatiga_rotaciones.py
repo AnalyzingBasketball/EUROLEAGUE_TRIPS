@@ -2,7 +2,7 @@ import requests
 import streamlit as st
 
 from common.menu import image_columns, iniciar_pagina
-from common.print_tools import print_button
+from common.print_tools import print_button, print_table
 from common.theme import is_dark
 from controllers.chart_data import (
     RESULT_MEASURES,
@@ -53,8 +53,9 @@ if iniciar_pagina("Fatiga y rotaciones", "🏀"):
 
     st.subheader("Fuente 1 · SQLite: descanso, carga y rotación por partido")
     st.caption("Los minutos por jugador salen de las estadísticas de Euroliga y EuroCup (API) y de las de la ACB (live.acb.com).")
-    st.dataframe(fatigue_table(scope, names, get_crest_uris()), width="stretch", hide_index=True, height=320,
-                 column_config=image_columns())
+    fatigue = fatigue_table(scope, names, get_crest_uris())
+    st.dataframe(fatigue, width="stretch", hide_index=True, height=320, column_config=image_columns())
+    print_table(fatigue)
 
     current = int(seasons[0])
     st.subheader("Fuente 2 · API de Euroliga: próximos partidos")
@@ -71,6 +72,7 @@ if iniciar_pagina("Fatiga y rotaciones", "🏀"):
                 st.info("No quedan partidos por jugar en la temporada en curso.")
             else:
                 st.dataframe(upcoming, width="stretch", hide_index=True, height=260, column_config=image_columns())
+                print_table(upcoming, rows=15)
     except (requests.RequestException, ValueError, KeyError) as exc:  # la app no debe romperse si la API falla
         st.error(f"No se pudo consultar la API de Euroliga: {exc}")
 

@@ -34,11 +34,11 @@ models/                  acceso a datos: SQLite, CSV y API, con esquema SQL
 data/                    base, métricas, catálogos y descargas públicas usadas para construirlos
 assets/escudos/          escudos de los 74 clubes (PNG de hasta 128 px)
 assets/banderas/         banderas de los 23 países de las sedes (PNG de 80 px, nombre = código ISO)
-styles/print.css         estilos de la vista de impresión (oculta menú y botones)
+styles/print.css         estilos de la vista de impresión (oculta menú y botones, hoja horizontal, tablas estáticas)
 .streamlit/config.toml   oculta el menú automático de Streamlit
 scripts/                descarga pública, construcción de SQLite y precálculo de métricas
 data/raw/                calendarios, minutos y catálogos descargados de Euroliga, EuroCup y ACB
-tests/                   pruebas con pytest (158)
+tests/                   pruebas con pytest (159)
 docs/cuaderno_app.ipynb   cuaderno que contiene el código de la aplicación y lo exporta a los .py
 ```
 

@@ -1,7 +1,7 @@
 import streamlit as st
 
 from common.menu import image_columns, iniciar_pagina, number_formats
-from common.print_tools import print_button
+from common.print_tools import print_button, print_table
 from common.theme import is_dark
 from controllers.chart_data import default_season, km_by_club, trip_lines, venue_counts
 from controllers.charts import km_by_club_figure, trip_map_figure
@@ -50,15 +50,16 @@ if iniciar_pagina("Calendario y viajes", "✈️"):
     st.subheader("Fuente 1 · SQLite: partidos jugados y kilómetros")
     st.caption("Un partido aparece dos veces, una por cada club. Km del viaje: ida y vuelta entre la sede base y la del partido.")
     flags = get_flag_uris()
-    st.dataframe(trip_table(filtered, names, venues, get_crest_uris(), flags), width="stretch", hide_index=True,
-                 height=320, column_config=image_columns())
+    trips = trip_table(filtered, names, venues, get_crest_uris(), flags)
+    st.dataframe(trips, width="stretch", hide_index=True, height=320, column_config=image_columns())
+    print_table(trips)
 
     st.subheader("Fuente 2 · CSV: sedes y coordenadas")
     st.caption("Geocodificadas con OpenStreetMap (ODbL). Las filas con «revisar» tienen una coordenada aproximada.")
-    st.dataframe(
-        venues_table(get_venues_csv(), flags), width="stretch", hide_index=True, height=260,
-        column_config=number_formats(Latitud="%.4f", Longitud="%.4f") | image_columns(),
-    )
+    venue_list = venues_table(get_venues_csv(), flags)
+    st.dataframe(venue_list, width="stretch", hide_index=True, height=260,
+                 column_config=number_formats(Latitud="%.4f", Longitud="%.4f") | image_columns())
+    print_table(venue_list, rows=20)
 
     st.subheader("Gráficos")
     if filtered.empty:
@@ -105,6 +106,7 @@ if iniciar_pagina("Calendario y viajes", "✈️"):
                 games_here = venue_games(filtered, venue_id, names, get_crest_uris())
                 st.markdown(f"**Partidos en {venues.set_index('id')['nombre'][venue_id]}** ({len(games_here)})")
                 st.dataframe(games_here, width="stretch", hide_index=True, height=260, column_config=image_columns())
+                print_table(games_here, rows=15)
 
     user = st.session_state["usuario"]  # el PDF se genera al pulsar, fuera del hilo del script: no puede leer la sesión
     with actions:
