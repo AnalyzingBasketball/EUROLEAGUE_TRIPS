@@ -19,7 +19,7 @@ button:hover { border-color: #ff6b6b; background: #ff6b6b; }
 // Los gráficos de Plotly tienen un ancho fijo en píxeles: se reducen para que quepan en la hoja y se restauran después.
 function imprimir() {
   const padre = window.parent;
-  const MAX = 1000;
+  const MAX = 680;  // ancho útil de un A4 vertical; Safari ignora @page y suele imprimir en vertical
   padre.document.querySelectorAll('[data-testid="stPlotlyChart"]').forEach((el) => {
     const ancho = el.getBoundingClientRect().width;
     if (ancho > MAX) { el.style.zoom = String(MAX / ancho); el.dataset.ajustado = "1"; }

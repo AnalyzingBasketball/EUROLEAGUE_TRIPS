@@ -17,10 +17,11 @@
   .print-only th, .print-only td { border: 1px solid #bbb; padding: 1px 3px; text-align: left; }
   .print-only th { background: #eee; }
   .print-only td:first-child { white-space: nowrap; }
-  .print-only tr { break-inside: avoid; }
+  .print-only tr { break-inside: avoid; page-break-inside: avoid; }
   .print-only p { font-size: 8pt; margin: 2px 0 0; }
 
   /* Gráficos y títulos no se parten entre páginas. */
-  [data-testid="stPlotlyChart"], [data-testid="stImage"] { break-inside: avoid; }
-  h1, h2, h3 { break-after: avoid; }
+  [data-testid="stPlotlyChart"], [data-testid="stImage"],
+  [data-testid="stElementContainer"]:has([data-testid="stPlotlyChart"]) { break-inside: avoid; page-break-inside: avoid; }
+  h1, h2, h3 { break-after: avoid; page-break-after: avoid; }
 }
