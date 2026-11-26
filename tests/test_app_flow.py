@@ -76,7 +76,7 @@ def test_login_then_logout():
     assert "usuario" not in at.session_state
 
 
-@pytest.mark.parametrize("page,min_charts", [("pages/1_calendario_viajes.py", 2), ("pages/2_fatiga_rotaciones.py", 4)])  # el mapa de calor sale solo si alguna celda llega a 15 partidos
+@pytest.mark.parametrize("page,min_charts", [("pages/1_calendario_viajes.py", 2), ("pages/2_fatiga_rotaciones.py", 4)])  # el mapa de calor sale solo si alguna celda llega a 5 partidos
 def test_pages_show_two_sources_and_charts_after_login(page, min_charts):
     at = _open_page(page)
     assert not at.exception
@@ -103,3 +103,13 @@ def test_api_failure_shows_error_not_traceback(monkeypatch):
     at = _open_page("pages/2_fatiga_rotaciones.py")
     assert not at.exception
     assert any("No se pudo consultar la API" in e.value for e in at.error)
+
+
+def test_heatmap_tells_how_to_see_all_clubs():
+    at = AppTest.from_file(str(APP_DIR / "home.py"), default_timeout=60)
+    at.session_state["usuario"] = "admin"
+    at.switch_page("pages/2_fatiga_rotaciones.py").run()
+    assert any("Desmarca «Solo doble competición»" in w.value for w in at.warning)
+    at.checkbox(key="dual_f").uncheck().run()
+    assert not any("Desmarca" in w.value for w in at.warning)
+    assert any("todos los clubes" in m.value for m in at.success)

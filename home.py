@@ -3,7 +3,7 @@ import streamlit as st
 from common.menu import iniciar_pagina
 from models.sqlite_model import get_clubs, get_metrics
 
-if iniciar_pagina("Viajes y fatiga", "🏀"):
+if iniciar_pagina("Viajes y fatiga"):
     st.title("Viajes, descanso y rotaciones en clubes con doble competición")
     st.write(
         "¿Se notan los kilómetros y el poco descanso en los resultados y en las rotaciones de los clubes españoles "
@@ -62,7 +62,7 @@ if iniciar_pagina("Viajes y fatiga", "🏀"):
     st.info(
         "Los resultados muestran correlaciones, no causas, y con pocos partidos una diferencia puede ser casualidad: "
         "las gráficas indican cuántos partidos hay detrás de cada barra, los tramos con pocos partidos son poco fiables y el "
-        "mapa de calor deja en blanco las celdas con menos de 15. Los clubes con doble competición suelen ser los más fuertes, así que sus porcentajes de "
+        "mapa de calor deja en blanco las celdas con menos de 5 partidos; para verlo con todos los clubes hay que desmarcar «Solo doble competición» en la página Fatiga y rotaciones. Los clubes con doble competición suelen ser los más fuertes, así que sus porcentajes de "
         "victoria salen altos. Solo la temporada 2026/27 reúne a la vez ACB y competición europea, así que la doble competición se estudia en esa temporada. "
         "Quedan fuera la Champions League, la Copa del Rey y las ligas nacionales de los clubes extranjeros, de modo "
         "que la carga de los clubes que además juegan esas competiciones está subestimada."

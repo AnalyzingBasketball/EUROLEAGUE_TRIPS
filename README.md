@@ -9,7 +9,7 @@ Enlace público: https://euroleague-trips.streamlit.app (usuario `admin`, contra
 - Usuario de prueba: `admin` / `admin`.
 - Menú lateral con dos páginas:
   - Calendario y viajes: tabla de partidos con descanso y kilómetros, catálogo de sedes, ranking de kilómetros por club y mapa de sedes y viajes.
-  - Fatiga y rotaciones: tabla de descanso, carga y rotación, próximos partidos de la API de Euroliga y gráficas en dos bloques seguidos: descanso y rotación, y resultados y viaje (victorias en casa y fuera, resultado según km u horas de viaje, mapa de calor de descanso y viaje).
+  - Fatiga y rotaciones: tabla de descanso, carga y rotación, próximos partidos de la API de Euroliga y gráficas en dos bloques seguidos: descanso y rotación, y resultados y viaje (victorias en casa y fuera, resultado según km u horas de viaje, mapa de calor de descanso y viaje). El mapa de calor está al final de la página; por defecto usa los clubes con doble competición y, al desmarcar «Solo doble competición», pasa a usar todos.
 - Cada página tiene un botón para imprimir y otro para exportar a PDF con los datos filtrados en pantalla.
 
 ## Instalación y ejecución
@@ -38,7 +38,7 @@ styles/print.css         estilos de la vista de impresión (oculta menú y boton
 .streamlit/config.toml   oculta el menú automático de Streamlit
 scripts/                descarga pública, construcción de SQLite y precálculo de métricas
 data/raw/                calendarios, minutos y catálogos descargados de Euroliga, EuroCup y ACB
-tests/                   pruebas con pytest (162)
+tests/                   pruebas con pytest (163)
 docs/cuaderno_app.ipynb   cuaderno que contiene el código de la aplicación y lo exporta a los .py
 ```
 
@@ -73,7 +73,7 @@ La base se construye fuera de la aplicación con los scripts incluidos en `scrip
 - Horas de viaje (aproximadas): para cada trayecto, el menor entre autobús a 75 km/h y avión a 750 km/h más 3 horas de aeropuerto, por la ida y la vuelta. Es una estimación, no un dato.
 - Margen ajustado: margen real menos el esperado por la fuerza de ambos clubes y la ventaja de campo, con una regresión ridge por competición y temporada.
 
-Las gráficas muestran medias con ±1,96 errores estándar y dibujan todos los tramos con datos (los que tienen pocos partidos son poco fiables y con uno solo no hay barra de error); en el mapa de calor, las celdas con menos de 15 quedan en blanco. Son correlaciones, no causas.
+Las gráficas muestran medias con ±1,96 errores estándar y dibujan todos los tramos con datos (los que tienen pocos partidos son poco fiables y con uno solo no hay barra de error); en el mapa de calor, las celdas con menos de 5 partidos quedan en blanco. Son correlaciones, no causas.
 
 ## Caché
 

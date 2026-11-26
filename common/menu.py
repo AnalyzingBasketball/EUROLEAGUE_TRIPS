@@ -20,18 +20,18 @@ def crear_menu() -> None:
     with st.sidebar:
         inject_print_css()
         st.title("Viajes y fatiga")
-        st.page_link("home.py", label="Inicio", icon="🏠")
-        st.page_link("pages/1_calendario_viajes.py", label="Calendario y viajes", icon="✈️")
-        st.page_link("pages/2_fatiga_rotaciones.py", label="Fatiga y rotaciones", icon="🏀")
+        st.page_link("home.py", label="Inicio")
+        st.page_link("pages/1_calendario_viajes.py", label="Calendario y viajes")
+        st.page_link("pages/2_fatiga_rotaciones.py", label="Fatiga y rotaciones")
         st.divider()
         st.caption(f"Usuario: {st.session_state.get('usuario', '')}")
         if st.button("Salir"):
             logout()
 
 
-def iniciar_pagina(titulo: str, icono: str) -> bool:
+def iniciar_pagina(titulo: str) -> bool:
     """Configura la página, exige sesión y pinta el menú; devuelve False si hay que parar."""
-    st.set_page_config(page_title=titulo, page_icon=icono, layout="wide")
+    st.set_page_config(page_title=titulo, page_icon=":material/analytics:", layout="wide")
     if not generar_login():
         return False
     crear_menu()

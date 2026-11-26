@@ -3,6 +3,7 @@ import pandas as pd
 
 from common.pdf_generator import Image, Table, build_report
 from controllers.chart_data import (
+    MIN_CELL,
     RESULT_MEASURES,
     TRIP_UNITS,
     add_result_columns,
@@ -52,12 +53,12 @@ def result_blocks(scope: pd.DataFrame, measure: str, unit: str) -> list[Table | 
             "Solo partidos fuera. Las horas son una estimación (autobús o avión con 3 h de aeropuerto). " + CAVEAT,
         )
         grid = rest_trip_grid(scope, measure)
-        if grid["media"].notna().any():  # sin ninguna celda con 15 partidos el mapa saldría vacío
+        if grid["media"].notna().any():  # sin ninguna celda con partidos suficientes el mapa saldría vacío
             blocks.append(Image(
                 f"{label} fuera de casa según descanso y viaje",
                 rest_trip_heatmap_png(grid, label, float(away[measure].mean())),
                 f"Color respecto a la media de los partidos fuera ({round(away[measure].mean(), 1) + 0.0:.1f}). "
-                "Celdas con menos de 15 partidos en blanco. " + CAVEAT,
+                f"Celdas con menos de {MIN_CELL} partidos en blanco. " + CAVEAT,
             ))
     return blocks
 

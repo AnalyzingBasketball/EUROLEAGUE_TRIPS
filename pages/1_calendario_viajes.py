@@ -29,7 +29,7 @@ from models.sqlite_model import get_clubs, get_metrics, get_venues
 
 COMPETITIONS = {"ACB": "ACB", "E": "Euroliga", "U": "EuroCup"}
 
-if iniciar_pagina("Calendario y viajes", "✈️"):
+if iniciar_pagina("Calendario y viajes"):
     st.title("Calendario y viajes")
     actions = st.container()
     metrics, clubs, venues = get_metrics(), get_clubs(), get_venues()
@@ -115,7 +115,7 @@ if iniciar_pagina("Calendario y viajes", "✈️"):
         report_filters = {"Temporada": seasons_label(season), "Competiciones": ", ".join(COMPETITIONS[c] for c in comps),
                           "Club": club_label}
         b2.download_button(
-            "📄 Exportar a PDF",
+            "Exportar a PDF",
             data=lambda: trip_report(user, report_filters, trips, km_data,
                                      venue_counts(filtered, venues), pdf_routes),
             file_name=f"calendario_viajes_{season}.pdf", mime="application/pdf", type="primary", width="stretch", disabled=filtered.empty,

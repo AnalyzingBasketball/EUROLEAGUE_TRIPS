@@ -14,7 +14,7 @@ button { box-sizing: border-box; width: 100%; height: 40px; padding: 0 12px; bor
          font: 400 14px "Source Sans", "Source Sans Pro", sans-serif; white-space: nowrap; }
 button:hover { border-color: #ff6b6b; background: #ff6b6b; }
 </style>
-<button onclick="imprimir()">🖨️ Imprimir página</button>
+<button onclick="imprimir()">Imprimir página</button>
 <script>
 // Los gráficos de Plotly tienen un ancho fijo en píxeles: se reducen para que quepan en la hoja y se restauran después.
 function imprimir() {

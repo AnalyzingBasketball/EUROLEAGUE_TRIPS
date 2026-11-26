@@ -122,7 +122,7 @@ def test_rest_trip_grid_hides_cells_with_few_games():
     assert g["media"].isna().all()  # ninguna celda llega a MIN_CELL partidos
     low = rest_trip_grid(_results(), "margin_resid", min_n=1)
     assert low["media"].notna().sum() == 2
-    assert MIN_CELL == 15
+    assert MIN_CELL == 5
 
 
 def test_groups_with_few_games_are_drawn_by_default():

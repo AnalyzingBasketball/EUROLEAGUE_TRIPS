@@ -5,6 +5,7 @@ from common.menu import image_columns, iniciar_pagina
 from common.print_tools import print_button, print_table
 from common.theme import is_dark
 from controllers.chart_data import (
+    MIN_CELL,
     RESULT_MEASURES,
     TRIP_UNITS,
     add_result_columns,
@@ -34,7 +35,7 @@ ROTATION = {
     "starters_changed": "Titulares cambiados respecto al partido anterior",
 }
 
-if iniciar_pagina("Fatiga y rotaciones", "🏀"):
+if iniciar_pagina("Fatiga y rotaciones"):
     st.title("Fatiga y rotaciones")
     actions = st.container()
     metrics, clubs = get_metrics(), get_clubs()
@@ -45,7 +46,9 @@ if iniciar_pagina("Fatiga y rotaciones", "🏀"):
     c2, c3 = st.columns(2)
     comps = c2.multiselect("Competición", ["ACB", "E", "U"], default=["ACB", "E", "U"],
                            format_func={"ACB": "ACB", "E": "Euroliga", "U": "EuroCup"}.get, key="comps_f")
-    only_dual = c3.checkbox("Solo doble competición", value=True, key="dual_f")
+    only_dual = c3.checkbox("Solo doble competición", value=True, key="dual_f",
+                            help="Marcado: solo los clubes que juegan dos competiciones. Desmarcado: todos los clubes.")
+    c3.caption("**Desmárcalo para ver el mapa de calor con todos los clubes** (al final de la página).")
     scope = filter_metrics(metrics, season, comps)
     if only_dual:
         scope = scope[scope["dual"]]
@@ -134,14 +137,24 @@ if iniciar_pagina("Fatiga y rotaciones", "🏀"):
                     st.dataframe(competition_names(by_trip.round(2)), width="stretch", hide_index=True)
 
             with st.container(key="keep_heat"):
-                st.markdown(f"**{label} fuera de casa según descanso y viaje**")
-                st.caption("El color compara con la media de los partidos fuera. Las celdas con menos de 15 partidos quedan en blanco.")
+                st.markdown(f"#### Mapa de calor: {label.lower()} fuera de casa según descanso y viaje")
                 grid = rest_trip_grid(results, measure)
+                cells = int(grid["media"].notna().sum())
+                if only_dual:
+                    everyone = add_result_columns(metrics[metrics["competicion_id"].isin(comps)])
+                    all_cells = int(rest_trip_grid(everyone, measure)["media"].notna().sum())
+                    st.warning(f"Ahora el mapa usa **solo los clubes con doble competición** ({cells} celdas con color). "
+                               f"**Desmarca «Solo doble competición»**, arriba de la página, para verlo con todos los clubes "
+                               f"({all_cells} celdas).")
+                else:
+                    st.success(f"El mapa usa **todos los clubes** de las competiciones elegidas ({cells} celdas con color).")
+                st.caption(f"El color compara con la media de los partidos fuera. Cada celda indica su número de partidos (n); "
+                           f"las que tienen menos de {MIN_CELL} quedan en blanco. Con pocos partidos, una diferencia puede ser casualidad.")
                 if grid["media"].notna().any():
                     st.plotly_chart(rest_trip_heatmap(grid, label, float(away_games[measure].mean()), dark),
                                     theme=None, width="stretch")
                 else:
-                    st.info("Con esta selección ninguna combinación de descanso y viaje reúne 15 partidos. "
+                    st.info(f"Con esta selección ninguna combinación de descanso y viaje reúne {MIN_CELL} partidos. "
                             "Quita «Solo doble competición» o añade competiciones para ver el mapa de calor.")
                 with st.expander("Ver los datos del gráfico"):
                     st.dataframe(grid.round(2), width="stretch", hide_index=True)
@@ -157,7 +170,7 @@ if iniciar_pagina("Fatiga y rotaciones", "🏀"):
         report_filters = {"Temporada": seasons_label(season), "Competiciones": ", ".join(COMP_NAMES[c] for c in comps),
                           "Solo doble competición": "sí" if only_dual else "no"}
         b2.download_button(
-            "📄 Exportar a PDF",
+            "Exportar a PDF",
             data=lambda: fatigue_report(user, report_filters, fatigue_table(scope, names),
                                         chart_scope, rot_now, ROTATION[rot_now], measure_now, unit_now),
             file_name=f"fatiga_rotaciones_{season}.pdf", mime="application/pdf", type="primary", width="stretch", disabled=chart_scope.empty,

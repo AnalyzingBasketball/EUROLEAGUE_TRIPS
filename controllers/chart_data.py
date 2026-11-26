@@ -21,7 +21,7 @@ BINS = {
 
 RESULT_MEASURES = {"win_pct": "Victorias (%)", "margin": "Margen (puntos)", "margin_resid": "Margen ajustado (puntos)"}
 TRIP_UNITS = {"km_trip": "Km del viaje (ida y vuelta)", "trip_hours": "Horas de viaje aproximadas (ida y vuelta)"}
-MIN_CELL = 15  # partidos mínimos para colorear una celda del mapa de calor
+MIN_CELL = 5  # partidos mínimos para colorear una celda del mapa de calor
 MIN_BAR = 1  # se dibujan todos los tramos con datos; con pocos partidos la barra es poco fiable (n en el tooltip y en la tabla)
 
 # Estimación del tiempo de viaje: el mejor de autobús o avión (con 3 h de aeropuerto) para la mitad del trayecto.
