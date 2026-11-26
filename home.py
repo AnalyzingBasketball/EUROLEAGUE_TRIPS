@@ -7,9 +7,9 @@ if iniciar_pagina("Viajes y fatiga", "🏀"):
     st.title("Viajes, descanso y rotaciones en clubes con doble competición")
     st.write(
         "¿Se notan los kilómetros y el poco descanso en los resultados y en las rotaciones de los clubes españoles "
-        "que juegan a la vez la ACB y la Euroliga o la EuroCup? La aplicación reúne los calendarios de las tres "
-        "competiciones (Euroliga y EuroCup desde 2022/23, ACB solo la temporada 2026/27) y calcula, para cada partido, los días de descanso, los kilómetros de viaje y "
-        "cuántos jugadores usa el entrenador."
+        "que juegan a la vez la ACB y la Euroliga o la EuroCup? La aplicación reúne los calendarios de la ACB, la "
+        "Euroliga y la EuroCup de la temporada 2026/27 y calcula, para cada partido, los días de descanso, los "
+        "kilómetros de viaje y cuántos jugadores usa el entrenador."
     )
     metrics, clubs = get_metrics(), get_clubs()
     dual = clubs.groupby(["club_id", "temporada_id"])["competicion_id"].nunique()
@@ -17,12 +17,12 @@ if iniciar_pagina("Viajes y fatiga", "🏀"):
     col1.metric("Partidos jugados", f"{metrics['partido_id'].nunique():,}".replace(",", "."))
     col2.metric("Clubes", clubs["club_id"].nunique())
     col3.metric("Doble competición", int((dual >= 2).sum()),
-                help="Combinaciones de club y temporada con partidos en dos o más competiciones.")
+                help="Clubes con partidos en dos o más competiciones esta temporada.")
 
     st.subheader("Cómo se usa")
     st.markdown(
         "1. El menú de la izquierda lleva a las dos páginas. «Salir» cierra la sesión.\n"
-        "2. Los filtros de cada página (temporada, competición y club) cambian a la vez las tablas y las gráficas.\n"
+        "2. Los filtros de cada página (competición, club o doble competición) cambian a la vez las tablas y las gráficas.\n"
         "3. Las tablas se ordenan pulsando el título de una columna y se agrandan con el icono de su esquina.\n"
         "4. Bajo cada gráfica, «Ver los datos del gráfico» abre una tabla con los números exactos.\n"
         "5. «Imprimir página» abre el diálogo de impresión del navegador. «Exportar a PDF» descarga un informe con "

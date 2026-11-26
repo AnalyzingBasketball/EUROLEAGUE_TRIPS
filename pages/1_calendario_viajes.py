@@ -36,10 +36,9 @@ if iniciar_pagina("Calendario y viajes", "✈️"):
     metrics, clubs, venues = get_metrics(), get_clubs(), get_venues()
     names = club_names(clubs)
 
-    c1, c2, c3 = st.columns(3)
-    seasons = sorted(metrics["temporada_id"].unique(), reverse=True)
-    season = c1.selectbox("Temporada", seasons, index=seasons.index(default_season(metrics)),
-                          format_func=seasons_label, key="season")
+    season = default_season(metrics)  # la base solo tiene la temporada en curso
+    st.caption(f"Temporada {seasons_label(season)}")
+    c2, c3 = st.columns(2)
     comps = c2.multiselect("Competición", list(COMPETITIONS), default=list(COMPETITIONS),
                            format_func=COMPETITIONS.get, key="comps")
     in_season = clubs[clubs["temporada_id"] == season].drop_duplicates("club_id")

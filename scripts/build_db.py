@@ -1,6 +1,7 @@
 """Construye app/data/viajes_fatiga.db con lo descargado por fetch_euroleague.py y fetch_acb.py más las sedes (CSV).
 
-Uso: python scripts/build_db.py [--from 2022] [--to 2026]
+Uso: python scripts/build_db.py [--from 2026] [--to 2026]
+La aplicación estudia solo la temporada en curso: por defecto se carga únicamente 2026/27.
 Lee solo data/raw/: no necesita ninguna ruta externa. La base se recrea desde cero en cada ejecución.
 """
 import argparse
@@ -29,6 +30,7 @@ from models.db import DEFAULT_DB_PATH, connect, create_schema
 
 RAW = ROOT / "data" / "raw"
 MADRID = ZoneInfo("Europe/Madrid")
+CURRENT_SEASON = 2026  # año de inicio: 2026 = 2026/27
 
 
 def load_crosswalk() -> dict[tuple[str, str], str]:
@@ -98,8 +100,8 @@ def insert_venues(conn, acb_clubs: dict[str, dict]) -> tuple[dict[tuple[str, str
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--from", dest="first", type=int, default=2022)
-    parser.add_argument("--to", dest="last", type=int, default=2026)
+    parser.add_argument("--from", dest="first", type=int, default=CURRENT_SEASON)
+    parser.add_argument("--to", dest="last", type=int, default=CURRENT_SEASON)
     parser.add_argument("--db", type=Path, default=DEFAULT_DB_PATH)
     args = parser.parse_args()
     seasons = range(args.first, args.last + 1)
@@ -170,7 +172,13 @@ def main() -> None:
 
     # Cambios de pabellón (p. ej. Valencia Basket se muda al Roig Arena en 2025): cierra el anterior y abre el nuevo.
     for r in pd.read_csv(RAW / "club_pabellon_cambios.csv").itertuples():
-        cl = club_id[r.club_canonico]
+        cl = club_id.get(r.club_canonico)
+        if cl is None:
+            continue
+        if r.temporada_desde <= args.first:  # el cambio es anterior a lo cargado: solo cuenta el pabellón nuevo
+            conn.execute("UPDATE club_pabellon SET sede_id = ? WHERE club_id = ? AND temporada_hasta IS NULL",
+                         (vcode_to_sede[("E", r.vcode)], cl))
+            continue
         conn.execute("UPDATE club_pabellon SET temporada_hasta = ? WHERE club_id = ? AND temporada_hasta IS NULL",
                      (r.temporada_desde - 1, cl))
         conn.execute("INSERT INTO club_pabellon VALUES (?,?,?,NULL)",
@@ -229,6 +237,11 @@ def main() -> None:
                     conn.execute("INSERT OR REPLACE INTO minutos_jugador VALUES (?,?,?,?,?,?)",
                                  (pid, club, p["jugador"], p["titular"], p["minutos"], p["puntos"]))
                     minutes += 1
+
+    # El catálogo de sedes de data/raw cubre más pabellones de los que se usan: solo quedan los de los partidos cargados.
+    used = "SELECT sede_id FROM partido WHERE sede_id IS NOT NULL UNION SELECT sede_id FROM club_pabellon"
+    conn.execute(f"DELETE FROM sede_alias WHERE sede_id NOT IN ({used})")
+    conn.execute(f"DELETE FROM sede WHERE id NOT IN ({used})")
 
     conn.commit()
     pd.read_sql_query("SELECT id, nombre, ciudad, pais, lat, lon, precision, revisar FROM sede ORDER BY pais, nombre", conn).to_csv(

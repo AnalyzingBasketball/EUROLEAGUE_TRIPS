@@ -40,10 +40,9 @@ if iniciar_pagina("Fatiga y rotaciones", "🏀"):
     metrics, clubs = get_metrics(), get_clubs()
     names = club_names(clubs)
 
-    c1, c2, c3 = st.columns(3)
-    seasons = sorted(metrics["temporada_id"].unique(), reverse=True)
-    season = c1.selectbox("Temporada", seasons, index=seasons.index(default_season(metrics)),
-                          format_func=seasons_label, key="season_f")
+    season = default_season(metrics)  # la base solo tiene la temporada en curso
+    st.caption(f"Temporada {seasons_label(season)}")
+    c2, c3 = st.columns(2)
     comps = c2.multiselect("Competición", ["ACB", "E", "U"], default=["ACB", "E", "U"],
                            format_func={"ACB": "ACB", "E": "Euroliga", "U": "EuroCup"}.get, key="comps_f")
     only_dual = c3.checkbox("Solo doble competición", value=True, key="dual_f")
@@ -57,7 +56,7 @@ if iniciar_pagina("Fatiga y rotaciones", "🏀"):
     st.dataframe(fatigue, width="stretch", hide_index=True, height=320, column_config=image_columns())
     print_table(fatigue)
 
-    current = int(seasons[0])
+    current = int(season)
     with st.container(key="keep_api"):
         st.subheader("Fuente 2 · API de Euroliga: próximos partidos")
         st.caption(f"Temporada en curso: {seasons_label(current)}.")
@@ -78,18 +77,18 @@ if iniciar_pagina("Fatiga y rotaciones", "🏀"):
             st.error(f"No se pudo consultar la API de Euroliga: {exc}")
 
     st.subheader("Gráficos")
-    st.caption("Barras: media por tramo con ±1,96 errores estándar. Mide correlación, no causa. Se omiten los tramos con menos de 5 partidos. Todas las temporadas de la selección de competición.")
-    all_seasons = metrics[metrics["competicion_id"].isin(comps)]
+    st.caption("Barras: media por tramo con ±1,96 errores estándar. Mide correlación, no causa. Se omiten los tramos con menos de 5 partidos. Solo la temporada en curso, con los filtros de competición.")
+    chart_scope = metrics[metrics["competicion_id"].isin(comps)]
     if only_dual:
-        all_seasons = all_seasons[all_seasons["dual"]]
+        chart_scope = chart_scope[chart_scope["dual"]]
     dark = is_dark()
-    if all_seasons.empty:
+    if chart_scope.empty:
         st.info("No hay partidos con estos filtros.")
     else:
         with st.container(key="keep_rest"):
             st.markdown("#### Descanso y rotación")
             st.markdown("**Rendimiento según el descanso**")
-            rest = binned_effect(all_seasons, "rest_days", "margin_resid")
+            rest = binned_effect(chart_scope, "rest_days", "margin_resid")
             st.plotly_chart(effect_figure(rest, "Margen ajustado medio (puntos)", "Días desde el partido anterior", dark),
                             theme=None, width="stretch")
             with st.expander("Ver los datos del gráfico"):
@@ -98,7 +97,7 @@ if iniciar_pagina("Fatiga y rotaciones", "🏀"):
         with st.container(key="keep_rot"):
             rot_key = st.selectbox("Medida de rotación", list(ROTATION), format_func=ROTATION.get, key="rot")
             st.markdown(f"**{ROTATION[rot_key]} según los km de los últimos 7 días**")
-            rot = binned_effect(all_seasons, "km_7d", rot_key)
+            rot = binned_effect(chart_scope, "km_7d", rot_key)
             st.plotly_chart(effect_figure(rot, ROTATION[rot_key], "Km de viaje acumulados en 7 días", dark),
                             theme=None, width="stretch")
             with st.expander("Ver los datos del gráfico"):
@@ -108,7 +107,7 @@ if iniciar_pagina("Fatiga y rotaciones", "🏀"):
         with st.container(key="keep_home"):
             st.markdown("#### Resultados y viaje")
             st.caption("Los selectores de esta sección solo cambian las dos últimas gráficas.")
-            results = add_result_columns(all_seasons)
+            results = add_result_columns(chart_scope)
             m1, m2 = st.columns(2)
             measure = m1.selectbox("Resultado", list(RESULT_MEASURES), format_func=RESULT_MEASURES.get, key="measure",
                                    help="Se aplica a las dos últimas gráficas. El margen ajustado descuenta la fuerza de los clubes.")
@@ -155,11 +154,11 @@ if iniciar_pagina("Fatiga y rotaciones", "🏀"):
         rot_now = st.session_state.get("rot", "players_10")
         measure_now = st.session_state.get("measure", "win_pct")
         unit_now = st.session_state.get("unit", "km_trip")
-        report_filters = {"Temporada de la tabla": seasons_label(season), "Competiciones": ", ".join(COMP_NAMES[c] for c in comps),
+        report_filters = {"Temporada": seasons_label(season), "Competiciones": ", ".join(COMP_NAMES[c] for c in comps),
                           "Solo doble competición": "sí" if only_dual else "no"}
         b2.download_button(
             "📄 Exportar a PDF",
             data=lambda: fatigue_report(user, report_filters, fatigue_table(scope, names),
-                                        all_seasons, rot_now, ROTATION[rot_now], measure_now, unit_now),
-            file_name=f"fatiga_rotaciones_{season}.pdf", mime="application/pdf", type="primary", width="stretch", disabled=all_seasons.empty,
+                                        chart_scope, rot_now, ROTATION[rot_now], measure_now, unit_now),
+            file_name=f"fatiga_rotaciones_{season}.pdf", mime="application/pdf", type="primary", width="stretch", disabled=chart_scope.empty,
         )

@@ -64,7 +64,7 @@ def result_blocks(scope: pd.DataFrame, measure: str, unit: str) -> list[Table | 
 
 def fatigue_report(user: str, filters: dict[str, str], table: pd.DataFrame, scope: pd.DataFrame,
                    rotation_key: str, rotation_label: str, measure: str = "win_pct", unit: str = "km_trip") -> bytes:
-    """Informe de la página Fatiga y rotaciones; `scope` son las métricas de todas las temporadas filtradas."""
+    """Informe de la página Fatiga y rotaciones; `scope` son las métricas filtradas de la temporada en curso."""
     blocks: list[Table | Image] = [Table("Descanso, carga y rotación por partido", table)]
     if not scope.empty:
         blocks += _effect_block(

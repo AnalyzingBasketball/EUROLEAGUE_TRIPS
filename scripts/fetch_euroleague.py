@@ -5,7 +5,7 @@ Por cada competición y temporada guarda:
   minutos_<comp><año>.json  minutos, puntos y titulares de cada partido jugado (solo se piden los que faltan)
 
 Peticiones en serie con pausa y reintentos ante 429. Uso:
-  python scripts/fetch_euroleague.py [--force] [--from 2022] [--to 2026] [--pause 1.0]
+  python scripts/fetch_euroleague.py [--force] [--from 2026] [--to 2026] [--pause 1.0]
 """
 import argparse
 import json
@@ -57,7 +57,7 @@ def fetch_minutes(comp: str, year: int, games: list[dict], pause: float) -> None
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--force", action="store_true", help="vuelve a pedir el calendario de cada temporada")
-    parser.add_argument("--from", dest="first", type=int, default=2022)
+    parser.add_argument("--from", dest="first", type=int, default=2026)
     parser.add_argument("--to", dest="last", type=int, default=2026)
     parser.add_argument("--pause", type=float, default=1.0, help="segundos entre peticiones")
     args = parser.parse_args()

@@ -1,6 +1,6 @@
 # Viajes, descanso y rotaciones en baloncesto europeo
 
-Aplicación Streamlit que estudia si los kilómetros de viaje y el poco descanso se relacionan con el rendimiento y con las rotaciones de los clubes españoles que compiten a la vez en la liga ACB y en la Euroliga o la EuroCup. Reúne los calendarios de Euroliga y EuroCup desde 2022/23 hasta 2026/27 (en curso) y el de la ACB de la temporada 2026/27, la única que publica la web de la liga. Calcula, para cada partido y club, el descanso, el viaje y la rotación de la plantilla.
+Aplicación Streamlit que estudia si los kilómetros de viaje y el poco descanso se relacionan con el rendimiento y con las rotaciones de los clubes españoles que compiten a la vez en la liga ACB y en la Euroliga o la EuroCup. Estudia solo la temporada en curso, 2026/27: reúne los calendarios de la ACB, la Euroliga y la EuroCup de esa temporada. Calcula, para cada partido y club, el descanso, el viaje y la rotación de la plantilla.
 
 Enlace público: https://euroleague-trips.streamlit.app (usuario `admin`, contraseña `admin`).
 
@@ -32,8 +32,8 @@ common/                  login, menú, tema, utilidades (carga de CSS), botón d
 controllers/             lógica: métricas, datos de gráficas, mapa interactivo, figuras, informes
 models/                  acceso a datos: SQLite, CSV y API, con esquema SQL
 data/                    base, métricas, catálogos y descargas públicas usadas para construirlos
-assets/escudos/          escudos de los 74 clubes (PNG de hasta 128 px)
-assets/banderas/         banderas de los 23 países de las sedes (PNG de 80 px, nombre = código ISO)
+assets/escudos/          escudos de los 63 clubes (PNG de hasta 128 px)
+assets/banderas/         banderas de los 19 países de las sedes (PNG de 80 px, nombre = código ISO)
 styles/print.css         estilos de la vista de impresión (oculta menú y botones, hoja horizontal, tablas estáticas)
 .streamlit/config.toml   oculta el menú automático de Streamlit
 scripts/                descarga pública, construcción de SQLite y precálculo de métricas
@@ -54,15 +54,15 @@ El cuaderno `docs/cuaderno_app.ipynb` es la fuente de los 29 archivos `.py` de l
 
 Las coordenadas y la ciudad de cada sede proceden de OpenStreetMap (© colaboradores de OpenStreetMap, licencia ODbL); la ciudad de las sedes de la ACB es la del club. Los contornos de países del mapa del PDF son de Natural Earth (dominio público), reducidos a Europa y Oriente Medio. Las sedes marcadas `revisar` tienen una coordenada aproximada, a nivel de ciudad.
 
-Los escudos de los 74 clubes están en `assets/escudos/` y `data/escudos.csv` indica de dónde sale cada uno. Los 64 clubes de Euroliga y EuroCup usan el escudo que publica la API de Euroliga, y los 10 clubes de la ACB que no juegan esas competiciones usan el logo de su ficha en acb.com. Los escudos son marcas de sus clubes y se incluyen solo con fines académicos. Las tablas los muestran en una columna de imagen: cada escudo se convierte en una miniatura de 32 px incrustada en la propia tabla, y como categoría viaja una sola vez al navegador, no una por fila.
+Los escudos de los 63 clubes están en `assets/escudos/` y `data/escudos.csv` indica de dónde sale cada uno. Los 53 clubes de Euroliga y EuroCup usan el escudo que publica la API de Euroliga, y los 10 clubes de la ACB que no juegan esas competiciones usan el logo de su ficha en acb.com. Los escudos son marcas de sus clubes y se incluyen solo con fines académicos. Las tablas los muestran en una columna de imagen: cada escudo se convierte en una miniatura de 32 px incrustada en la propia tabla, y como categoría viaja una sola vez al navegador, no una por fila.
 
 La tabla de próximos partidos de la API también lleva escudos: la API escribe los nombres de otra forma (Kosner Baskonia Vitoria-Gasteiz, La Laguna Tenerife), así que cada club se reconoce por su código, competición y temporada en la tabla `club_alias`.
 
 El mapa de la página Calendario y viajes tiene tres modos. Con fondo detallado (teselas de OpenStreetMap servidas por Carto), dibuja las sedes por competición, con la leyenda como filtro, y las rutas de viaje: todas las del club elegido o las 15 más repetidas de cada competición si no hay club, con el grosor según las veces. Un selector resalta una sede y muestra debajo sus partidos con escudos. La vista de animación por meses suma los partidos y los viajes mes a mes, con botones de reproducir y pausa y un control deslizante. Si las teselas no cargan, el fondo simple dibuja los países sin conexión. Streamlit no devuelve el clic sobre un mapa, por eso la sede se elige con un selector.
 
-Las tablas con país (partidos y catálogo de sedes) llevan además una columna con la bandera del país de la sede. Las 23 banderas están en `assets/banderas/` y se descargaron de flagcdn.com (PNG de 80 px, de uso libre). Se tratan igual que los escudos: miniatura de 40 × 27 px con marco fino (las banderas más altas se recortan y las más anchas se aplanan para que todas midan igual) y columna como categoría.
+Las tablas con país (partidos y catálogo de sedes) llevan además una columna con la bandera del país de la sede. Las 19 banderas están en `assets/banderas/` y se descargaron de flagcdn.com (PNG de 80 px, de uso libre). Se tratan igual que los escudos: miniatura de 40 × 27 px con marco fino (las banderas más altas se recortan y las más anchas se aplanan para que todas midan igual) y columna como categoría.
 
-La base se construye fuera de la aplicación con los scripts incluidos en `scripts/`: `fetch_euroleague.py`, `fetch_acb.py`, `build_db.py` y `precompute_metrics.py`. Los JSON de origen y catálogos usados en esta entrega están en `data/raw/`. Un mismo club cambia de código y de nombre según la competición y la temporada, por lo que el modelo separa el club (identificador propio), sus alias por competición y temporada, y los clubes que juegan cada competición cada año. Valencia Basket cambia de pabellón en 2025 y el modelo lo recoge.
+La base se construye fuera de la aplicación con los scripts incluidos en `scripts/`: `fetch_euroleague.py`, `fetch_acb.py`, `build_db.py` y `precompute_metrics.py`. Los JSON de origen y catálogos usados en esta entrega están en `data/raw/`. Un mismo club cambia de código y de nombre según la competición y la temporada, por lo que el modelo separa el club (identificador propio), sus alias por competición y temporada, y los clubes que juegan cada competición cada año. La base solo carga la temporada en curso y solo conserva las sedes en las que se juega algún partido.
 
 ## Métricas
 
@@ -99,7 +99,7 @@ La tabla de próximos partidos no necesita nada de esto: se pide en directo a la
 
 ## Limitaciones
 
-- La web de la ACB solo muestra la temporada en curso y no ofrece un modo público de listar las anteriores, de modo que la doble competición solo se puede estudiar en 2026/27. Euroliga y EuroCup sí cubren las cinco temporadas.
+- La web de la ACB solo muestra la temporada en curso y no ofrece un modo público de listar las anteriores, y por eso el estudio se limita a la temporada 2026/27 en las tres competiciones.
 - Los partidos de la ACB aún sin fecha fija (los marca la web como «sin programar») no se incluyen.
 - Quedan fuera la Champions League, la Copa del Rey y las ligas domésticas de los clubes extranjeros. La carga de los clubes que además juegan la Champions o la Copa está subestimada.
 - En ACB la sede del partido es el pabellón habitual del local.
