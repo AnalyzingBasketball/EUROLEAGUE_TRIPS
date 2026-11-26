@@ -20,6 +20,12 @@
   .print-only tr { break-inside: avoid; page-break-inside: avoid; }
   .print-only p { font-size: 8pt; margin: 2px 0 0; }
 
+  /* WebKit no respeta los saltos de página dentro de contenedores flex: se pasan a bloque y el espacio se da con márgenes. */
+  [data-testid="stMainBlockContainer"], [data-testid="stVerticalBlock"], [data-testid="stElementContainer"] {
+    display: block !important;
+  }
+  [data-testid="stElementContainer"] { margin-bottom: 0.75rem; }
+
   /* Gráficos y títulos no se parten entre páginas. */
   [data-testid="stPlotlyChart"], [data-testid="stImage"],
   [data-testid="stElementContainer"]:has([data-testid="stPlotlyChart"]) { break-inside: avoid; page-break-inside: avoid; }
