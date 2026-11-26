@@ -38,7 +38,7 @@ styles/print.css         estilos de la vista de impresión (oculta menú y boton
 .streamlit/config.toml   oculta el menú automático de Streamlit
 scripts/                descarga pública, construcción de SQLite y precálculo de métricas
 data/raw/                calendarios, minutos y catálogos descargados de Euroliga, EuroCup y ACB
-tests/                   pruebas con pytest (159)
+tests/                   pruebas con pytest (160)
 docs/cuaderno_app.ipynb   cuaderno que contiene el código de la aplicación y lo exporta a los .py
 ```
 
